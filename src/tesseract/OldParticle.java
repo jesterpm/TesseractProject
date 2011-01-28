@@ -1,52 +1,23 @@
 package tesseract;
 
-import java.awt.Color;
+import com.sun.j3d.utils.geometry.*;
+import java.awt.*;
+import javax.media.j3d.*;
+import javax.vecmath.*;
 
-import javax.media.j3d.Appearance;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.ColoringAttributes;
-import javax.media.j3d.Group;
-import javax.media.j3d.Node;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
-import javax.vecmath.Color3f;
-import javax.vecmath.Vector3f;
+import tesseract.objects.Forceable;
 
-import com.sun.j3d.utils.geometry.Sphere;
-
-/**
- * This class is the parent of all objects in the world.
- * 
- * @author Jesse Morgan
- */
-public abstract class PhysicalObject {
-	/**
-	 * The inverse of the object's mass.
-	 */
-	protected float inverseMass;
-	
-	/**
-	 * The object's current position.
-	 */
-	private Vector3f myPosition;
-	
-	/**
-	 * The object's previous position.
-	 */
-	private Vector3f myPrevPosition;
-	
-	private Vector3f myVelocity;
-	
+public class OldParticle implements Forceable {
+	private float inverseMass;
+	private Vector3f position, prevPosition;
+	private Vector3f velocity;
+	private Vector3f force;
 	private BranchGroup BG;
 	private TransformGroup TG;
 
-	public PhysicalObject(final Vector3f position, final float mass) {
-		inverseMass = 1 / mass;
-		myPosition = new Vector3f(position);
-		myPrevPosition = new Vector3f(position);
-	}
+	private static final float RADIUS = 0.004f;
 	
-	public Particle(Color3f color, Vector3f position, Vector3f velocity) {
+	public OldParticle(Color3f color, Vector3f position, Vector3f velocity) {
 		inverseMass = 1;
 		this.position = new Vector3f(position);
 		prevPosition = new Vector3f(position);
@@ -66,11 +37,11 @@ public abstract class PhysicalObject {
 	}
 
 	public Vector3f getPosition() {
-		return myPosition;
+		return position;
 	}
 
 	public Vector3f getPreviousPosition() {
-		return myPrevPosition;
+		return prevPosition;
 	}
 
 	public Vector3f getVelocity() {

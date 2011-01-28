@@ -22,6 +22,9 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
+import tesseract.forces.Gravity;
+import tesseract.objects.Particle;
+
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 /**
@@ -42,9 +45,14 @@ public class TesseractUI extends JFrame {
 	private static final int UPDATE_RATE = 30;
 	
 	/**
-	 * 
+	 * Measure of 1 unite of space in the world.
 	 */
 	private static final double UNIT = 1;
+
+	/**
+	 * Number of miliseconds in 1 second.
+	 */
+	private static final int MILISECONDS_IN_SECOND = 1000;
 	
 	/**
 	 * A reference to the world.
@@ -86,6 +94,11 @@ public class TesseractUI extends JFrame {
 				isFrameStateSupported(JFrame.MAXIMIZED_BOTH)) {
 			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		}
+		
+		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
+		// TODO: REMOVE TEST CODE
+		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
+		myWorld.addForce(new Gravity());
 	}
 	
 	/**
@@ -200,7 +213,7 @@ public class TesseractUI extends JFrame {
 		});
 		
 		// Setup the timer.
- 		new Timer(1000 / UPDATE_RATE, new ActionListener() {
+ 		new Timer(MILISECONDS_IN_SECOND / UPDATE_RATE, new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				myCanvas.stopRenderer();
 				myWorld.tick();
