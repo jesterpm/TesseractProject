@@ -24,6 +24,7 @@ import javax.vecmath.Vector3f;
 
 import tesseract.forces.Gravity;
 import tesseract.objects.Particle;
+import tesseract.objects.emitters.ParticleEmitter;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
@@ -47,7 +48,7 @@ public class TesseractUI extends JFrame {
 	/**
 	 * Measure of 1 unite of space in the world.
 	 */
-	private static final double UNIT = 1;
+	private static final float UNIT = 1;
 
 	/**
 	 * Number of miliseconds in 1 second.
@@ -99,6 +100,7 @@ public class TesseractUI extends JFrame {
 		// TODO: REMOVE TEST CODE
 		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
 		myWorld.addForce(new Gravity());
+		myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
 	}
 	
 	/**
