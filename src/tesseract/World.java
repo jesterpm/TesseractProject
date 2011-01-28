@@ -17,6 +17,8 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
+import tesseract.objects.Collidable;
+import tesseract.objects.CollisionInfo;
 import tesseract.objects.Forceable;
 import tesseract.objects.PhysicalObject;
 
@@ -46,6 +48,11 @@ public class World {
 	 */
 	private List<Force> myForces;
 	
+	/**
+	 * Objects that can be collided into, a subset of myObjects.
+	 */
+	private List<Collidable> myCollidables;
+	
 	//private List<ParticleEmitter> emitters;
 	//private boolean enableEmitters;
 	
@@ -74,6 +81,7 @@ public class World {
 
 		myForces = new LinkedList<Force>();
 		myObjects = new LinkedList<PhysicalObject>();
+		myCollidables = new LinkedList<Collidable>();
 		
 		// TODO: Should this go here?
 		myScene = new BranchGroup();
@@ -162,7 +170,14 @@ public class World {
 				children.addAll(newChildren);
 			}
 			
-			// TODO: Eventually check for collisions here.
+			// Check for collisions
+			for (Collidable collidable : myCollidables) {
+				if (collidable.hasCollision(obj)) {
+					// Resolve the collision
+					CollisionInfo ci = collidable.calculateCollision(obj);
+					collidable.resolveCollision(obj, ci);
+				}
+			}
 
 			// If it leaves the bounds of the world, DESTROY IT
 			if (!obj.isExisting()
@@ -197,6 +212,10 @@ public class World {
 	public void addObject(final PhysicalObject obj) {
 		myScene.addChild(obj.getGroup());
 		myObjects.add(obj);
+		
+		if (obj instanceof Collidable) {
+			myCollidables.add((Collidable) obj);
+		}
 	}
 	
 	/**
