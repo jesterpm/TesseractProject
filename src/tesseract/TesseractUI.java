@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.vecmath.Point3d;
@@ -110,6 +111,10 @@ public class TesseractUI extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		
 		JMenu simulationMenu = new JMenu("Simulation");
+		
+		//Added by Steve: Fixes viewing menu problem with Canvas3D on both my windows machines
+		JPopupMenu.setDefaultLightWeightPopupEnabled(false); 
+		
 		menuBar.add(simulationMenu);
 		
 		/*
