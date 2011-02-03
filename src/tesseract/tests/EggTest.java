@@ -83,13 +83,18 @@ public class EggTest {
 		TransformGroup ellipsoidTG = new TransformGroup();
 		Appearance eApp = new Appearance();
 		Material eggMat = new Material();
-		eggMat.setDiffuseColor(1f, 0f, 1f);
+		eggMat.setDiffuseColor(0f, .8f, 1f);
 		eApp.setMaterial(eggMat);
 		eApp.setColoringAttributes(new ColoringAttributes(0f, 1f, 1f, ColoringAttributes.ALLOW_COLOR_WRITE));
-		Ellipsoid egg = new Ellipsoid(0.2f, new Sphere().getPrimitiveFlags(), 100, eApp, 0.8f, 1.5f);
+		Vector3f position = new Vector3f(0.2f,0,0);
+		
+		//Test for first constructor.
+		Ellipsoid egg = new Ellipsoid(position, 1, 0.1f, new Sphere().getPrimitiveFlags(), 100, eApp, 0.2f, 4.0f);
+		//Test for second constructor.
+		//Ellipsoid egg = new Ellipsoid(position, 0.3f);
 		
 		//unlike the basic sphere or cube etc., you must use a getter or will throw exception
-		ellipsoidTG.addChild(egg.getEllipsoid());
+		ellipsoidTG.addChild(egg.getGroup());
 		
 		BranchGroup bg = new BranchGroup();
 		bg.addChild(ellipsoidTG);

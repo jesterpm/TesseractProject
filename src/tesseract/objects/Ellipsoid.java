@@ -1,14 +1,15 @@
 /*
+ * Class Ellipsoid
  * TCSS 491 Computational Worlds
- * Author Steve Bradshaw
+ * Steve Bradshaw
  */
+
 package tesseract.objects;
 
 import javax.media.j3d.Appearance;
-import javax.media.j3d.Group;
 import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Sphere;
 
@@ -22,82 +23,82 @@ import com.sun.j3d.utils.geometry.Sphere;
  * @author Steve Bradshaw
  * @version 1 Feb 2011
  */
-public class Ellipsoid extends Sphere {
+public class Ellipsoid extends ForceableObject {
 	
 	/**
-	 *  The b in the formula (x/a)^2 + (y/b)^2 + (z/c)^2 = 1.
+	 * Default mass.
 	 */
-	private float my_b;
+	private static final float DEFAULT_MASS = 1;
 	
 	/**
-	 *  The c in the formula (x/a)^2 + (y/b)^2 + (z/c)^2 = 1.
+	 * Number of divisions in the sphere.
 	 */
-	private float my_c;
+	private static final int DEFAULT_DIVISIONS = 50;
 	
 	/**
-	 *  The Group containing the new ellipsoid.
-	 */
-	private TransformGroup my_ellipsoidTG;
-	
-	/**
-	 * Constructor similar to sphere but with the additions of b and c to change
-	 * the shape.
-	 * This constructor does not have the Appearance as an argument.
+	 * Create a new Ellipsoid.
 	 * 
-	 * @param radius the radius of the ellipsoid if in sphere form
-	 * @param primflags an int
-	 * @param divisions an int 
-	 * @param b to change the shape of the ellipsoid in the y direction
-	 * @param c to change the shape of the ellipsoid in the z direction
+	 * @param position Initial position.
+	 * @param mass Initial mass.
+	 * @param radius the radius of the base sphere.
+	 * @param primflags an int for the base spere primflags.
+	 * @param divisions an in for the shape divisions.
+	 * @param appearance an Appearance object.
+	 * @param b a float for the b portion of the ellipsoid formula.
+	 * @param c a float for the c portion of the ellipsoid formula.
 	 */
-	public Ellipsoid(final float radius, final int primflags,
-			final int divisions, final float b, final float c) {
-		super(radius, primflags, divisions);
+	public Ellipsoid(final Vector3f position, final float mass,
+			final float radius,	final int primflags, final int divisions,
+			final Appearance appearance, final float b, final float c) {
+		super(position, mass);
 		
-		my_b = b;
-		my_c = c;
-		my_ellipsoidTG = new TransformGroup();
-		createGeometry();
+		createShape(radius, primflags, appearance, divisions, b, c);
 	}
 	
 	/**
-	 * Constructor similar to sphere but with the additions of b and c to change
-	 * the shape. This constructor adds Appearance as an argument.
+	 * Create a new Ellipsoid.
 	 * 
-	 * @param radius the radius of the ellipsoid if in sphere form
-	 * @param primflags an int
-	 * @param divisions an int
-	 * @param appearance brings an Appearance object for material, color etc.
-	 * @param b to change the shape of the ellipsoid in the y direction
-	 * @param c to change the shape of the ellipsoid in the z direction
+	 * @param position Initial position.
+	 * @param radius a float for the size of the base sphere.
 	 */
-	public Ellipsoid(final float radius, final int primflags,
-			final int divisions, final Appearance appearance,
-			final float b, final float c) {
-		super(radius, primflags, divisions, appearance);
+	public Ellipsoid(final Vector3f position, final float radius) {
+		super(position, DEFAULT_MASS);
 		
-		my_b = b;
-		my_c = c;
-		my_ellipsoidTG = new TransformGroup();
-		createGeometry();
+		createDefaultEllipsoid(radius);
 	}
 	
-	/*
-	 * This private method transforms a sphere using a 3D Matrix
+	/**
+	 * This creates a default Ellipsoid for the 2 argument constructor.
+	 * @param radius the siz of the ellipsoid
 	 */
-	private void createGeometry() {
+	private void createDefaultEllipsoid(final float radius) {
+		
+		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags(),
+				DEFAULT_DIVISIONS);
 		Transform3D tmp = new Transform3D();
-		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, my_b, 0.0f, 0.0f, 0.0f, my_c));
-		my_ellipsoidTG.setTransform(tmp);
-		my_ellipsoidTG.addChild(this);
+		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
+		getTransformGroup().setTransform(tmp);
+		getTransformGroup().addChild(sphere);
 	}
 	
 	/**
-	 * This method is the getter to get custom ellipsoid
+	 * This method creates multiple ellipsoidial shapes.
 	 * 
-	 * @return Group containing the transformation of the sphere
+	 * @param radius a float for the size of the base sphere
+	 * @param primflags an int for the base sphere
+	 * @param appearance an Appearance object
+	 * @param divisions an int for the number of divisons
+	 * @param b a float for the y axis transform
+	 * @param c a float for the z axis transfrom
 	 */
-	public Group getEllipsoid() {
-		return my_ellipsoidTG;
+	private void createShape(final float radius, final int primflags,
+			final Appearance appearance, final int divisions, final float b,
+			final float c) {
+		
+		Sphere sphere = new Sphere(radius, primflags, divisions, appearance);
+		Transform3D tmp = new Transform3D();
+		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
+		getTransformGroup().setTransform(tmp);
+		getTransformGroup().addChild(sphere);
 	}
 }
