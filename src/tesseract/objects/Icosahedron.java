@@ -11,6 +11,7 @@ import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Group;
 import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TriangleArray;
 import javax.vecmath.Point3f;
@@ -59,7 +60,7 @@ public class Icosahedron extends ForceableObject {
 	
 	public void buildIcosahedron() {
 		// TODO Auto-generated method stub
-		Point3f coordinates[] = new Point3f[NUM_VERTEX];
+		Point3f[] coordinates = new Point3f[NUM_VERTEX];
 		
 		float phi = GOLDEN_RATIO;
 		int i = 0;
@@ -72,7 +73,7 @@ public class Icosahedron extends ForceableObject {
 		coordinates[i++] = new Point3f(1f, phi, 0);             //4
 		coordinates[i++] = new Point3f(-1f, phi, 0);
 		coordinates[i++] = new Point3f(1f, -1 * phi, 0);
-		coordinates[i++] = new Point3f(-1f, -1 *phi, 0);
+		coordinates[i++] = new Point3f(-1f, -1 * phi, 0);
 		// X / Z Plane coordinates
 		coordinates[i++] = new Point3f(phi, 0, 1f);            //8
 		coordinates[i++] = new Point3f(phi, 0, -1f);
@@ -85,8 +86,8 @@ public class Icosahedron extends ForceableObject {
 			coordinates[it].scale((float) myScale);
 		}
 		
-		GeometryArray die = new TriangleArray(((NUM_VERTEX / 2) - 1) *
-				coordinates.length,	GeometryArray.COORDINATES);
+		GeometryArray die = new TriangleArray(((NUM_VERTEX / 2) - 1)
+				* coordinates.length, GeometryArray.COORDINATES);
 		int index = 0;
 		
 		
@@ -176,18 +177,19 @@ public class Icosahedron extends ForceableObject {
 		GeometryInfo geo = new GeometryInfo(die);
 		norms.generateNormals(geo);
 		
-		Shape3D mesh = new Shape3D(geo.getGeometryArray());
+		Shape3D myShape = new Shape3D(geo.getGeometryArray());
 		Appearance meshApp = new Appearance();
 		Material surface = new Material();
 		surface.setDiffuseColor(.9f, .05f, .05f);
 		meshApp.setMaterial(surface);
 		meshApp.setColoringAttributes(new ColoringAttributes(.9f,
 				.05f, .05f, ColoringAttributes.NICEST));
-		mesh.setAppearance(meshApp);
-		myTG.addChild(mesh);
+		myShape.setAppearance(meshApp);
+		//myTG.addChild(myShape);
+		getTransformGroup().addChild(myShape);
 	}
 	
-	public Group getGroup(){
-		return (Group) myTG.cloneTree();
-	}
+	//public Group getGroup(){
+	//	return (Group) myTG.cloneTree();
+	//}
 }
