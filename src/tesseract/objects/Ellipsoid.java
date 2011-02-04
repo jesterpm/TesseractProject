@@ -8,6 +8,7 @@ package tesseract.objects;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -97,8 +98,9 @@ public class Ellipsoid extends ForceableObject {
 		
 		Sphere sphere = new Sphere(radius, primflags, divisions, appearance);
 		Transform3D tmp = new Transform3D();
+		TransformGroup tg = new TransformGroup(tmp);
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
-		getTransformGroup().setTransform(tmp);
-		getTransformGroup().addChild(sphere);
+		tg.addChild(sphere);
+		getTransformGroup().addChild(tg);
 	}
 }
