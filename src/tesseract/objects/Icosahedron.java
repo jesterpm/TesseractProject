@@ -82,7 +82,7 @@ public class Icosahedron extends ForceableObject {
 		// TODO: Scaling
 		
 		for (int it = 0; it < coordinates.length; it++) {
-			coordinates[it].scale((float) 2);
+			coordinates[it].scale((float) myScale);
 		}
 		
 		GeometryArray die = new TriangleArray(((NUM_VERTEX / 2) - 1) *
