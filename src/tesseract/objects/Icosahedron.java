@@ -78,6 +78,7 @@ public class Icosahedron extends ForceableObject {
 	public Icosahedron(final Vector3f position, final float mass) {
 		super(position, mass);
 		myScale = DEFAULT_SCALE;
+		buildIcosahedron();
 	}
 	
 	/**
