@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Canvas3D;
@@ -20,12 +21,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.vecmath.Point2i;
 import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Gravity;
+import tesseract.menuitems.ParticleMenuItem;
 import tesseract.objects.Particle;
-import tesseract.objects.emitters.ParticleEmitter;
+import tesseract.objects.Physical;
+import tesseract.objects.PhysicalObject;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
@@ -57,6 +62,11 @@ public class TesseractUI extends JFrame {
 	private static final int MILISECONDS_IN_SECOND = 1000;
 	
 	/**
+	 * List of items to appear in add objects menu.
+	 */
+	private ArrayList<JMenuItem> myObjectMenuItems;
+	
+	/**
 	 * A reference to the world.
 	 */
 	private World myWorld;
@@ -77,15 +87,26 @@ public class TesseractUI extends JFrame {
 	private double cameraXRotation, cameraYRotation, cameraDistance;
 	
 	/**
+	 * Reference to the currently selected physical object.
+	 */
+	private Physical myCurrentObject;
+	
+	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
 		super("Tesseract Project");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
+		myCurrentObject = null;
+		
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)));
+		
+		myObjectMenuItems = new ArrayList<JMenuItem>();
+		myObjectMenuItems.add(new ParticleMenuItem(myWorld));
+		
 		
 		createMenu();
 		setupCanvas();
@@ -99,9 +120,12 @@ public class TesseractUI extends JFrame {
 		
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
-		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
+		PhysicalObject p = new Particle(new Vector3f(0, 0, 0), null);
+		
+		//myWorld.addObject(p);
+		
 		myWorld.addForce(new Gravity());
-		myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
+		//myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
 	}
 	
 	/**
@@ -116,6 +140,14 @@ public class TesseractUI extends JFrame {
 		JPopupMenu.setDefaultLightWeightPopupEnabled(false); 
 		
 		menuBar.add(simulationMenu);
+		
+		JMenu objectsMenu = new JMenu("Add Object");
+		
+		for (JMenuItem i : myObjectMenuItems) {
+			objectsMenu.add(i);
+		}
+		
+		menuBar.add(objectsMenu);
 		
 		/*
 		JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
@@ -181,28 +213,47 @@ public class TesseractUI extends JFrame {
 			private MouseEvent lastDragEvent = null;
 			
 			public void mouseDragged(final MouseEvent e) {
-				if (lastDragEvent != null) {
-					cameraXRotation += 
-						Math.toRadians(e.getY() - lastDragEvent.getY()) / 3;
+				if (myCurrentObject != null) {
+					Point3d point = mouseToWorld(
+							new Point2i(e.getX(), e.getY()));					
+					myCurrentObject.setPosition(new Vector3f(point));
 					
-					if (cameraXRotation > Math.PI / 2) {
-						cameraXRotation = Math.PI / 2;
+				} else {
+					Point3d point = mouseToWorld(
+							new Point2i(e.getX(), e.getY()));
+					Vector3d direction = new Vector3d(0, 0, -1);
+					Transform3D t3d = new Transform3D();
+					cameraTG.getTransform(t3d);
+					t3d.transform(direction);
+					
+					myCurrentObject = myWorld.getObject(point, direction);
+					System.out.println(point);
+					System.out.println(myCurrentObject);
+					
+					if (lastDragEvent != null) {
+						cameraXRotation += 
+							Math.toRadians(e.getY() - lastDragEvent.getY()) / 3;
 						
-					} else if (cameraXRotation < -Math.PI / 2) {
-						cameraXRotation = -Math.PI / 2;
+						if (cameraXRotation > Math.PI / 2) {
+							cameraXRotation = Math.PI / 2;
+							
+						} else if (cameraXRotation < -Math.PI / 2) {
+							cameraXRotation = -Math.PI / 2;
+						}
+						
+						cameraYRotation += 
+							Math.toRadians(e.getX() - lastDragEvent.getX()) / 3;
+						
+						updateCamera();
 					}
 					
-					cameraYRotation += 
-						Math.toRadians(e.getX() - lastDragEvent.getX()) / 3;
-					
-					updateCamera();
+					lastDragEvent = e;
 				}
-				
-				lastDragEvent = e;
 			}
 			
 			public void mouseMoved(final MouseEvent e) {
 				lastDragEvent = null;
+				myCurrentObject = null;
 			}
 		});
 		
@@ -228,6 +279,24 @@ public class TesseractUI extends JFrame {
 			}
 		}).start();
 		
+	}
+	
+	/**
+	 * Convert screen coordinates to world coordinates.
+	 * 
+	 * @param mousePosition The mouse position on screen.
+	 * @return A point in the world.
+	 */
+	private Point3d mouseToWorld(final Point2i mousePosition) {
+		Point3d position = new Point3d();
+		myCanvas.getPixelLocationInImagePlate(
+				mousePosition.getX(), mousePosition.getY(), position);
+		
+		Transform3D transform = new Transform3D();
+		myCanvas.getImagePlateToVworld(transform);
+		transform.transform(position);
+		
+		return position;
 	}
 	
 	/**
