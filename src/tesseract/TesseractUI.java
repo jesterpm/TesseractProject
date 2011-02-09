@@ -27,6 +27,7 @@ import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Gravity;
+import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.objects.Particle;
 import tesseract.objects.Physical;
@@ -105,6 +106,7 @@ public class TesseractUI extends JFrame {
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)));
 		
 		myObjectMenuItems = new ArrayList<JMenuItem>();
+		myObjectMenuItems.add(new ParticleEmitterMenuItem(myWorld));
 		myObjectMenuItems.add(new ParticleMenuItem(myWorld));
 		
 		
