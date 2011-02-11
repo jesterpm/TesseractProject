@@ -78,8 +78,9 @@ public class Ellipsoid extends ForceableObject {
 				DEFAULT_DIVISIONS);
 		Transform3D tmp = new Transform3D();
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
-		getTransformGroup().setTransform(tmp);
-		getTransformGroup().addChild(sphere);
+		TransformGroup tg = new TransformGroup(tmp);
+		tg.addChild(sphere);
+		getTransformGroup().addChild(tg);
 	}
 	
 	/**
@@ -98,8 +99,8 @@ public class Ellipsoid extends ForceableObject {
 		
 		Sphere sphere = new Sphere(radius, primflags, divisions, appearance);
 		Transform3D tmp = new Transform3D();
-		TransformGroup tg = new TransformGroup(tmp);
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
+		TransformGroup tg = new TransformGroup(tmp);
 		tg.addChild(sphere);
 		getTransformGroup().addChild(tg);
 	}

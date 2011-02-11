@@ -46,9 +46,12 @@ public abstract class TesseractMenuItem
 	 * @return A vector3f.
 	 */
 	protected Vector3f parseVector(final String input)  {
+		String[] split = input.split(",");
 		
-		
-		return new Vector3f();
-	}
+		float x = Float.parseFloat(split[0]);
+		float y = Float.parseFloat(split[0]);
+		float z = Float.parseFloat(split[0]);
 
+		return new Vector3f(x, y, z);
+	}
 }
