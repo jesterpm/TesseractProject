@@ -13,6 +13,7 @@ import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -23,14 +24,9 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
-import tesseract.forces.Gravity;
-import tesseract.menuitems.EllipsoidMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
-import tesseract.menuitems.PlanarPolygonMenuItem;
 import tesseract.objects.Particle;
-import tesseract.objects.PlanarPolygon;
-import tesseract.objects.emitters.ParticleEmitter;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
@@ -87,6 +83,11 @@ public class TesseractUI extends JFrame {
 	private JMenuItem[] myObjectMenuItems;
 	
 	/**
+	 * World Timer.
+	 */
+	private Timer myTimer;
+	
+	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
@@ -100,8 +101,8 @@ public class TesseractUI extends JFrame {
 		myObjectMenuItems = new JMenuItem[] {
 				new ParticleEmitterMenuItem(myWorld),
 				new ParticleMenuItem(myWorld),
-				new PlanarPolygonMenuItem(myWorld),
-				new EllipsoidMenuItem(myWorld)
+				//new PlanarPolygonMenuItem(myWorld),
+				//new EllipsoidMenuItem(myWorld)
 			};
 		
 		createMenu();
@@ -116,10 +117,11 @@ public class TesseractUI extends JFrame {
 		
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
-		//myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
+		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
 		//myWorld.addForce(new Gravity());
 		//myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
 		//myWorld.addObject(new PlanarPolygon(new Vector3f(0, 0.49f, 0), 0.25f));
+		//myWorld.addObject(new Icosahedron(new Vector3f(), 1, 0.00001f));
 	}
 	
 	/**
@@ -165,6 +167,21 @@ public class TesseractUI extends JFrame {
 		}
 		*/
 		
+		// Simulator Start/Stop
+		JMenuItem runSim = new JCheckBoxMenuItem("Run Simulator", true);
+		runSim.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+					myTimer.start();
+				
+				} else {
+					myTimer.stop();
+				}
+			}
+		});
+		simulationMenu.add(runSim);
+		
+		
 		// Exit Menu Item
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
@@ -197,7 +214,10 @@ public class TesseractUI extends JFrame {
 		
 		// Add the scene BG.
 		universe.addBranchGraph(myWorld.getScene());
-
+		
+		// Setup the Mouse Behaviors
+		myWorld.setupMouseBehaviors(myCanvas);
+		
 		// Add the canvas to the frame.
 		add(myCanvas);
 		
@@ -207,6 +227,11 @@ public class TesseractUI extends JFrame {
 			private MouseEvent lastDragEvent = null;
 			
 			public void mouseDragged(final MouseEvent e) {
+				if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0
+						|| (e.getModifiersEx() & MouseEvent.ALT_DOWN_MASK) != 0) {
+					return;
+				}
+				
 				if (lastDragEvent != null) {
 					cameraXRotation += 
 						Math.toRadians(e.getY() - lastDragEvent.getY()) / 3;
@@ -246,13 +271,16 @@ public class TesseractUI extends JFrame {
 		});
 		
 		// Setup the timer.
- 		new Timer(MILISECONDS_IN_SECOND / UPDATE_RATE, new ActionListener() {
+ 		myTimer = new Timer(MILISECONDS_IN_SECOND / UPDATE_RATE,
+ 		new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				myCanvas.stopRenderer();
 				myWorld.tick();
 				myCanvas.startRenderer();
 			}
-		}).start();
+		});
+ 		
+ 		myTimer.start();
 		
 	}
 	

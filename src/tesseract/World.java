@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.media.j3d.BoundingBox;
+import javax.media.j3d.BoundingLeaf;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
 import javax.media.j3d.DirectionalLight;
 import javax.media.j3d.IndexedLineArray;
 import javax.media.j3d.Light;
@@ -22,6 +24,10 @@ import tesseract.objects.CollisionInfo;
 import tesseract.objects.Forceable;
 import tesseract.objects.PhysicalObject;
 
+import com.sun.j3d.utils.picking.PickTool;
+import com.sun.j3d.utils.picking.behaviors.PickTranslateBehavior;
+import com.sun.j3d.utils.picking.behaviors.PickZoomBehavior;
+
 /**
  * Model of the 3D world.
  * 
@@ -32,6 +38,11 @@ public class World {
 	 * Root element of the world.
 	 */
 	private BranchGroup myScene;
+	
+	/**
+	 * Pickable Objects.
+	 */
+	private BranchGroup myPickableObjects;
 	
 	/**
 	 * Bounding box of the world.
@@ -87,8 +98,19 @@ public class World {
 		myScene = new BranchGroup();
 		myScene.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		myScene.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		
+		BoundingLeaf originLeaf = new BoundingLeaf(new BoundingSphere());
+		myScene.addChild(originLeaf);
+		
 		myScene.addChild(createVirtualWorldBoundsShape());
+		
+		myPickableObjects = new BranchGroup();
+		myPickableObjects.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+		myPickableObjects.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+		//myScene.addChild(myPickableObjects);
+		
 		addLights();
+		
 		myScene.compile();
 	}
 
@@ -205,12 +227,33 @@ public class World {
 	}
 	
 	/**
+	 * Setup mouse behaviors in the world.
+	 *
+	 * @param canvas The canvas to tie the events to.
+	 */
+	public void setupMouseBehaviors(final Canvas3D canvas) {
+		//BranchGroup pickables = new BranchGroup();
+		myPickableObjects.addChild(new PickTranslateBehavior(myPickableObjects, canvas, myVirtualWorldBounds, PickTool.GEOMETRY));
+		myPickableObjects.addChild(new PickZoomBehavior(myPickableObjects, canvas, myVirtualWorldBounds, PickTool.GEOMETRY));
+		myScene.addChild(myPickableObjects);
+		
+		/*myPickableObjects.addChild(
+				new PickTranslateBehavior(myPickableObjects, canvas,
+						myVirtualWorldBounds, PickTool.GEOMETRY));
+		
+		myPickableObjects.addChild(
+				new PickZoomBehavior(myPickableObjects, canvas,
+						myVirtualWorldBounds, PickTool.GEOMETRY));
+		*/
+	}
+	
+	/**
 	 * Add a new object to the world.
 	 * 
 	 * @param obj The object to add
 	 */
 	public void addObject(final PhysicalObject obj) {
-		myScene.addChild(obj.getGroup());
+		myPickableObjects.addChild(obj.getGroup());
 		myObjects.add(obj);
 		
 		if (obj instanceof Collidable) {

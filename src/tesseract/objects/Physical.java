@@ -13,4 +13,11 @@ public interface Physical {
 	 * @return The position of the object in the world.
 	 */
 	Vector3f getPosition(); 
+	
+	/**
+	 * Set the object's position.
+	 * 
+	 * @param position The new position.
+	 */
+	void setPosition(Vector3f position);
 }

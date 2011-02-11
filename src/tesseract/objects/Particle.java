@@ -74,7 +74,7 @@ public class Particle extends ForceableObject {
 		cAttr = new ColoringAttributes(color, ColoringAttributes.FASTEST);
 		Appearance appearance = new Appearance();
 		appearance.setColoringAttributes(cAttr);
-		return new Sphere(RADIUS, 0, DIVISIONS, appearance);
+		return new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING,
+				DIVISIONS, appearance);
 	}
-
 }

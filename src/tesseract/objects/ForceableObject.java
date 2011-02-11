@@ -9,7 +9,8 @@ import javax.vecmath.Vector3f;
  * 
  * @author Jesse Morgan
  */
-public class ForceableObject extends PhysicalObject implements Forceable {
+public abstract class ForceableObject 
+	extends PhysicalObject implements Forceable {
 	/**
 	 * The inverse of the object's mass.
 	 */
