@@ -25,6 +25,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.menuitems.EllipsoidMenuItem;
+import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
@@ -103,7 +104,8 @@ public class TesseractUI extends JFrame {
 				new ParticleEmitterMenuItem(myWorld),
 				new ParticleMenuItem(myWorld),
 				new PlanarPolygonMenuItem(myWorld),
-				new EllipsoidMenuItem(myWorld)
+				new EllipsoidMenuItem(myWorld),
+				new IcosahedronMenuItem(myWorld)
 			};
 		
 		createMenu();

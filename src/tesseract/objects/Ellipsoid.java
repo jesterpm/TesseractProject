@@ -1,5 +1,5 @@
 /*
- * Class Ellipsoid
+ 																																																																		* Class Ellipsoid
  * TCSS 491 Computational Worlds
  * Steve Bradshaw
  */

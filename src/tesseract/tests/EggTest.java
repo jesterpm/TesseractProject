@@ -60,7 +60,7 @@ public class EggTest {
 		icc3D = new Transform3D();
 		iccTG = new TransformGroup();
 		iccTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		iccTG.addChild(createPlanar());
+		iccTG.addChild(createEllipsoid());
 		scene.addChild(iccTG);
 		scene.compile();
 		
