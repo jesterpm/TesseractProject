@@ -11,6 +11,7 @@ import javax.media.j3d.Material;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -132,6 +133,10 @@ public class ChainLink extends ForceableObject {
 		app.setMaterial(mat);
 		shape.setAppearance(app);
 		getTransformGroup().addChild(myShape);
+		Transform3D tmp2 = new Transform3D();
+		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
+		getTransformGroup().setTransform(tmp2);
+		getTransformGroup().addChild(shape);
 	}
 	
 	//public Group getGroup(){
