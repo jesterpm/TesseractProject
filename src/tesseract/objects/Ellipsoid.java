@@ -74,7 +74,9 @@ public class Ellipsoid extends ForceableObject {
 	 */
 	private void createDefaultEllipsoid(final float radius) {
 		
-		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags(),
+		Sphere sphere = new Sphere(radius,
+				new Sphere().getPrimitiveFlags()
+				| Sphere.ENABLE_GEOMETRY_PICKING,
 				DEFAULT_DIVISIONS);
 		Transform3D tmp = new Transform3D();
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));

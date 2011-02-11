@@ -7,6 +7,7 @@
 package tesseract.objects;
 
 import javax.media.j3d.Appearance;
+import javax.media.j3d.Geometry;
 import javax.media.j3d.Group;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Node;
@@ -129,6 +130,7 @@ public class PlanarPolygon extends ForceableObject {
 		appearance.setTexture(texture);
 		PolygonAttributes polyAttr = new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0);
 		appearance.setPolygonAttributes(polyAttr);		
+		geometry.setCapability(Geometry.ALLOW_INTERSECT);
 		Shape3D polygon =  new Shape3D(geometry, appearance);
 		getTransformGroup().addChild(polygon);
 		//return getTransformGroup();
