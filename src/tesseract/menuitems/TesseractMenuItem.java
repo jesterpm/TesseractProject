@@ -26,6 +26,16 @@ public abstract class TesseractMenuItem
 	private static final long serialVersionUID = 1839955501629795920L;
 	
 	/**
+	 * A Default radius.
+	 */
+	private static final float DEFAULT_RADIUS = 0.1f;
+	
+	/**
+	 * A Default position.
+	 */
+	private static final Vector3f DEFAULT_POSITION = new Vector3f(0,0,0);
+	
+	/**
 	 * The reference to the world.
 	 */
 	protected World myWorld;
@@ -91,5 +101,19 @@ public abstract class TesseractMenuItem
 	
 	protected JFrame getParamFrame() {
 		return my_param_frame;
+	}
+
+	/**
+	 * @return the defaultRadius
+	 */
+	public static float getDefaultRadius() {
+		return DEFAULT_RADIUS;
+	}
+
+	/**
+	 * @return the defaultPosition
+	 */
+	public static Vector3f getDefaultPosition() {
+		return DEFAULT_POSITION;
 	}
 }

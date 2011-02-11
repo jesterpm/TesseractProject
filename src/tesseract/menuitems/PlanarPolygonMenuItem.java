@@ -29,11 +29,6 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * A Default radius.
-	 */
-	private static final float DEFAULT_RADIUS = 0.1f;
-
-	/**
 	 * Constructor for the menu item.
 	 * 
 	 * @param theWorld The world into which we add.
@@ -57,7 +52,7 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new PlanarPolygon(new Vector3f(0,0,0), DEFAULT_RADIUS));
+					myWorld.addObject(new PlanarPolygon(getDefaultPosition(), getDefaultRadius()));
 					params.dispose();
 				}
 			}
