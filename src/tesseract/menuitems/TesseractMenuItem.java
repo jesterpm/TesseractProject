@@ -49,8 +49,8 @@ public abstract class TesseractMenuItem
 		String[] split = input.split(",");
 		
 		float x = Float.parseFloat(split[0]);
-		float y = Float.parseFloat(split[0]);
-		float z = Float.parseFloat(split[0]);
+		float y = Float.parseFloat(split[1]);
+		float z = Float.parseFloat(split[2]);
 
 		return new Vector3f(x, y, z);
 	}
