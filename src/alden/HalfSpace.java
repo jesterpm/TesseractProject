@@ -1,6 +1,6 @@
 package alden;
-import javax.media.j3d.*;
-import javax.vecmath.*;
+
+import javax.vecmath.Vector3f;
 
 @SuppressWarnings("restriction")
 public class HalfSpace extends CollidableObject {
