@@ -2,7 +2,7 @@ package tesseract.forces;
 
 import javax.vecmath.Vector3f;
 
-import tesseract.objects.Forceable;
+import tesseract.objects.PhysicalObject;
 
 /**
  * Abstract Force class.
@@ -16,14 +16,14 @@ public abstract class Force {
 	 * @param obj The given object.
 	 * @return A vector describing the force.
 	 */
-	protected abstract Vector3f calculateForce(final Forceable obj);
+	protected abstract Vector3f calculateForce(final PhysicalObject obj);
 	
 	/**
 	 * Apply this force to the given object.
 	 * 
 	 * @param obj The given object.
 	 */
-	public void applyForceTo(final Forceable obj) {
+	public void applyForceTo(final PhysicalObject obj) {
 		obj.addForce(calculateForce(obj));
 	}
 }

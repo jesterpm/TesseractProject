@@ -35,7 +35,7 @@ import com.sun.j3d.utils.image.TextureLoader;
  * @author Steve Bradshaw
  * @version 8 Feb 2011
  */
-public class PlanarPolygon extends ForceableObject {
+public class PlanarPolygon extends PhysicalObject {
 	
 	/**
 	 * Default mass.
@@ -63,8 +63,7 @@ public class PlanarPolygon extends ForceableObject {
 			final float radius, final int divisions) {
 		super(position, mass);
 		
-		//getTransformGroup().addChild(createShape(radius, divisions));
-		createShape(radius, divisions);
+		setShape(createShape(radius, divisions));
 	}
 	
 	/**
@@ -74,9 +73,7 @@ public class PlanarPolygon extends ForceableObject {
 	 * @param radius a float for the size of the base sphere.
 	 */
 	public PlanarPolygon(final Vector3f position, final float radius) {
-		super(position, DEFAULT_MASS);
-		
-		createShape(radius, DEFAULT_DIVISIONS);
+		this(position, DEFAULT_MASS, radius, DEFAULT_DIVISIONS);
 	}
 	
 	/**
@@ -100,7 +97,7 @@ public class PlanarPolygon extends ForceableObject {
 	 * @param divisions an int for the number of divisons
 	 * @param appearance an Appearance object
 	 */
-	private void createShape(final float radius, final int divisions) {
+	private Shape3D createShape(final float radius, final int divisions) {
 		TriangleFanArray geometry = new TriangleFanArray(divisions,
 				TriangleFanArray.COORDINATES | TriangleFanArray.TEXTURE_COORDINATE_2, new int[] {divisions});
 		for (int i = 0; i < divisions; i++) {
@@ -132,8 +129,8 @@ public class PlanarPolygon extends ForceableObject {
 		appearance.setPolygonAttributes(polyAttr);		
 		geometry.setCapability(Geometry.ALLOW_INTERSECT);
 		Shape3D polygon =  new Shape3D(geometry, appearance);
-		getTransformGroup().addChild(polygon);
-		//return getTransformGroup();
+		
+		return polygon;
 	}
 	
 	/*private void createShape(final float radius, final int primflags,

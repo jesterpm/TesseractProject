@@ -11,6 +11,7 @@ import javax.media.j3d.Material;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -24,16 +25,9 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * @author Phillip Cardon
  * @version 0.1a
  */
-public class ChainLink extends ForceableObject {
+public class ChainLink extends PhysicalObject {
 	//CONSTANTS
 	private static final int MAX_ANGLE = 120;
-
-	//FIELDS
-	private Shape3D myShape;
-	
-	private float myScale;
-
-	//CONSTRUCTORS
 
 
 	/**
@@ -50,7 +44,8 @@ public class ChainLink extends ForceableObject {
 			final int sliceDivisions, final float arcRadius,
 			final int arcDivisions) {
 		super(position, mass);
-		myScale = scale;
+		
+		setShape(buildChainLink(scale, sliceRadius, sliceDivisions, arcRadius, arcDivisions));
 	}
 	
 	
@@ -61,7 +56,8 @@ public class ChainLink extends ForceableObject {
 	 * @param arcRadius Radius of donut circle
 	 * @param arcDivisions resolution of slices on donut.
 	 */
-	public void buildToroid(final float sliceRadius, final int sliceDivisions,
+	public TransformGroup buildChainLink(final float scale,
+			final float sliceRadius, final int sliceDivisions, 
 			final float arcRadius, final int arcDivisions) {
 		Point3f[][] coordinates = new Point3f[arcDivisions][sliceDivisions];
 		final float arcAngle = (float) (Math.PI * 2.0);
@@ -86,7 +82,7 @@ public class ChainLink extends ForceableObject {
 			for (int i = 0; i < sliceDivisions; i++) {
 				coordinates[j][i] = new Point3f(coordinates[j - 1][i]);
 				trans3D.transform(coordinates[j][i]);
-				coordinates[j][i].scale((float) myScale);
+				coordinates[j][i].scale((float) scale);
 			}
 		}
 		
@@ -132,11 +128,16 @@ public class ChainLink extends ForceableObject {
 		mat.setDiffuseColor(1, 0, 0);
 		app.setMaterial(mat);
 		shape.setAppearance(app);
-		getTransformGroup().addChild(myShape);
+		
+		
 		Transform3D tmp2 = new Transform3D();
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
-		getTransformGroup().setTransform(tmp2);
-		getTransformGroup().addChild(shape);
+		
+		TransformGroup tg = new TransformGroup();
+		tg.setTransform(tmp2);
+		tg.addChild(shape);
+		
+		return tg;
 	}
 	
 	//public Group getGroup(){

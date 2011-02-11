@@ -19,9 +19,6 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
-import tesseract.objects.Collidable;
-import tesseract.objects.CollisionInfo;
-import tesseract.objects.Forceable;
 import tesseract.objects.PhysicalObject;
 
 import com.sun.j3d.utils.picking.PickTool;
@@ -59,11 +56,6 @@ public class World {
 	 */
 	private List<Force> myForces;
 	
-	/**
-	 * Objects that can be collided into, a subset of myObjects.
-	 */
-	private List<Collidable> myCollidables;
-	
 	//private List<ParticleEmitter> emitters;
 	//private boolean enableEmitters;
 	
@@ -92,7 +84,6 @@ public class World {
 
 		myForces = new LinkedList<Force>();
 		myObjects = new LinkedList<PhysicalObject>();
-		myCollidables = new LinkedList<Collidable>();
 		
 		// TODO: Should this go here?
 		myScene = new BranchGroup();
@@ -175,40 +166,35 @@ public class World {
 		
 		while (itr.hasNext()) {
 			PhysicalObject obj = itr.next();
-			
-			// If the object is affected by forces...
-			if (obj instanceof Forceable) {
-				// Apply all forces.
-				for (Force force : myForces) {
-					force.applyForceTo((Forceable) obj);
-				}
+
+			// Apply forces
+			for (Force force : myForces) {
+				force.applyForceTo(obj);
 			}
 			
 			// Update the object's state.
-			List<PhysicalObject> newChildren 
-				= obj.updateState(1f / UPDATE_RATE);
+			obj.updateState(1f / UPDATE_RATE);
 			
+			// Spawn new objects?
+			List<PhysicalObject> newChildren = obj.spawnChildren(1f / UPDATE_RATE);
 			if (newChildren != null) {
 				children.addAll(newChildren);
 			}
-			
-			// Check for collisions
-			for (Collidable collidable : myCollidables) {
-				if (collidable.hasCollision(obj)) {
-					// Resolve the collision
-					CollisionInfo ci = collidable.calculateCollision(obj);
-					collidable.resolveCollision(obj, ci);
-				}
-			}
 
 			// If it leaves the bounds of the world, DESTROY IT
-			if (!obj.isExisting()
+			/*if (!obj.isExisting()
 					|| !myVirtualWorldBounds.intersect(
 							new Point3d(obj.getPosition()))
 			) {
 				obj.detach();
 				itr.remove();
-			}
+			}*/
+		}
+		
+		// Collision Detection
+		for (int i = 0; i < myObjects.size() - 1; i++) {
+			for (int j = i + 1; j < myObjects.size(); j++)
+				myObjects.get(i).resolveCollisions(myObjects.get(j));
 		}
 
 		// Add new children to thr world.
@@ -255,10 +241,6 @@ public class World {
 	public void addObject(final PhysicalObject obj) {
 		myPickableObjects.addChild(obj.getGroup());
 		myObjects.add(obj);
-		
-		if (obj instanceof Collidable) {
-			myCollidables.add((Collidable) obj);
-		}
 	}
 	
 	/**

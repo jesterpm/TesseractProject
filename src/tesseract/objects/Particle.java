@@ -15,7 +15,7 @@ import com.sun.j3d.utils.geometry.Sphere;
  * 
  * @author Jesse Morgan
  */
-public class Particle extends ForceableObject {
+public class Particle extends PhysicalObject {
 	/**
 	 * Rendered radius of particle.
 	 */
@@ -42,7 +42,7 @@ public class Particle extends ForceableObject {
 			final Color3f color) {
 		super(position, mass);
 		
-		getTransformGroup().addChild(createShape(color));
+		setShape(createShape(color));
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class Particle extends ForceableObject {
 		cAttr = new ColoringAttributes(color, ColoringAttributes.FASTEST);
 		Appearance appearance = new Appearance();
 		appearance.setColoringAttributes(cAttr);
-		return new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING,
+		return new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING | Sphere.GEOMETRY_NOT_SHARED,
 				DIVISIONS, appearance);
 	}
 }

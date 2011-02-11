@@ -3,6 +3,7 @@ package tesseract.objects.emitters;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.media.j3d.Node;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
@@ -41,7 +42,7 @@ public class ParticleEmitter extends PhysicalObject {
 	public ParticleEmitter(final Vector3f position, final float frequency,
 			final Color3f color) {
 		
-		super(position);
+		super(position, Float.POSITIVE_INFINITY);
 		
 		myCount = 0;
 		myFrequency = frequency;
@@ -54,8 +55,8 @@ public class ParticleEmitter extends PhysicalObject {
 	 * @param duration The length of time that has passed.
 	 * @return A list of new objects to add to the world.
 	 */
-	public List<PhysicalObject> updateState(final float duration) {
-		List<PhysicalObject> children = super.updateState(duration);
+	public List<PhysicalObject> spawnChildren(final float duration) {
+		List<PhysicalObject> children = super.spawnChildren(duration);
 		
 		if (children == null) {
 			children = new LinkedList<PhysicalObject>();
@@ -63,7 +64,7 @@ public class ParticleEmitter extends PhysicalObject {
 		
 		myCount += duration;
 		if (myCount >= myFrequency) {
-			children.add(new Particle(getPosition(), myColor));
+			children.add(new Particle(this.position, myColor));
 			myCount = 0;
 		}
 		

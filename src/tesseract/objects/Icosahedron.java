@@ -24,7 +24,7 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * @author Phillip Cardon
  * @version 0.9a
  */
-public class Icosahedron extends ForceableObject {
+public class Icosahedron extends PhysicalObject {
 	//CONSTANTS
 	/**
 	 * Angle to stop checking normals.
@@ -46,16 +46,6 @@ public class Icosahedron extends ForceableObject {
 	 */
 	private static final float GOLDEN_RATIO = (float) ((1.0 + Math.sqrt(5.0))
 			/ 2.0);
-	//FIELDS
-	/**
-	 * Shape object.
-	 */
-	private Shape3D myShape;
-	
-	/**
-	 * Object scale.
-	 */
-	private float myScale;
 	
 
 	//CONSTRUCTORS
@@ -67,25 +57,26 @@ public class Icosahedron extends ForceableObject {
 	 */
 	public Icosahedron(final Vector3f position, final float mass,
 			final float scale) {
-		this(position, mass);
-		myScale = scale;
+		
+		super(position, mass);
+		
+		setShape(buildIcosahedron(scale));
 	}
+	
 	/**
 	 * Create new Icosahedron.
 	 * @param position Initial Position.
 	 * @param mass object mass.
 	 */
 	public Icosahedron(final Vector3f position, final float mass) {
-		super(position, mass);
-		myScale = DEFAULT_SCALE;
-		buildIcosahedron();
+		this(position, mass, DEFAULT_SCALE);
+		
 	}
 	
 	/**
 	 * Builds Icosahedron.
 	 */
-	public void buildIcosahedron() {
-		// TODO Auto-generated method stub
+	public Shape3D buildIcosahedron(final float scale) {
 		Point3f[] coordinates = new Point3f[NUM_VERTEX];
 		
 		float phi = GOLDEN_RATIO;
@@ -107,9 +98,8 @@ public class Icosahedron extends ForceableObject {
 		coordinates[i++] = new Point3f(-1 * phi, 0, -1f);
 		
 		// Scaling
-		
 		for (int it = 0; it < coordinates.length; it++) {
-			coordinates[it].scale((float) myScale);
+			coordinates[it].scale(scale);
 		}
 		
 		GeometryArray die = new TriangleArray(((NUM_VERTEX / 2) - 1)
@@ -203,19 +193,15 @@ public class Icosahedron extends ForceableObject {
 		GeometryInfo geo = new GeometryInfo(die);
 		norms.generateNormals(geo);
 		
-		myShape = new Shape3D(geo.getGeometryArray());
+		Shape3D shape = new Shape3D(geo.getGeometryArray());
 		Appearance meshApp = new Appearance();
 		Material surface = new Material();
 		surface.setDiffuseColor(.9f, .05f, .05f);
 		meshApp.setMaterial(surface);
 		meshApp.setColoringAttributes(new ColoringAttributes(.9f,
 				.05f, .05f, ColoringAttributes.NICEST));
-		myShape.setAppearance(meshApp);
-		//myTG.addChild(myShape);
-		getTransformGroup().addChild(myShape);
+		shape.setAppearance(meshApp);
+		
+		return shape;
 	}
-	
-	//public Group getGroup(){
-	//	return (Group) myTG.cloneTree();
-	//}
 }

@@ -2,7 +2,7 @@ package tesseract.forces;
 
 import javax.vecmath.Vector3f;
 
-import tesseract.objects.Forceable;
+import tesseract.objects.PhysicalObject;
 
 /**
  * Generic downward force class (aka Gravity).
@@ -42,7 +42,7 @@ public class Gravity extends Force {
 	 * @param obj The object the force is calculated for.
 	 * @return A vector describing the force
 	 */
-	protected Vector3f calculateForce(final Forceable obj) {
+	protected Vector3f calculateForce(final PhysicalObject obj) {
 		return new Vector3f(0, -myGravity, 0);
 	}
 

@@ -24,11 +24,14 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
+import tesseract.forces.Gravity;
 import tesseract.menuitems.EllipsoidMenuItem;
 import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
+import tesseract.objects.Particle;
+import tesseract.objects.emitters.ParticleEmitter;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
@@ -120,9 +123,9 @@ public class TesseractUI extends JFrame {
 		
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
-		//myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
-		//myWorld.addForce(new Gravity());
-		//myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
+		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
+		myWorld.addForce(new Gravity());
+		myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
 		//myWorld.addObject(new PlanarPolygon(new Vector3f(0, 0.49f, 0), 0.25f));
 		//myWorld.addObject(new Icosahedron(new Vector3f(), 1, 0.00001f));
 	}

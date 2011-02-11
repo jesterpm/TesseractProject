@@ -24,7 +24,7 @@ import com.sun.j3d.utils.geometry.Sphere;
  * @author Steve Bradshaw
  * @version 1 Feb 2011
  */
-public class Ellipsoid extends ForceableObject {
+public class Ellipsoid extends PhysicalObject {
 	
 	/**
 	 * Default mass.
@@ -53,7 +53,7 @@ public class Ellipsoid extends ForceableObject {
 			final Appearance appearance, final float b, final float c) {
 		super(position, mass);
 		
-		createShape(radius, primflags, appearance, divisions, b, c);
+		setShape(createShape(radius, primflags, appearance, divisions, b, c));
 	}
 	
 	/**
@@ -65,14 +65,14 @@ public class Ellipsoid extends ForceableObject {
 	public Ellipsoid(final Vector3f position, final float radius) {
 		super(position, DEFAULT_MASS);
 		
-		createDefaultEllipsoid(radius);
+		setShape(createDefaultEllipsoid(radius));
 	}
 	
 	/**
 	 * This creates a default Ellipsoid for the 2 argument constructor.
 	 * @param radius the siz of the ellipsoid
 	 */
-	private void createDefaultEllipsoid(final float radius) {
+	private TransformGroup createDefaultEllipsoid(final float radius) {
 		
 		Sphere sphere = new Sphere(radius,
 				new Sphere().getPrimitiveFlags()
@@ -82,7 +82,7 @@ public class Ellipsoid extends ForceableObject {
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
 		TransformGroup tg = new TransformGroup(tmp);
 		tg.addChild(sphere);
-		getTransformGroup().addChild(tg);
+		return tg;
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class Ellipsoid extends ForceableObject {
 	 * @param b a float for the y axis transform
 	 * @param c a float for the z axis transfrom
 	 */
-	private void createShape(final float radius, final int primflags,
+	private TransformGroup createShape(final float radius, final int primflags,
 			final Appearance appearance, final int divisions, final float b,
 			final float c) {
 		
@@ -104,6 +104,7 @@ public class Ellipsoid extends ForceableObject {
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
 		TransformGroup tg = new TransformGroup(tmp);
 		tg.addChild(sphere);
-		getTransformGroup().addChild(tg);
+		
+		return tg;
 	}
 }

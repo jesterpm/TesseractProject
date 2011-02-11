@@ -22,17 +22,7 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * @author Phillip Cardon
  * @version 0.9a
  */
-public class Toroid extends ForceableObject {
-	//CONSTANTS
-	private static final int MAX_ANGLE = 120;
-	//FIELDS
-	private Shape3D myShape;
-	
-	private float myScale;
-
-	//CONSTRUCTORS
-
-
+public class Toroid extends PhysicalObject {
 	/**
 	 * @param position starting position.
 	 * @param mass of object.
@@ -46,7 +36,8 @@ public class Toroid extends ForceableObject {
 			final float sliceRadius, final int sliceDivisions,
 			final float arcRadius, final int arcDivisions) {
 		super(position, mass);
-		myScale = scale;
+		
+		setShape(buildToroid(scale, sliceRadius, sliceDivisions, arcRadius, arcDivisions));
 	}
 	
 	
@@ -57,7 +48,7 @@ public class Toroid extends ForceableObject {
 	 * @param arcRadius Radius of donut circle
 	 * @param arcDivisions resolution of slices on donut.
 	 */
-	public void buildToroid(final float sliceRadius, final int sliceDivisions,
+	public Shape3D buildToroid(final float scale, final float sliceRadius, final int sliceDivisions,
 			final float arcRadius, final int arcDivisions) {
 		Point3f[][] coordinates = new Point3f[arcDivisions][sliceDivisions];
 		final float arcAngle = (float) (Math.PI * 2.0);
@@ -82,7 +73,7 @@ public class Toroid extends ForceableObject {
 			for (int i = 0; i < sliceDivisions; i++) {
 				coordinates[j][i] = new Point3f(coordinates[j - 1][i]);
 				trans3D.transform(coordinates[j][i]);
-				coordinates[j][i].scale((float) myScale);
+				coordinates[j][i].scale(scale);
 			}
 		}
 		
@@ -128,10 +119,7 @@ public class Toroid extends ForceableObject {
 		mat.setDiffuseColor(1, 0, 0);
 		app.setMaterial(mat);
 		shape.setAppearance(app);
-		getTransformGroup().addChild(myShape);
-	}
 	
-	//public Group getGroup(){
-	//	return (Group) myTG.cloneTree();
-	//}
+		return shape;
+	}
 }
