@@ -26,6 +26,7 @@ import javax.vecmath.Vector3f;
 
 import tesseract.forces.Gravity;
 import tesseract.menuitems.EllipsoidMenuItem;
+import tesseract.menuitems.GravityMenuItem;
 import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
@@ -88,6 +89,11 @@ public class TesseractUI extends JFrame {
 	private JMenuItem[] myObjectMenuItems;
 	
 	/**
+	 * Forces Menu Items.
+	 */
+	private JMenuItem[] myForcesMenuItems;
+	
+	/**
 	 * World Timer.
 	 */
 	private Timer myTimer;
@@ -109,7 +115,11 @@ public class TesseractUI extends JFrame {
 				new PlanarPolygonMenuItem(myWorld),
 				new EllipsoidMenuItem(myWorld),
 				new IcosahedronMenuItem(myWorld)
-			};
+		};
+		
+		myForcesMenuItems = new JMenuItem[] {
+				new GravityMenuItem(myWorld)};
+		
 		
 		createMenu();
 		setupCanvas();
@@ -135,21 +145,39 @@ public class TesseractUI extends JFrame {
 	 */
 	private void createMenu() {
 		JMenuBar menuBar = new JMenuBar();
-		
-		JMenu simulationMenu = new JMenu("Simulation");
-		
 		// Added by Steve: Fixes viewing menu problem with Canvas3D on both my windows machines
-		JPopupMenu.setDefaultLightWeightPopupEnabled(false); 
+		JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 		
+		//Simulator
+		JMenu simulationMenu = new JMenu("Simulation");
 		menuBar.add(simulationMenu);
+		// Simulator Start/Stop
+		JMenuItem runSim = new JCheckBoxMenuItem("Run Simulator", true);
+		runSim.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+					myTimer.start();
+				
+				} else {
+					myTimer.stop();
+				}
+			}
+		});
+		simulationMenu.add(runSim);
 		
+		//Objects
 		JMenu objectsMenu = new JMenu("Add Object");
-		
 		for (JMenuItem item : myObjectMenuItems) {
 			objectsMenu.add(item);
 		}
-		
 		menuBar.add(objectsMenu);
+		
+		//Forces
+		JMenu forcesMenu = new JMenu("Add Force");
+		for (JMenuItem item : myForcesMenuItems) {
+			forcesMenu.add(item);
+		}
+		menuBar.add(forcesMenu);
 		
 		/*
 		JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
@@ -173,19 +201,7 @@ public class TesseractUI extends JFrame {
 		}
 		*/
 		
-		// Simulator Start/Stop
-		JMenuItem runSim = new JCheckBoxMenuItem("Run Simulator", true);
-		runSim.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent e) {
-				if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
-					myTimer.start();
-				
-				} else {
-					myTimer.stop();
-				}
-			}
-		});
-		simulationMenu.add(runSim);
+		
 		
 		
 		// Exit Menu Item

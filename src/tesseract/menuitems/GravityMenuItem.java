@@ -9,15 +9,15 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.Ellipsoid;
+import tesseract.forces.Gravity;
 import tesseract.objects.PlanarPolygon;
 
 /**
- * Ellipsoid Menu Item.
+ * Gravity Menu Item.
  * 
  * @author Steve Bradshaw
  */
-public class EllipsoidMenuItem extends TesseractMenuItem {
+public class GravityMenuItem extends TesseractMenuItem {
 
 	/**
 	 * Serial ID.
@@ -29,8 +29,8 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 	 * 
 	 * @param theWorld The world into which we add.
 	 */
-	public EllipsoidMenuItem(final World theWorld) {
-		super(theWorld, "Ellipsoid");
+	public GravityMenuItem(final World theWorld) {
+		super(theWorld, "Gravity");
 	}
 	
 	/**
@@ -39,12 +39,6 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 	 * @param arg0 Unused event info.
 	 */
 	public void actionPerformed(final ActionEvent arg0) {
-		//Color c = JColorChooser.showDialog(null, "Ellipsoid", Color.RED);
-		Vector3f pos = 
-			parseVector(JOptionPane.showInputDialog("Enter the position"));
-		float radius = 
-			Float.parseFloat(JOptionPane.showInputDialog("Enter the radius"));
-		
-		myWorld.addObject(new Ellipsoid(pos, radius));
+		myWorld.addForce(new Gravity());
 	}
 }

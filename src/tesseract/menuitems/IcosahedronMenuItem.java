@@ -13,7 +13,7 @@ import tesseract.objects.Icosahedron;
 import tesseract.objects.PlanarPolygon;
 
 /**
- * Planar Polygon Menu Item.
+ * Icosahedron Menu Item.
  * 
  * @author Steve Bradshaw
  */
