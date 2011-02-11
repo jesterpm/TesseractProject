@@ -40,7 +40,8 @@ public class PlanarPolygon extends PhysicalObject {
 	/**
 	 * Default mass.
 	 */
-	private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
+	//private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
+	private static final float DEFAULT_MASS = 1;
 	
 	/**
 	 * Number of divisions in the sphere.
@@ -73,7 +74,11 @@ public class PlanarPolygon extends PhysicalObject {
 	 * @param radius a float for the size of the base sphere.
 	 */
 	public PlanarPolygon(final Vector3f position, final float radius) {
-		this(position, DEFAULT_MASS, radius, DEFAULT_DIVISIONS);
+		super(position, DEFAULT_MASS);
+		
+		//getTransformGroup().addChild(createShape(radius, DEFAULT_DIVISIONS));
+		createShape(radius, DEFAULT_DIVISIONS);
+
 	}
 	
 	/**
@@ -97,7 +102,8 @@ public class PlanarPolygon extends PhysicalObject {
 	 * @param divisions an int for the number of divisons
 	 * @param appearance an Appearance object
 	 */
-	private Shape3D createShape(final float radius, final int divisions) {
+
+	private Node createShape(final float radius, final int divisions) {
 		TriangleFanArray geometry = new TriangleFanArray(divisions,
 				TriangleFanArray.COORDINATES | TriangleFanArray.TEXTURE_COORDINATE_2, new int[] {divisions});
 		for (int i = 0; i < divisions; i++) {
@@ -129,8 +135,9 @@ public class PlanarPolygon extends PhysicalObject {
 		appearance.setPolygonAttributes(polyAttr);		
 		geometry.setCapability(Geometry.ALLOW_INTERSECT);
 		Shape3D polygon =  new Shape3D(geometry, appearance);
-		
 		return polygon;
+		//getTransformGroup().addChild(polygon);
+		//return getTransformGroup();
 	}
 	
 	/*private void createShape(final float radius, final int primflags,
