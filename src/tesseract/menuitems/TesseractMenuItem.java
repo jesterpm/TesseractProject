@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
@@ -32,7 +33,7 @@ public abstract class TesseractMenuItem
 	/**
 	 * The default button
 	 */
-	private JRadioButton my_default_button;
+	private JCheckBox my_default_button;
 	
 	/**
 	 * A Parameter setting Jframe
@@ -77,14 +78,14 @@ public abstract class TesseractMenuItem
 	    int screenWidth = screenSize.width;
 	    my_param_frame.setSize(screenWidth / 2, screenHeight / 2);
 	    my_param_frame.setLocation(screenWidth / 4, screenHeight / 4);
-	    my_default_button = new JRadioButton("Default Shape");
+	    my_default_button = new JCheckBox("Default Shape");
 	    my_param_frame.add(my_default_button);
 	    my_param_frame.setAlwaysOnTop(true);
 	    my_param_frame.pack();
 	    my_param_frame.setVisible(isVisible());
 	}
 	
-	protected JRadioButton getDefaultButton() {
+	protected JCheckBox getDefaultButton() {
 		return my_default_button;
 	}
 	

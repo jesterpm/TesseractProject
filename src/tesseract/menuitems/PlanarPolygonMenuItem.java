@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -48,7 +49,9 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 	 */
 	public void actionPerformed(final ActionEvent arg0) {
 		createParameterMenu();
-		final JRadioButton defaultButton = getDefaultButton();
+		
+		//If the default button is checked, the frame will close.
+		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 
 		defaultButton.addActionListener(new ActionListener() {
