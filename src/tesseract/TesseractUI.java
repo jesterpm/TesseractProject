@@ -133,9 +133,9 @@ public class TesseractUI extends JFrame {
 		
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
-		myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
-		myWorld.addForce(new Gravity());
-		myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
+		//myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
+		//myWorld.addForce(new Gravity());
+		//myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
 		//myWorld.addObject(new PlanarPolygon(new Vector3f(0, 0.49f, 0), 0.25f));
 		//myWorld.addObject(new Icosahedron(new Vector3f(), 1, 0.00001f));
 	}

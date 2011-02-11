@@ -77,7 +77,7 @@ public class PlanarPolygon extends PhysicalObject {
 		super(position, DEFAULT_MASS);
 		
 		//getTransformGroup().addChild(createShape(radius, DEFAULT_DIVISIONS));
-		createShape(radius, DEFAULT_DIVISIONS);
+		setShape(createShape(radius, DEFAULT_DIVISIONS));
 
 	}
 	

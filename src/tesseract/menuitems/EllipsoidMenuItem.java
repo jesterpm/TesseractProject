@@ -40,6 +40,10 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 	 */
 	public void actionPerformed(final ActionEvent arg0) {
 		//Color c = JColorChooser.showDialog(null, "Ellipsoid", Color.RED);
+		
+		
+		
+		
 		Vector3f pos = 
 			parseVector(JOptionPane.showInputDialog("Enter the position"));
 		float radius = 

@@ -1,8 +1,12 @@
 package tesseract.menuitems;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
@@ -10,7 +14,7 @@ import tesseract.World;
 /**
  * Abstract class for menu items.
  * 
- * @author Jesse Morgan
+ * @author Jesse Morgan, Steve Bradshaw
  */
 public abstract class TesseractMenuItem 
 	extends JMenuItem implements ActionListener {
@@ -24,6 +28,16 @@ public abstract class TesseractMenuItem
 	 * The reference to the world.
 	 */
 	protected World myWorld;
+	
+	/**
+	 * The default button
+	 */
+	private JRadioButton my_default_button;
+	
+	/**
+	 * A Parameter setting Jframe
+	 */
+	private JFrame my_param_frame;
 	
 	/**
 	 * Constructor.
@@ -53,5 +67,28 @@ public abstract class TesseractMenuItem
 		float z = Float.parseFloat(split[2]);
 
 		return new Vector3f(x, y, z);
+	}
+	
+	protected void createParameterMenu() {
+		my_param_frame= new JFrame("Parameters");
+		Toolkit tk = Toolkit.getDefaultToolkit();
+	    Dimension screenSize = tk.getScreenSize();
+	    int screenHeight = screenSize.height;
+	    int screenWidth = screenSize.width;
+	    my_param_frame.setSize(screenWidth / 2, screenHeight / 2);
+	    my_param_frame.setLocation(screenWidth / 4, screenHeight / 4);
+	    my_default_button = new JRadioButton("Default Shape");
+	    my_param_frame.add(my_default_button);
+	    my_param_frame.setAlwaysOnTop(true);
+	    my_param_frame.pack();
+	    my_param_frame.setVisible(isVisible());
+	}
+	
+	protected JRadioButton getDefaultButton() {
+		return my_default_button;
+	}
+	
+	protected JFrame getParamFrame() {
+		return my_param_frame;
 	}
 }
