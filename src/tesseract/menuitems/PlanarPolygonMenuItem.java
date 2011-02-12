@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
@@ -14,6 +15,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
+import tesseract.objects.Ellipsoid;
 import tesseract.objects.PlanarPolygon;
 
 /**
@@ -48,27 +50,36 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 		//If the default button is checked, the frame will close.
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
+		final JButton enterButton = getEnterButton();
 
 		defaultButton.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent e) {
+			public void actionPerformed(final ActionEvent ev) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new PlanarPolygon(new Vector3f(0f,-.3f, 0f), getDefaultRadius()));
+					myWorld.addObject(new PlanarPolygon(getDefaultPosition(), getDefaultRadius()));
 					params.dispose();
 				}
 			}
 		});
 		
-		
-		/*if(arg0. == true) {
-			myWorld.addObject(new PlanarPolygon(new Vector3f(0,0,0), DEFAULT_RADIUS));
-			params.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		}*/
-		
-		/*Vector3f pos = 
-			parseVector(JOptionPane.showInputDialog("Enter the position"));
-		float radius = 
-			Float.parseFloat(JOptionPane.showInputDialog("Enter the radius"));
-		
-		myWorld.addObject(new PlanarPolygon(pos, radius));*/
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent event) {
+					String string = getPositionField().getText();
+					Vector3f pos = parseVector(string);
+					setPosition(pos);
+				
+					String string2 = getRadiusField().getText();
+					float radius = Float.parseFloat(string2);
+					setRadius(radius);
+
+					String string3 = getMassField().getText();
+					float mass = Float.parseFloat(string3);
+					setMass(mass);
+	
+				if (event.getSource() == enterButton) {
+					myWorld.addObject(new Ellipsoid(getPosition(), getRadius()));
+					params.dispose();
+				}
+			}
+		});
 	}
 }

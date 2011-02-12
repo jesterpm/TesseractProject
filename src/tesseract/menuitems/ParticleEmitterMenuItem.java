@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -11,6 +12,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
+import tesseract.objects.Ellipsoid;
 import tesseract.objects.PlanarPolygon;
 import tesseract.objects.emitters.ParticleEmitter;
 
@@ -46,6 +48,7 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 		//If the default button is checked, the frame will close.
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
+		final JButton enterButton = getEnterButton();
 
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
@@ -57,14 +60,26 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 			}
 		});
 		
-		/*Vector3f pos = 
-			parseVector(JOptionPane.showInputDialog("Enter the position"));
-		
-		float freq = Float.parseFloat(
-					JOptionPane.showInputDialog(
-							"Emission Frequency (seconds)", "1"));
-		
-		myWorld.addObject(new ParticleEmitter(pos, freq, null));*/
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent event) {
+					String string = getPositionField().getText();
+					Vector3f pos = parseVector(string);
+					setPosition(pos);
+				
+					String string2 = getRadiusField().getText();
+					float radius = Float.parseFloat(string2);
+					setRadius(radius);
+
+					String string3 = getMassField().getText();
+					float mass = Float.parseFloat(string3);
+					setMass(mass);
+	
+				if (event.getSource() == enterButton) {
+					myWorld.addObject(new ParticleEmitter(getPosition(), .5f, new Color3f(1f,0f,0f)));
+					params.dispose();
+				}
+			}
+		});
 	}
 
 }

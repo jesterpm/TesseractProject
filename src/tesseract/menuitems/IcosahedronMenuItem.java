@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -12,6 +13,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
+import tesseract.objects.Ellipsoid;
 import tesseract.objects.Icosahedron;
 import tesseract.objects.PlanarPolygon;
 
@@ -47,6 +49,7 @@ public class IcosahedronMenuItem extends TesseractMenuItem {
 		//If the default button is checked, the frame will close.
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
+		final JButton enterButton = getEnterButton();
 
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
@@ -56,12 +59,26 @@ public class IcosahedronMenuItem extends TesseractMenuItem {
 				}
 			}
 		});
-		/*Vector3f pos = 
-			parseVector(JOptionPane.showInputDialog("Enter the position"));
-		float radius = 
-			Float.parseFloat(JOptionPane.showInputDialog("Enter the radius"));
-		
-		myWorld.addObject(new Icosahedron(pos, radius));*/
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent event) {
+					String string = getPositionField().getText();
+					Vector3f pos = parseVector(string);
+					setPosition(pos);
+				
+					String string2 = getRadiusField().getText();
+					float radius = Float.parseFloat(string2);
+					setRadius(radius);
+
+					String string3 = getMassField().getText();
+					float mass = Float.parseFloat(string3);
+					setMass(mass);
+	
+				if (event.getSource() == enterButton) {
+					myWorld.addObject(new Icosahedron(getPosition(), getMass(), getRadius()));
+					params.dispose();
+				}
+			}
+		});
 	}
 }
 

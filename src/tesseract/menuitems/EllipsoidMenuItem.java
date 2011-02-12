@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -42,14 +43,16 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 	 * @param arg0 Unused event info.
 	 */
 	public void actionPerformed(final ActionEvent arg0) {
+		
 		createParameterMenu();
 		
 		//If the default button is checked, the frame will close.
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
-
+		final JButton enterButton = getEnterButton();
+		
 		defaultButton.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent e) {
+			public void actionPerformed(final ActionEvent ev) {
 				if (defaultButton.isSelected()) {
 					myWorld.addObject(new Ellipsoid(getDefaultPosition(), getDefaultRadius()));
 					params.dispose();
@@ -57,15 +60,26 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 			}
 		});
 		
-		
-		
-		
-		
-		/*Vector3f pos = 
-			parseVector(JOptionPane.showInputDialog("Enter the position"));
-		float radius = 
-			Float.parseFloat(JOptionPane.showInputDialog("Enter the radius"));
-		
-		myWorld.addObject(new Ellipsoid(pos, radius));*/
+		enterButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent event) {
+					String string = getPositionField().getText();
+					Vector3f pos = parseVector(string);
+					setPosition(pos);
+				
+					String string2 = getRadiusField().getText();
+					float radius = Float.parseFloat(string2);
+					setRadius(radius);
+
+					String string3 = getMassField().getText();
+					float mass = Float.parseFloat(string3);
+					setMass(mass);
+	
+				if (event.getSource() == enterButton) {
+					myWorld.addObject(new Ellipsoid(getPosition(), getRadius()));
+					params.dispose();
+				}
+			}
+		});
+
 	}
 }
