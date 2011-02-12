@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JRadioButton;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;

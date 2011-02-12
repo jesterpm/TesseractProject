@@ -1,11 +1,17 @@
 package tesseract.menuitems;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
+import tesseract.objects.PlanarPolygon;
 import tesseract.objects.emitters.ParticleEmitter;
 
 /**
@@ -35,14 +41,30 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 	 * @param arg0 Unused event info.
 	 */
 	public void actionPerformed(final ActionEvent arg0) {
-		Vector3f pos = 
+		createParameterMenu();
+		
+		//If the default button is checked, the frame will close.
+		final JCheckBox defaultButton = getDefaultButton();
+		final JFrame params = getParamFrame();
+
+		defaultButton.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				if (defaultButton.isSelected()) {
+					myWorld.addObject(new ParticleEmitter(getDefaultPosition(),
+							.5f, new Color3f(1f,0f,0f)));
+					params.dispose();
+				}
+			}
+		});
+		
+		/*Vector3f pos = 
 			parseVector(JOptionPane.showInputDialog("Enter the position"));
 		
 		float freq = Float.parseFloat(
 					JOptionPane.showInputDialog(
 							"Emission Frequency (seconds)", "1"));
 		
-		myWorld.addObject(new ParticleEmitter(pos, freq, null));
+		myWorld.addObject(new ParticleEmitter(pos, freq, null));*/
 	}
 
 }
