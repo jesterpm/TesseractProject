@@ -10,6 +10,7 @@ import javax.media.j3d.Appearance;
 import javax.media.j3d.Geometry;
 import javax.media.j3d.Group;
 import javax.media.j3d.ImageComponent2D;
+import javax.media.j3d.Material;
 import javax.media.j3d.Node;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
@@ -22,6 +23,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord2f;
 import javax.vecmath.Vector3f;
 
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.NormalGenerator;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
 
@@ -76,27 +79,12 @@ public class PlanarPolygon extends PhysicalObject {
 	public PlanarPolygon(final Vector3f position, final float radius) {
 		super(position, DEFAULT_MASS);
 		
-		//getTransformGroup().addChild(createShape(radius, DEFAULT_DIVISIONS));
 		setShape(createShape(radius, DEFAULT_DIVISIONS));
 
 	}
-	
+
 	/**
-	 * This creates a default Ellipsoid for the 2 argument constructor.
-	 * @param radius the siz of the ellipsoid
-	 */
-	/*private void createDefaultPlanarPolygon(final float radius) {
-		
-		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags(),
-				DEFAULT_DIVISIONS);
-		Transform3D tmp = new Transform3D();
-		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
-		getTransformGroup().setTransform(tmp);
-		getTransformGroup().addChild(sphere);
-	}*/
-	
-	/**
-	 * This method creates a planar polygon shape.
+	 * This method creates a planar polygon shape with lava texture.
 	 * 
 	 * @param radius a float for the size of the base polygon
 	 * @param divisions an int for the number of divisons
@@ -112,6 +100,12 @@ public class PlanarPolygon extends PhysicalObject {
 			geometry.setCoordinate(i, new Point3f(radius * baseX, 0, radius * baseZ));
 			geometry.setTextureCoordinate(0, i, new TexCoord2f((baseX + 1) / 2, (-baseZ + 1) / 2));
 		}
+		
+		GeometryInfo gInfo = new GeometryInfo(geometry);
+		new NormalGenerator().generateNormals(gInfo);
+		gInfo.convertToIndexedTriangles();
+		Shape3D polygon = new Shape3D(gInfo.getGeometryArray());
+		
 		TextureLoader tl = new TextureLoader("lava.jpg", null);
 		ImageComponent2D image = tl.getImage();
 		int width = image.getWidth();
@@ -128,26 +122,16 @@ public class PlanarPolygon extends PhysicalObject {
 		}
 		texture.setMagFilter(Texture2D.NICEST);
 		texture.setMinFilter(Texture2D.NICEST);
-
+		Material mat = new Material();
+		mat.setDiffuseColor(1, 0, 0);
+		
 		Appearance appearance = new Appearance();
 		appearance.setTexture(texture);
+		appearance.setMaterial(mat);
 		PolygonAttributes polyAttr = new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0);
 		appearance.setPolygonAttributes(polyAttr);		
 		geometry.setCapability(Geometry.ALLOW_INTERSECT);
-		Shape3D polygon =  new Shape3D(geometry, appearance);
+		polygon =  new Shape3D(geometry, appearance);
 		return polygon;
-		//getTransformGroup().addChild(polygon);
-		//return getTransformGroup();
 	}
-	
-	/*private void createShape(final float radius, final int primflags,
-			final Appearance appearance, final int divisions, final float b,
-			final float c) {
-		
-		Sphere sphere = new Sphere(radius, primflags, divisions, appearance);
-		Transform3D tmp = new Transform3D();
-		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
-		getTransformGroup().setTransform(tmp);
-		getTransformGroup().addChild(sphere);
-	}*/
 }

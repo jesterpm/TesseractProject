@@ -60,6 +60,7 @@ public class EllipsoidMenuItem extends TesseractMenuItem {
 		
 		
 		
+		
 		/*Vector3f pos = 
 			parseVector(JOptionPane.showInputDialog("Enter the position"));
 		float radius = 

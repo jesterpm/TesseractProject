@@ -26,6 +26,7 @@ import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
 import tesseract.forces.Gravity;
+import tesseract.menuitems.ChainLinkMenuItem;
 import tesseract.menuitems.EllipsoidMenuItem;
 import tesseract.menuitems.GravityMenuItem;
 import tesseract.menuitems.IcosahedronMenuItem;
@@ -105,7 +106,7 @@ public class TesseractUI extends JFrame {
 	public TesseractUI() {
 		super("Tesseract Project");
 		
-		my_gravity = new Gravity(-.5f);
+		my_gravity = new Gravity();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
@@ -118,7 +119,8 @@ public class TesseractUI extends JFrame {
 				new ParticleMenuItem(myWorld),
 				new PlanarPolygonMenuItem(myWorld),
 				new EllipsoidMenuItem(myWorld),
-				new IcosahedronMenuItem(myWorld)
+				new IcosahedronMenuItem(myWorld),
+				new ChainLinkMenuItem(myWorld)
 		};
 		createMenu();
 		setupCanvas();
