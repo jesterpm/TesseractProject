@@ -159,13 +159,6 @@ public class TesseractUI extends JFrame {
 		});
 		simulationMenu.add(runSim);
 		
-		JMenuItem resetSim = new JCheckBoxMenuItem("Reset Simulator", true);
-		runSim.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent e) {
-				myWorld.resetWorld();
-			}
-		});
-		simulationMenu.add(resetSim);
 		
 		//Objects
 		JMenu objectsMenu = new JMenu("Add Object");
@@ -176,7 +169,7 @@ public class TesseractUI extends JFrame {
 		
 		//Forces
 		JMenu forcesMenu = new JMenu("Add Forces");
-		JMenuItem gravity = new JCheckBoxMenuItem("Gravity", false);
+		final JMenuItem gravity = new JCheckBoxMenuItem("Gravity", false);
 		gravity.addActionListener(new ActionListener() {
 				private Force me;
 				
@@ -195,6 +188,17 @@ public class TesseractUI extends JFrame {
 			});
 		forcesMenu.add(gravity);
 		menuBar.add(forcesMenu);
+		
+		// Add reset Simulator menu item
+		JMenuItem resetSim = new JMenuItem("Reset Simulator");
+		resetSim.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				myWorld.resetWorld();
+				gravity.setSelected(false);
+			}
+		});
+		simulationMenu.add(resetSim);
+		
 		
 		/*
 		JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
