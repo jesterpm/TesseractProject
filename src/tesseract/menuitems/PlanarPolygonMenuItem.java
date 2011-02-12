@@ -76,7 +76,7 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 					setMass(mass);
 	
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(new Ellipsoid(getPosition(), getRadius()));
+					myWorld.addObject(new PlanarPolygon(getPosition(), getRadius()));
 					params.dispose();
 				}
 			}

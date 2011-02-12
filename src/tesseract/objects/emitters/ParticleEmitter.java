@@ -43,6 +43,7 @@ public class ParticleEmitter extends PhysicalObject {
 			final Color3f color) {
 		
 		super(position, Float.POSITIVE_INFINITY);
+		this.collidable = false;
 		
 		myCount = 0;
 		myFrequency = frequency;

@@ -21,6 +21,8 @@ import javax.vecmath.Vector3f;
 import tesseract.forces.Force;
 import tesseract.objects.PhysicalObject;
 
+import tesseract.objects.HalfSpace;
+
 import com.sun.j3d.utils.picking.PickTool;
 import com.sun.j3d.utils.picking.behaviors.PickTranslateBehavior;
 import com.sun.j3d.utils.picking.behaviors.PickZoomBehavior;
@@ -101,6 +103,7 @@ public class World {
 		//myScene.addChild(myPickableObjects);
 		
 		addLights();
+		addHalfspaces();
 		
 		myScene.compile();
 	}
@@ -132,6 +135,27 @@ public class World {
 		geometry.setCoordinateIndices(0, coordinateIndices);
 		
 		return new Shape3D(geometry);
+	}
+	
+	private void addHalfspaces() {
+		Point3d lower = new Point3d();
+		Point3d upper = new Point3d();
+		myVirtualWorldBounds.getLower(lower);
+		myVirtualWorldBounds.getUpper(upper);
+		
+		// Bottom
+		myObjects.add(new HalfSpace(new Vector3f(lower), new Vector3f(0, 1, 0)));
+		
+		// Top
+		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(0, -1, 0)));
+		
+		// Sides
+		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(0, 0, -1)));
+		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(-1, 0, 0)));
+		
+		myObjects.add(new HalfSpace(new Vector3f(lower), new Vector3f(0, 0, 1)));
+		myObjects.add(new HalfSpace(new Vector3f(lower), new Vector3f(1, 0, 0)));
+		
 	}
 
 	/**
@@ -193,8 +217,9 @@ public class World {
 		
 		// Collision Detection
 		for (int i = 0; i < myObjects.size() - 1; i++) {
-			for (int j = i + 1; j < myObjects.size(); j++)
+			for (int j = i + 1; j < myObjects.size(); j++) {
 				myObjects.get(i).resolveCollisions(myObjects.get(j));
+			}
 		}
 
 		// Add new children to thr world.
@@ -250,5 +275,28 @@ public class World {
 	 */
 	public void addForce(final Force force) {
 		myForces.add(force);
+	}
+	
+	/**
+	 * Remove a force from the world.
+	 * 
+	 * @param force The force to remove.
+	 */
+	public void removeForce(final Force force) {
+		myForces.remove(force);
+	}
+	
+	/**
+	 * Remove all forces and objects from the world.
+	 */
+	public void resetWorld() {
+		myForces.clear();
+		
+		for (PhysicalObject obj : myObjects) {
+			obj.detach();
+		}
+		myObjects.clear();
+		
+		addHalfspaces();
 	}
 }	

@@ -1,9 +1,27 @@
 package alden;
-import com.sun.j3d.utils.geometry.*;
-import java.util.*;
+import java.util.ArrayList;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Geometry;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.Group;
+import javax.media.j3d.IndexedTriangleArray;
+import javax.media.j3d.IndexedTriangleFanArray;
+import javax.media.j3d.IndexedTriangleStripArray;
+import javax.media.j3d.Node;
+import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TriangleArray;
+import javax.media.j3d.TriangleFanArray;
+import javax.media.j3d.TriangleStripArray;
+import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
+
+import tesseract.objects.HalfSpace;
+
+import com.sun.j3d.utils.geometry.Primitive;
 
 @SuppressWarnings("restriction")
 public class CollisionDetector {
@@ -325,7 +343,7 @@ public class CollisionDetector {
 			for (int i = 0; i < group.numChildren(); i++)
 				extractVertices(group.getChild(i), vertices);
 		} else 
-			throw new IllegalArgumentException("Illegal node type for vertex extraction");
+			throw new IllegalArgumentException("Illegal node type for vertex extraction ");
 	}
 
 	private static void extractVertices(Geometry geometry, Transform3D transform, ArrayList<Vector3f> vertices) {

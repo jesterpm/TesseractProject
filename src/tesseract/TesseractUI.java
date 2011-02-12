@@ -96,18 +96,11 @@ public class TesseractUI extends JFrame {
 	private Timer myTimer;
 	
 	/**
-	 * The gravity of the world
-	 */
-	private Gravity my_gravity;
-	
-	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
 		super("Tesseract Project");
-		
-		my_gravity = new Gravity();
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
 		myWorld = new World(
@@ -166,6 +159,14 @@ public class TesseractUI extends JFrame {
 		});
 		simulationMenu.add(runSim);
 		
+		JMenuItem resetSim = new JCheckBoxMenuItem("Reset Simulator", true);
+		runSim.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				myWorld.resetWorld();
+			}
+		});
+		simulationMenu.add(resetSim);
+		
 		//Objects
 		JMenu objectsMenu = new JMenu("Add Object");
 		for (JMenuItem item : myObjectMenuItems) {
@@ -177,11 +178,18 @@ public class TesseractUI extends JFrame {
 		JMenu forcesMenu = new JMenu("Add Forces");
 		JMenuItem gravity = new JCheckBoxMenuItem("Gravity", false);
 		gravity.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new Gravity();
+				}
+				
 				public void actionPerformed(ActionEvent e) {
 					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
-						myWorld.addForce(my_gravity);
+						myWorld.addForce(me);
 					} else {
-						myWorld.addForce(my_gravity = new Gravity(-.5f));
+						myWorld.removeForce(me);
 					}
 				}			
 			});

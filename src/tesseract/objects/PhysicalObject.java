@@ -22,9 +22,12 @@ import com.sun.j3d.utils.geometry.Primitive;
  * @author Jesse Morgan
  */
 public class PhysicalObject extends CollidableObject {
+	protected boolean collidable;
+	
 	public PhysicalObject(final Vector3f thePosition, final float mass) {
 		super(mass);
 		this.position.set(thePosition);
+		collidable = true;
 	}
 
 	public List<PhysicalObject> spawnChildren(final float duration) {
@@ -67,7 +70,7 @@ public class PhysicalObject extends CollidableObject {
 	}
 
 	public void resolveCollisions(final PhysicalObject other) {
-		if (this.node != null && other.node != null) {
+		if (collidable && other.collidable) {
 			super.resolveCollisions(other);
 		}
 	}
