@@ -1,16 +1,9 @@
 package tesseract.menuitems;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JColorChooser;
-import javax.swing.JOptionPane;
-import javax.vecmath.Color3f;
-import javax.vecmath.Vector3f;
 
 import tesseract.World;
 import tesseract.forces.Gravity;
-import tesseract.objects.PlanarPolygon;
 
 /**
  * Gravity Menu Item.

@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.Node;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
@@ -61,7 +62,7 @@ public class Particle extends PhysicalObject {
 	 * @param theColor The particle color or null for random.
 	 * @return A sphere to visually represent the particle.
 	 */
-	private Node createShape(final Color3f theColor) {
+	private TransformGroup createShape(final Color3f theColor) {
 		Color3f color = theColor;
 		
 		ColoringAttributes cAttr;
@@ -74,7 +75,10 @@ public class Particle extends PhysicalObject {
 		cAttr = new ColoringAttributes(color, ColoringAttributes.FASTEST);
 		Appearance appearance = new Appearance();
 		appearance.setColoringAttributes(cAttr);
-		return new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING | Sphere.GEOMETRY_NOT_SHARED,
+		Sphere sphere = new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING | Sphere.GEOMETRY_NOT_SHARED,
 				DIVISIONS, appearance);
+		TransformGroup tg = new TransformGroup();
+		tg.addChild(sphere);
+		return tg;
 	}
 }

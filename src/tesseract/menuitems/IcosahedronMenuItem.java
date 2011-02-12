@@ -51,7 +51,7 @@ public class IcosahedronMenuItem extends TesseractMenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new Icosahedron(getDefaultPosition(), 1, getDefaultRadius()));
+					myWorld.addObject(new Icosahedron(getDefaultPosition(), 10, getDefaultRadius()));
 					params.dispose();
 				}
 			}

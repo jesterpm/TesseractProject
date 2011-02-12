@@ -52,7 +52,7 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new PlanarPolygon(getDefaultPosition(), getDefaultRadius()));
+					myWorld.addObject(new PlanarPolygon(new Vector3f(0f,-.3f, 0f), getDefaultRadius()));
 					params.dispose();
 				}
 			}

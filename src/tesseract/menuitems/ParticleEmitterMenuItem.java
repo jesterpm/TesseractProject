@@ -50,7 +50,7 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new ParticleEmitter(getDefaultPosition(),
+					myWorld.addObject(new ParticleEmitter(new Vector3f(0f,.49f, 0f),
 							.5f, new Color3f(1f,0f,0f)));
 					params.dispose();
 				}

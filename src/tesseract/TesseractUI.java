@@ -24,6 +24,7 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
+import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.menuitems.EllipsoidMenuItem;
 import tesseract.menuitems.GravityMenuItem;
@@ -89,20 +90,23 @@ public class TesseractUI extends JFrame {
 	private JMenuItem[] myObjectMenuItems;
 	
 	/**
-	 * Forces Menu Items.
-	 */
-	private JMenuItem[] myForcesMenuItems;
-	
-	/**
 	 * World Timer.
 	 */
 	private Timer myTimer;
+	
+	/**
+	 * The gravity of the world
+	 */
+	private Gravity my_gravity;
 	
 	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
 		super("Tesseract Project");
+		
+		my_gravity = new Gravity(-.5f);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
 		myWorld = new World(
@@ -116,11 +120,6 @@ public class TesseractUI extends JFrame {
 				new EllipsoidMenuItem(myWorld),
 				new IcosahedronMenuItem(myWorld)
 		};
-		
-		myForcesMenuItems = new JMenuItem[] {
-				new GravityMenuItem(myWorld)};
-		
-		
 		createMenu();
 		setupCanvas();
 		pack();
@@ -173,10 +172,18 @@ public class TesseractUI extends JFrame {
 		menuBar.add(objectsMenu);
 		
 		//Forces
-		JMenu forcesMenu = new JMenu("Add Force");
-		for (JMenuItem item : myForcesMenuItems) {
-			forcesMenu.add(item);
-		}
+		JMenu forcesMenu = new JMenu("Add Forces");
+		JMenuItem gravity = new JCheckBoxMenuItem("Gravity", false);
+		gravity.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(my_gravity);
+					} else {
+						myWorld.addForce(my_gravity = new Gravity(-.5f));
+					}
+				}			
+			});
+		forcesMenu.add(gravity);
 		menuBar.add(forcesMenu);
 		
 		/*
@@ -200,10 +207,6 @@ public class TesseractUI extends JFrame {
 			menu.add(cMenuItem);
 		}
 		*/
-		
-		
-		
-		
 		// Exit Menu Item
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {

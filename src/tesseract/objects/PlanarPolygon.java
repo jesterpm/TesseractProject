@@ -40,8 +40,8 @@ public class PlanarPolygon extends PhysicalObject {
 	/**
 	 * Default mass.
 	 */
-	//private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
-	private static final float DEFAULT_MASS = 1;
+	private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
+	//private static final float DEFAULT_MASS = 6;
 	
 	/**
 	 * Number of divisions in the sphere.
