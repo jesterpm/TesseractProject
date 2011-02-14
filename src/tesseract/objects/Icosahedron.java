@@ -34,7 +34,7 @@ public class Icosahedron extends PhysicalObject {
 	/**
 	 * Default Icosohedran Scale.
 	 */
-	private static final float DEFAULT_SCALE = 1;
+	private static final float DEFAULT_SCALE = 0.2f;
 	
 	/**
 	 * Vertex count in Icosohedran.
@@ -99,7 +99,7 @@ public class Icosahedron extends PhysicalObject {
 		
 		// Scaling
 		for (int it = 0; it < coordinates.length; it++) {
-			coordinates[it].scale(scale);
+			coordinates[it].scale(Math.min(DEFAULT_SCALE, scale));
 		}
 		
 		GeometryArray die = new TriangleArray(((NUM_VERTEX / 2) - 1)
