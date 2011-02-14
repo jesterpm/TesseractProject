@@ -24,6 +24,7 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
+import tesseract.forces.Circular;
 import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.menuitems.ChainLinkMenuItem;
@@ -187,6 +188,26 @@ public class TesseractUI extends JFrame {
 				}			
 			});
 		forcesMenu.add(gravity);
+
+		final JMenuItem circular = new JCheckBoxMenuItem("Tangential force in the XZ plane", false);
+		circular.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new Circular(.5f);
+				}
+				
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(me);
+					} else {
+						myWorld.removeForce(me);
+					}
+				}			
+			});
+		forcesMenu.add(circular);
+		
 		menuBar.add(forcesMenu);
 		
 		// Add reset Simulator menu item

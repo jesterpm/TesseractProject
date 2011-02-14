@@ -74,4 +74,8 @@ public class PhysicalObject extends CollidableObject {
 			super.resolveCollisions(other);
 		}
 	}
+	
+	public Vector3f getPosition() {
+		return position;
+	}
 }
