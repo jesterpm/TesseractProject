@@ -22,7 +22,7 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * Represents an Icosahedron, a 20 sided object who's
  * faces are all equal equilateral triangles.
  * @author Phillip Cardon
- * @version 0.9a
+ * @version 1.1a
  */
 public class Icosahedron extends PhysicalObject {
 	//CONSTANTS
@@ -75,6 +75,8 @@ public class Icosahedron extends PhysicalObject {
 	
 	/**
 	 * Builds Icosahedron.
+	 * @param scale of Icosahedron
+	 * @return shape object
 	 */
 	public Shape3D buildIcosahedron(final float scale) {
 		Point3f[] coordinates = new Point3f[NUM_VERTEX];
