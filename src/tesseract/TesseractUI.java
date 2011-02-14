@@ -24,7 +24,8 @@ import javax.swing.Timer;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
-import tesseract.forces.Circular;
+import tesseract.forces.CircularXY;
+import tesseract.forces.CircularXZ;
 import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.menuitems.ChainLinkMenuItem;
@@ -191,13 +192,13 @@ public class TesseractUI extends JFrame {
 			});
 		forcesMenu.add(gravity);
 
-		final JMenuItem circular = new JCheckBoxMenuItem("Tangential force in the XZ plane", false);
-		circular.addActionListener(new ActionListener() {
+		final JMenuItem circularXZ = new JCheckBoxMenuItem("Tangential force in the XZ plane", false);
+		circularXZ.addActionListener(new ActionListener() {
 				private Force me;
 				
 				// Constructor 
 				{
-					me = new Circular(.5f);
+					me = new CircularXZ(.5f);
 				}
 				
 				public void actionPerformed(ActionEvent e) {
@@ -208,7 +209,26 @@ public class TesseractUI extends JFrame {
 					}
 				}			
 			});
-		forcesMenu.add(circular);
+		forcesMenu.add(circularXZ);
+		
+		final JMenuItem circularXY = new JCheckBoxMenuItem("Tangential force in the XY plane", false);
+		circularXY.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new CircularXY(.5f);
+				}
+				
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(me);
+					} else {
+						myWorld.removeForce(me);
+					}
+				}			
+			});
+		forcesMenu.add(circularXY);
 		
 		menuBar.add(forcesMenu);
 		

@@ -5,10 +5,10 @@ import javax.vecmath.Vector3f;
 import tesseract.objects.PhysicalObject;
 
 @SuppressWarnings("restriction")
-public class Circular extends Force {
+public class CircularXZ extends Force {
 	private float strength;
 	
-	public Circular(float strength) {
+	public CircularXZ(float strength) {
 		this.strength = strength;
 	}
 
