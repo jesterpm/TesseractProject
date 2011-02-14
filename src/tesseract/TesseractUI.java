@@ -28,6 +28,7 @@ import tesseract.forces.Circular;
 import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.menuitems.ChainLinkMenuItem;
+import tesseract.menuitems.DonutMenuItem;
 import tesseract.menuitems.EllipsoidMenuItem;
 import tesseract.menuitems.GravityMenuItem;
 import tesseract.menuitems.IcosahedronMenuItem;
@@ -114,7 +115,8 @@ public class TesseractUI extends JFrame {
 				new PlanarPolygonMenuItem(myWorld),
 				new EllipsoidMenuItem(myWorld),
 				new IcosahedronMenuItem(myWorld),
-				new ChainLinkMenuItem(myWorld)
+				new ChainLinkMenuItem(myWorld),
+				new DonutMenuItem(myWorld)
 		};
 		createMenu();
 		setupCanvas();
