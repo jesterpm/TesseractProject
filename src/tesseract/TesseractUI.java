@@ -28,6 +28,8 @@ import tesseract.forces.CircularXY;
 import tesseract.forces.CircularXZ;
 import tesseract.forces.Force;
 import tesseract.forces.Gravity;
+import tesseract.forces.LinearOrigin;
+import tesseract.forces.QuadradicOrigin;
 import tesseract.menuitems.ChainLinkMenuItem;
 import tesseract.menuitems.DonutMenuItem;
 import tesseract.menuitems.EllipsoidMenuItem;
@@ -229,6 +231,44 @@ public class TesseractUI extends JFrame {
 				}			
 			});
 		forcesMenu.add(circularXY);
+		
+		final JMenuItem originLinear = new JCheckBoxMenuItem("Linear proportional force towards the origin", false);
+		originLinear.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new LinearOrigin(.5f);
+				}
+				
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(me);
+					} else {
+						myWorld.removeForce(me);
+					}
+				}			
+			});
+		forcesMenu.add(originLinear);
+		
+		final JMenuItem originQuadradic = new JCheckBoxMenuItem("Quadratic proportional force towards the origin", false);
+		originQuadradic.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new QuadradicOrigin(.5f);
+				}
+				
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(me);
+					} else {
+						myWorld.removeForce(me);
+					}
+				}			
+			});
+		forcesMenu.add(originQuadradic);
 		
 		menuBar.add(forcesMenu);
 		
