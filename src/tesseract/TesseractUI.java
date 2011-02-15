@@ -278,32 +278,14 @@ public class TesseractUI extends JFrame {
 			public void actionPerformed(final ActionEvent e) {
 				myWorld.resetWorld();
 				gravity.setSelected(false);
+				circularXZ.setSelected(false);
+				circularXY.setSelected(false);
+				originLinear.setSelected(false);
+				originQuadradic.setSelected(false);
 			}
 		});
 		simulationMenu.add(resetSim);
 		
-		
-		/*
-		JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
-		cMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				enableEmitters = !enableEmitters;
-			}			
-		});
-		menu.add(cMenuItem);
-		
-		for (int i = 0; i < forces.length; i++) {
-			cMenuItem = new JCheckBoxMenuItem(forces[i].toString(), activeForces[i]);
-			cMenuItem.setActionCommand(i + "");
-			cMenuItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					int index = Integer.parseInt(e.getActionCommand());
-					activeForces[index] = !activeForces[index];
-				}			
-			});
-			menu.add(cMenuItem);
-		}
-		*/
 		// Exit Menu Item
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
@@ -434,3 +416,27 @@ public class TesseractUI extends JFrame {
 		});
 	}
 }
+
+
+
+/*
+JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
+cMenuItem.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		enableEmitters = !enableEmitters;
+	}			
+});
+menu.add(cMenuItem);
+
+for (int i = 0; i < forces.length; i++) {
+	cMenuItem = new JCheckBoxMenuItem(forces[i].toString(), activeForces[i]);
+	cMenuItem.setActionCommand(i + "");
+	cMenuItem.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			int index = Integer.parseInt(e.getActionCommand());
+			activeForces[index] = !activeForces[index];
+		}			
+	});
+	menu.add(cMenuItem);
+}
+*/
