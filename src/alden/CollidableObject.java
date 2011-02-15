@@ -58,7 +58,7 @@ public abstract class CollidableObject {
 	protected void setShape(Node node) {
 		this.node = node;
 		TG.addChild(node);
-//		TG.addChild(CollisionDetector.createShape(CollisionDetector.triangularize(shapeNode)));
+		//TG.addChild(CollisionDetector.createShape(CollisionDetector.triangularize(node)));
 	}
 
 	public Group getGroup() {

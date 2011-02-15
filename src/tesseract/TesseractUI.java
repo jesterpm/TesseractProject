@@ -4,6 +4,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
@@ -33,14 +34,15 @@ import tesseract.forces.QuadradicOrigin;
 import tesseract.menuitems.ChainLinkMenuItem;
 import tesseract.menuitems.DonutMenuItem;
 import tesseract.menuitems.EllipsoidMenuItem;
-import tesseract.menuitems.GravityMenuItem;
 import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
-import tesseract.objects.Particle;
-import tesseract.objects.emitters.ParticleEmitter;
+import tesseract.objects.ChainLink2;
+import tesseract.objects.PhysicalObject;
 
+import com.sun.j3d.utils.picking.PickCanvas;
+import com.sun.j3d.utils.picking.PickResult;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 /**
@@ -101,6 +103,11 @@ public class TesseractUI extends JFrame {
 	private Timer myTimer;
 	
 	/**
+	 * Currently selected object.
+	 */
+	private PhysicalObject myCurrentObject;
+	
+	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
@@ -111,6 +118,8 @@ public class TesseractUI extends JFrame {
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)));
+		
+		myCurrentObject = null;
 		
 		myObjectMenuItems = new JMenuItem[] {
 				new ParticleEmitterMenuItem(myWorld),
@@ -133,11 +142,12 @@ public class TesseractUI extends JFrame {
 		
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
-		//myWorld.addObject(new Particle(new Vector3f(0, 0, 0), null));
-		//myWorld.addForce(new Gravity());
-		//myWorld.addObject(new ParticleEmitter(new Vector3f(0, 0.49f, 0), 0.5f, null));
-		//myWorld.addObject(new PlanarPolygon(new Vector3f(0, 0.49f, 0), 0.25f));
-		//myWorld.addObject(new Icosahedron(new Vector3f(), 1, 0.00001f));
+		
+		// Lookie! Linked chainlinks!
+		myWorld.addObject(new ChainLink2(new Vector3f(0.15f, 0, 0), 1));
+		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
+		o.setRotation();
+		myWorld.addObject(o);
 	}
 	
 	/**
@@ -319,38 +329,62 @@ public class TesseractUI extends JFrame {
 		// Add the scene BG.
 		universe.addBranchGraph(myWorld.getScene());
 		
-		// Setup the Mouse Behaviors
-		myWorld.setupMouseBehaviors(myCanvas);
-		
 		// Add the canvas to the frame.
 		add(myCanvas);
 		
+		// Test Picking
+		final PickCanvas pc = new PickCanvas(myCanvas, myWorld.getScene());
+		pc.setMode(PickCanvas.GEOMETRY);
+		
+		myCanvas.addMouseListener(new MouseAdapter() {
+			public void mousePressed(final MouseEvent e) {
+				pc.setShapeLocation(e);
+				PickResult r = pc.pickClosest();
+				
+				if (r.getObject().getUserData() instanceof PhysicalObject) {
+					myCurrentObject = 
+						(PhysicalObject) r.getObject().getUserData();
+					
+					myCurrentObject.selected(true);
+				}
+				
+				System.out.println(r.getObject().getUserData());
+			}
+
+			public void mouseReleased(final MouseEvent e) {
+				myCurrentObject.selected(false);
+				myCurrentObject = null;				
+			}
+		});
 		
 		// Event listener time
 		myCanvas.addMouseMotionListener(new MouseMotionAdapter() {
 			private MouseEvent lastDragEvent = null;
 			
 			public void mouseDragged(final MouseEvent e) {
-				if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0
-						|| (e.getModifiersEx() & MouseEvent.ALT_DOWN_MASK) != 0) {
-					return;
-				}
-				
-				if (lastDragEvent != null) {
-					cameraXRotation += 
-						Math.toRadians(e.getY() - lastDragEvent.getY()) / 3;
-					
-					if (cameraXRotation > Math.PI / 2) {
-						cameraXRotation = Math.PI / 2;
+				if (lastDragEvent != null) { 
+					if (myCurrentObject != null) {
+						myCurrentObject.getPosition().x = 0.1f * (e.getX() - lastDragEvent.getX());
+						myCurrentObject.getPosition().y = -0.1f * (e.getY() - lastDragEvent.getY());
+						myCurrentObject.updateTranformGroup();
 						
-					} else if (cameraXRotation < -Math.PI / 2) {
-						cameraXRotation = -Math.PI / 2;
+						
+					} else {
+						cameraXRotation += 
+							Math.toRadians(e.getY() - lastDragEvent.getY()) / 3;
+						
+						if (cameraXRotation > Math.PI / 2) {
+							cameraXRotation = Math.PI / 2;
+							
+						} else if (cameraXRotation < -Math.PI / 2) {
+							cameraXRotation = -Math.PI / 2;
+						}
+						
+						cameraYRotation += 
+							Math.toRadians(e.getX() - lastDragEvent.getX()) / 3;
+						
+						updateCamera();
 					}
-					
-					cameraYRotation += 
-						Math.toRadians(e.getX() - lastDragEvent.getX()) / 3;
-					
-					updateCamera();
 				}
 				
 				lastDragEvent = e;

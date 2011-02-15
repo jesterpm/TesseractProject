@@ -37,12 +37,7 @@ public class World {
 	 * Root element of the world.
 	 */
 	private BranchGroup myScene;
-	
-	/**
-	 * Pickable Objects.
-	 */
-	private BranchGroup myPickableObjects;
-	
+
 	/**
 	 * Bounding box of the world.
 	 */
@@ -96,11 +91,6 @@ public class World {
 		myScene.addChild(originLeaf);
 		
 		myScene.addChild(createVirtualWorldBoundsShape());
-		
-		myPickableObjects = new BranchGroup();
-		myPickableObjects.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-		myPickableObjects.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-		//myScene.addChild(myPickableObjects);
 		
 		addLights();
 		addHalfspaces();
@@ -238,33 +228,12 @@ public class World {
 	}
 	
 	/**
-	 * Setup mouse behaviors in the world.
-	 *
-	 * @param canvas The canvas to tie the events to.
-	 */
-	public void setupMouseBehaviors(final Canvas3D canvas) {
-		//BranchGroup pickables = new BranchGroup();
-		myPickableObjects.addChild(new PickTranslateBehavior(myPickableObjects, canvas, myVirtualWorldBounds, PickTool.GEOMETRY));
-		myPickableObjects.addChild(new PickZoomBehavior(myPickableObjects, canvas, myVirtualWorldBounds, PickTool.GEOMETRY));
-		myScene.addChild(myPickableObjects);
-		
-		/*myPickableObjects.addChild(
-				new PickTranslateBehavior(myPickableObjects, canvas,
-						myVirtualWorldBounds, PickTool.GEOMETRY));
-		
-		myPickableObjects.addChild(
-				new PickZoomBehavior(myPickableObjects, canvas,
-						myVirtualWorldBounds, PickTool.GEOMETRY));
-		*/
-	}
-	
-	/**
 	 * Add a new object to the world.
 	 * 
 	 * @param obj The object to add
 	 */
 	public void addObject(final PhysicalObject obj) {
-		myPickableObjects.addChild(obj.getGroup());
+		myScene.addChild(obj.getGroup());
 		myObjects.add(obj);
 	}
 	

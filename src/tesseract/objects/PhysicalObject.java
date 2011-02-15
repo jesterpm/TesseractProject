@@ -1,15 +1,14 @@
 package tesseract.objects;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Node;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
 import alden.CollidableObject;
-import alden.CollisionInfo;
 
 import com.sun.j3d.utils.geometry.Primitive;
 
@@ -24,10 +23,13 @@ import com.sun.j3d.utils.geometry.Primitive;
 public class PhysicalObject extends CollidableObject {
 	protected boolean collidable;
 	
+	protected boolean mySelected;
+	
 	public PhysicalObject(final Vector3f thePosition, final float mass) {
 		super(mass);
 		this.position.set(thePosition);
 		collidable = true;
+		mySelected = false;
 	}
 
 	public List<PhysicalObject> spawnChildren(final float duration) {
@@ -39,11 +41,18 @@ public class PhysicalObject extends CollidableObject {
 	}
 	
 	public void updateState(final float duration) {
-		super.updateState(duration);
-		this.updateTransformGroup();
+		if (!mySelected) { 
+			super.updateState(duration);
+			this.updateTransformGroup();
+		}
 	}
 	
 	public void setShape(final Node node) {
+		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		TG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+		
+		node.setUserData(this);
+		
 		node.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
 		node.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
 
@@ -75,7 +84,35 @@ public class PhysicalObject extends CollidableObject {
 		}
 	}
 	
+	/**
+	 * TODO: Test code to mess with the orientation of an object.
+	 */
+	public void setRotation() {
+		this.orientation.x = (float) (Math.PI / 4);
+		this.orientation.w = 1;
+		//this.angularVelocity.x = 0.5f;
+	}
+	
+	/**
+	 * @return The position of the object.
+	 */
 	public Vector3f getPosition() {
 		return position;
+	}
+
+	/**
+	 * When set to true, the object will ignore all updateState calls.
+	 * 
+	 * @param b true to ignore updateState. False to heed.
+	 */
+	public void selected(final boolean b) {
+		mySelected = b;
+	}
+	
+	/**
+	 * Update the transform group after changing the position.
+	 */
+	public void updateTranformGroup() {
+		super.updateTransformGroup();
 	}
 }
