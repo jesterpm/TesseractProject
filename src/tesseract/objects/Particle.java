@@ -75,7 +75,7 @@ public class Particle extends PhysicalObject {
 		cAttr = new ColoringAttributes(color, ColoringAttributes.FASTEST);
 		Appearance appearance = new Appearance();
 		appearance.setColoringAttributes(cAttr);
-		Sphere sphere = new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING | Sphere.GEOMETRY_NOT_SHARED,
+		Sphere sphere = new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING,
 				DIVISIONS, appearance);
 		TransformGroup tg = new TransformGroup();
 		tg.addChild(sphere);

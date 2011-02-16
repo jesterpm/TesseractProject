@@ -12,6 +12,7 @@ import java.awt.event.MouseWheelListener;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Canvas3D;
+import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -39,6 +40,7 @@ import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
+import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
 import tesseract.objects.PhysicalObject;
 
@@ -149,6 +151,7 @@ public class TesseractUI extends JFrame {
 		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
 		o.setRotation();
 		myWorld.addObject(o);
+		myWorld.addObject(new Box(0.20f, 0.09f, 0.10f, new Vector3f(0, 0.25f, 0)));
 	}
 	
 	/**
@@ -342,11 +345,18 @@ public class TesseractUI extends JFrame {
 				pc.setShapeLocation(e);
 				PickResult r = pc.pickClosest();
 				
-				if (r != null && r.getObject().getUserData() instanceof PhysicalObject) {
-					myCurrentObject = 
-						(PhysicalObject) r.getObject().getUserData();
-					
-					myCurrentObject.selected(true);
+				if (r != null) {
+					for (int i = r.getSceneGraphPath().nodeCount() - 1;
+						i > 0; i--) {
+						Node n = r.getSceneGraphPath().getNode(i); 
+						if (n.getUserData() instanceof PhysicalObject) {
+							myCurrentObject = 
+								(PhysicalObject) n.getUserData();
+							myCurrentObject.selected(true);
+							
+							break;
+						}
+					}
 				}
 			}
 

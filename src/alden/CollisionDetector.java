@@ -1,4 +1,5 @@
 package alden;
+
 import java.util.ArrayList;
 
 import javax.media.j3d.Appearance;
@@ -15,11 +16,15 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TriangleArray;
 import javax.media.j3d.TriangleFanArray;
 import javax.media.j3d.TriangleStripArray;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.objects.HalfSpace;
+import tesseract.objects.Particle;
+import tesseract.objects.Polygon;
+import tesseract.objects.Sphere;
 
 import com.sun.j3d.utils.geometry.Primitive;
 
@@ -228,21 +233,6 @@ public class CollisionDetector {
 			}
 			return region;
 		}
-		
-		public boolean isAdjacent(Triangle other) {
-			if (a.equals(other.a)) {
-				if (b.equals(other.b) || b.equals(other.c) || c.equals(other.b) || c.equals(other.c))
-					return true;
-			} else if (a.equals(other.b)) {
-				if (b.equals(other.a) || b.equals(other.c) || c.equals(other.a) || c.equals(other.c))
-					return true;
-			} else if (a.equals(other.c)) {
-				if (b.equals(other.a) || b.equals(other.b) || c.equals(other.a) || c.equals(other.b))
-					return true;
-			} else if ((b.equals(other.b) || b.equals(other.c)) && (c.equals(other.b) || c.equals(other.c)))
-				return true;
-			return false;
-		}
 	}
 	
 	public static ArrayList<CollisionInfo> calculateCollisions(CollidableObject a, CollidableObject b) {
@@ -251,28 +241,72 @@ public class CollisionDetector {
 		if (a instanceof HalfSpace) {
 			if (b instanceof HalfSpace)
 				return EMPTY_COLLISION_LIST;
+			if (b instanceof Particle)
+				return calculateCollisions((HalfSpace)a, (Particle)b);
 			if (b instanceof Sphere)
 				return calculateCollisions((HalfSpace)a, (Sphere)b);
 			return calculateCollisions((HalfSpace)a, b.getVertices());
 		}
-		if (!a.getBounds().intersect(b.getBounds()))
-			return EMPTY_COLLISION_LIST;
+		if (b instanceof HalfSpace) {
+			if (a instanceof Particle)
+				return flipContactNormals(calculateCollisions((HalfSpace)b, (Particle)a));
+			if (a instanceof Sphere)
+				return flipContactNormals(calculateCollisions((HalfSpace)b, (Sphere)a));
+			return flipContactNormals(calculateCollisions((HalfSpace)b, a.getVertices()));
+		}
+		if (a instanceof Particle) {
+			if (b instanceof Particle)
+				return EMPTY_COLLISION_LIST;
+			if (b instanceof Sphere)
+				return calculateCollisions((Particle)a, (Sphere)b);
+			if (b instanceof Polygon)
+				return calculateCollisions((Particle)a, (Polygon)b);
+		}
+		if (b instanceof Particle) {
+			if (a instanceof Sphere)
+				return flipContactNormals(calculateCollisions((Particle)b, (Sphere)a));
+			if (a instanceof Polygon)
+				return flipContactNormals(calculateCollisions((Particle)b, (Polygon)a));
+		}
 		if (a instanceof Sphere && b instanceof Sphere)
 			return calculateCollisions((Sphere)a, (Sphere)b);
+		
+		if (!a.getBounds().intersect(b.getBounds()))
+			return EMPTY_COLLISION_LIST;
+		
+		if (a instanceof Particle)
+			return calculateCollisions((Particle)a, b);
+		if (b instanceof Particle)
+			return flipContactNormals(calculateCollisions((Particle)b, a));
+		if (a instanceof Polygon)
+			return calculateCollisions((Polygon)a, b);
+		if (b instanceof Polygon)
+			return calculateCollisions((Polygon)b, a);
 		return CollisionDetector.calculateCollisions(a.getCollisionTriangles(), b.getCollisionTriangles());
 	}
 	
+	private static ArrayList<CollisionInfo> calculateCollisions(HalfSpace a, Particle b) {
+		float penetration = a.intercept - a.normal.dot(b.position);
+		if (penetration < 0)
+			return EMPTY_COLLISION_LIST;
+		Vector3f contactPoint = new Vector3f();
+		contactPoint.scaleAdd(penetration, a.normal, b.position);
+		assert(Math.abs(a.normal.dot(contactPoint) - a.intercept) < 0.01);
+		ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
+		collisions.add(new CollisionInfo(contactPoint, new Vector3f(a.normal), penetration));
+		return collisions;
+	}
+
 	private static ArrayList<CollisionInfo> calculateCollisions(HalfSpace a, Sphere b) {
 		float penetration = b.radius - (a.normal.dot(b.position) - a.intercept);
-		if (penetration >= 0) {
-			Vector3f contactPoint = new Vector3f();
-			contactPoint.scaleAdd(-(b.radius - penetration), a.normal, b.position);
-			assert(Math.abs(a.normal.dot(contactPoint) - a.intercept) < 0.01);
-			ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
-			collisions.add(new CollisionInfo(contactPoint, a.normal, penetration));
-			return collisions;
-		}
-		return EMPTY_COLLISION_LIST;
+		if (penetration < 0)
+			return EMPTY_COLLISION_LIST;
+		Vector3f contactPoint = new Vector3f();
+		contactPoint.scaleAdd(-(b.radius - penetration), a.normal, b.position);
+		assert(Math.abs(a.normal.dot(contactPoint) - a.intercept) < 0.01);
+		ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
+		collisions.add(new CollisionInfo(contactPoint, new Vector3f(a.normal), penetration));
+		return collisions;
 	}
 
 	private static ArrayList<CollisionInfo> calculateCollisions(HalfSpace a, ArrayList<Vector3f> setB) {
@@ -283,24 +317,124 @@ public class CollisionDetector {
 				Vector3f contactPoint = new Vector3f();
 				contactPoint.scaleAdd(penetration, a.normal, vertex);
 				assert(Math.abs(a.normal.dot(contactPoint) - a.intercept) < 0.01);
-				collisions.add(new CollisionInfo(contactPoint, a.normal, penetration));
+				collisions.add(new CollisionInfo(contactPoint, new Vector3f(a.normal), penetration));
 			}
 		}
 		return collisions;
 	}
 
-	private static ArrayList<CollisionInfo> calculateCollisions(Sphere a, Sphere b) {
+	private static ArrayList<CollisionInfo> calculateCollisions(Particle a, Sphere b) {
 		Vector3f delta = new Vector3f();
 		delta.scaleAdd(-1, a.position, b.position);
-		float penetration = delta.length() - a.radius - b.radius;
-		if (penetration > 0)
+		float penetration = b.radius - delta.length();
+		if (penetration < 0)
 			return EMPTY_COLLISION_LIST;
 		
 		ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
 		delta.normalize();
 		Vector3f contactPoint = new Vector3f();
-		contactPoint.scaleAdd(a.radius + 0.5f * penetration, delta, a.position);
-		collisions.add(new CollisionInfo(contactPoint, delta, -penetration));
+		contactPoint.scaleAdd(-(b.radius - 0.5f * penetration), delta, b.position);
+		collisions.add(new CollisionInfo(contactPoint, delta, penetration));
+		return collisions;
+	}
+
+	private static ArrayList<CollisionInfo> calculateCollisions(Particle a, Polygon b) {
+		float penetration = b.intercept - b.normal.dot(a.position);
+		float previousPenetration = b.intercept - b.normal.dot(a.previousPosition);
+		if (Math.signum(penetration) == Math.signum(previousPenetration))
+			return EMPTY_COLLISION_LIST;
+		
+		for (Triangle triangle : b.getCollisionTriangles()) {
+			Matrix3f tmp = new Matrix3f(a.previousPosition.x - a.position.x, triangle.b.x - triangle.a.x, triangle.c.x - triangle.a.x,
+			                            a.previousPosition.y - a.position.y, triangle.b.y - triangle.a.y, triangle.c.y - triangle.a.y,
+			                            a.previousPosition.z - a.position.z, triangle.b.z - triangle.a.z, triangle.c.z - triangle.a.z);
+			tmp.invert();
+			Vector3f intercept = new Vector3f();
+			intercept.scaleAdd(-1, triangle.a, a.previousPosition);
+			tmp.transform(intercept);
+			
+			assert(intercept.x >= 0 && intercept.x <= 1);
+			
+			if (intercept.y >= 0 && intercept.y <= 1 && intercept.z >= 0 && intercept.z <= 1 && (intercept.y + intercept.z) <= 1) {
+				Vector3f contactPoint = new Vector3f();
+				contactPoint.scaleAdd(-1, a.previousPosition, a.position);
+				contactPoint.scale(intercept.x);
+				contactPoint.add(a.previousPosition);
+				assert(Math.abs(b.normal.dot(contactPoint) - b.intercept) < 0.01);
+				Vector3f contactNormal = new Vector3f(b.normal);
+				if (penetration - previousPenetration > 0)
+					contactNormal.negate();
+				else
+					penetration = -penetration;
+				ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
+				collisions.add(new CollisionInfo(contactPoint, contactNormal, penetration));
+				return collisions;
+			}
+		}
+		return EMPTY_COLLISION_LIST;
+	}
+	
+	private static ArrayList<CollisionInfo> calculateCollisions(Particle a, CollidableObject b) {
+		ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
+		for (Triangle triangle : b.getCollisionTriangles()) {
+			float penetration = triangle.intercept - triangle.normal.dot(a.position);
+			if (penetration < 0 || (!collisions.isEmpty() && penetration <= collisions.get(0).penetration))
+				continue;
+			float previousPenetration = triangle.intercept - triangle.normal.dot(a.previousPosition);
+			if (Math.signum(penetration) == Math.signum(previousPenetration))
+				continue;
+			
+			Matrix3f tmp = new Matrix3f(a.previousPosition.x - a.position.x, triangle.b.x - triangle.a.x, triangle.c.x - triangle.a.x,
+			                            a.previousPosition.y - a.position.y, triangle.b.y - triangle.a.y, triangle.c.y - triangle.a.y,
+			                            a.previousPosition.z - a.position.z, triangle.b.z - triangle.a.z, triangle.c.z - triangle.a.z);
+			tmp.invert();
+			Vector3f intercept = new Vector3f();
+			intercept.scaleAdd(-1, triangle.a, a.previousPosition);
+			tmp.transform(intercept);
+			
+			assert(intercept.x >= 0 && intercept.x <= 1);
+			
+			if (intercept.y >= 0 && intercept.y <= 1 && intercept.z >= 0 && intercept.z <= 1 && (intercept.y + intercept.z) <= 1) {
+				Vector3f contactPoint = new Vector3f();
+				contactPoint.scaleAdd(-1, a.previousPosition, a.position);
+				contactPoint.scale(intercept.x);
+				contactPoint.add(a.previousPosition);
+				assert(Math.abs(triangle.normal.dot(contactPoint) - triangle.intercept) < 0.01);
+				Vector3f contactNormal = new Vector3f(triangle.normal);
+				if (penetration - previousPenetration > 0)
+					contactNormal.negate();
+				else
+					penetration = -penetration;				
+				collisions.clear();
+				collisions.add(new CollisionInfo(contactPoint, contactNormal, penetration));
+			}
+		}
+		return collisions;
+	}
+	
+	private static ArrayList<CollisionInfo> calculateCollisions(Sphere a, Sphere b) {
+		Vector3f delta = new Vector3f();
+		delta.scaleAdd(-1, a.position, b.position);
+		float penetration = a.radius + b.radius - delta.length();
+		if (penetration < 0)
+			return EMPTY_COLLISION_LIST;
+		
+		ArrayList<CollisionInfo> collisions = new ArrayList<CollisionInfo>();
+		delta.normalize();
+		Vector3f contactPoint = new Vector3f();
+		contactPoint.scaleAdd(a.radius - 0.5f * penetration, delta, a.position);
+		collisions.add(new CollisionInfo(contactPoint, delta, penetration));
+		return collisions;
+	}
+
+	private static ArrayList<CollisionInfo> calculateCollisions(Polygon a, CollidableObject b) {
+		ArrayList<CollisionInfo> collisions = calculateCollisions(a.getCollisionTriangles(), b.getCollisionTriangles());
+		int size = collisions.size();
+		collisions.ensureCapacity(2 * size);
+		for (int i = 0; i < size; i++) {
+			collisions.add(collisions.get(i).clone());
+			collisions.get(collisions.size() - 1).contactNormal.negate();
+		}
 		return collisions;
 	}
 	
@@ -312,6 +446,12 @@ public class CollisionDetector {
 				if (collision != null)
 					collisions.add(collision);
 			}
+		return collisions;
+	}
+
+	private static ArrayList<CollisionInfo> flipContactNormals(ArrayList<CollisionInfo> collisions) {
+		for (CollisionInfo collision : collisions)
+			collision.contactNormal.negate();
 		return collisions;
 	}
 
@@ -343,7 +483,7 @@ public class CollisionDetector {
 			for (int i = 0; i < group.numChildren(); i++)
 				extractVertices(group.getChild(i), vertices);
 		} else 
-			throw new IllegalArgumentException("Illegal node type for vertex extraction ");
+			throw new IllegalArgumentException("Illegal node type for vertex extraction");
 	}
 
 	private static void extractVertices(Geometry geometry, Transform3D transform, ArrayList<Vector3f> vertices) {

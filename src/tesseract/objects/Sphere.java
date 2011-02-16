@@ -1,21 +1,21 @@
-package alden;
-
+package tesseract.objects;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
-@SuppressWarnings("restriction")
-public class Sphere extends CollidableObject {
-	protected float radius;
+import alden.CollidableObject;
+
+public class Sphere extends PhysicalObject {
+	public float radius;
 	
 	public Sphere(float radius, Vector3f position) {
 		this(1, radius, position);
 	}
 	
 	public Sphere(float mass, float radius, Vector3f position) {
-		super(mass);
+		super(position, mass);
 		setShape(createShape(radius, 22));
 		this.radius = radius;
-		this.position.set(position);
+		
 		if (inverseMass != 0) {
 			inverseInertiaTensor.m00 = 2f / 5 / inverseMass * radius * radius;
 			inverseInertiaTensor.m11 = inverseInertiaTensor.m00;

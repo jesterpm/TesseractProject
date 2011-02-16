@@ -45,7 +45,7 @@ public abstract class CollidableObject {
 		angularVelocity = new Vector3f();
 		torqueAccumulator = new Vector3f();
 		inverseInertiaTensor = new Matrix3f();
-		coefficientOfRestitution = 0.65f;
+		coefficientOfRestitution = 0.75f;
 		penetrationCorrection = 1.05f;
 		dynamicFriction = 0.02f;
 		TG = new TransformGroup();
@@ -58,7 +58,7 @@ public abstract class CollidableObject {
 	protected void setShape(Node node) {
 		this.node = node;
 		TG.addChild(node);
-		//TG.addChild(CollisionDetector.createShape(CollisionDetector.triangularize(node)));
+//		TG.addChild(CollisionDetector.createShape(CollisionDetector.triangularize(node)));
 	}
 
 	public Group getGroup() {
@@ -79,6 +79,7 @@ public abstract class CollidableObject {
 		velocity.scaleAdd(duration, forceAccumulator, velocity);
 		// The force vector is cleared.
 		forceAccumulator.set(0, 0, 0);
+		
 		angularVelocity.scaleAdd(duration, torqueAccumulator, angularVelocity);
 		torqueAccumulator.set(0, 0, 0);
 		UnQuat4f tmp = new UnQuat4f(angularVelocity.x, angularVelocity.y, angularVelocity.z, 0);
@@ -89,10 +90,16 @@ public abstract class CollidableObject {
 	}
 
 	protected void updateTransformGroup() {
+		Vector3f com = new Vector3f(-centerOfMass.x, -centerOfMass.y, -centerOfMass.z);
 		Transform3D tmp = new Transform3D();
-		tmp.setRotation(orientation);
-		tmp.setTranslation(position);
-		TG.setTransform(tmp);
+		tmp.setTranslation(com);
+		Transform3D tmp2 = new Transform3D();
+		tmp2.setRotation(orientation);
+		com.negate();
+		com.add(position);
+		tmp2.setTranslation(com);
+		tmp2.mul(tmp);
+		TG.setTransform(tmp2);
 		clearCaches();
 	}
 
@@ -122,12 +129,15 @@ public abstract class CollidableObject {
 		if (inverseInertiaTensorCache == null) {
 			inverseInertiaTensorCache = new Matrix3f();
 			inverseInertiaTensorCache.set(orientation);
-			inverseInertiaTensorCache.invert();
-			inverseInertiaTensorCache.mul(inverseInertiaTensor);
+			Matrix3f tmp = new Matrix3f(inverseInertiaTensor);
+			Matrix3f tmp2 = new Matrix3f(inverseInertiaTensorCache);
+			tmp2.invert();
+			tmp.mul(tmp2);
+			inverseInertiaTensorCache.mul(tmp);
 		}
 		return inverseInertiaTensorCache;
 	}
-	
+
 	protected void clearCaches() {
 		vertexCache = null;
 		triangleCache = null;
@@ -144,7 +154,6 @@ public abstract class CollidableObject {
 		float max = Float.NEGATIVE_INFINITY;
 		int count = 0;
 		for (CollisionInfo collision : collisions) {
-//			float speed = collision.contactNormal.dot(previousVelocity) - collision.contactNormal.dot(other.previousVelocity);
 			Vector3f thisRelativeContactPosition = new Vector3f();
 			thisRelativeContactPosition.scaleAdd(-1, position, collision.contactPoint);
 			thisRelativeContactPosition.scaleAdd(-1, centerOfMass, thisRelativeContactPosition);
@@ -203,34 +212,47 @@ public abstract class CollidableObject {
 		if (totalInverseMass == 0)
 			return;
 		
+		Vector3f thisMovementUnit = new Vector3f();
+		thisMovementUnit.cross(thisRelativeContactPosition, ci.contactNormal);
+		getInverseInertiaTensor().transform(thisMovementUnit);
 		Vector3f thisAngularVelocityUnit = new Vector3f();
-		thisAngularVelocityUnit.cross(thisRelativeContactPosition, ci.contactNormal);
-		getInverseInertiaTensor().transform(thisAngularVelocityUnit);
-		thisAngularVelocityUnit.cross(thisAngularVelocityUnit, thisRelativeContactPosition);
+		thisAngularVelocityUnit.cross(thisMovementUnit, thisRelativeContactPosition);
 		totalInverseMass += thisAngularVelocityUnit.dot(ci.contactNormal);
 		
+		Vector3f otherMovementUnit = new Vector3f();
+		otherMovementUnit.cross(otherRelativeContactPosition, ci.contactNormal);
+		other.getInverseInertiaTensor().transform(otherMovementUnit);
 		Vector3f otherAngularVelocityUnit = new Vector3f();
-		otherAngularVelocityUnit.cross(otherRelativeContactPosition, ci.contactNormal);
-		other.getInverseInertiaTensor().transform(otherAngularVelocityUnit);
-		otherAngularVelocityUnit.cross(otherAngularVelocityUnit, otherRelativeContactPosition);
+		otherAngularVelocityUnit.cross(otherMovementUnit, otherRelativeContactPosition);
 		totalInverseMass += otherAngularVelocityUnit.dot(ci.contactNormal);
-		
+
 		Vector3f impulse = new Vector3f(ci.contactNormal);
 		impulse.scale(deltaClosingSpeed / totalInverseMass);
+	
 		velocity.scaleAdd(inverseMass, impulse, velocity);
 		Vector3f tmp = new Vector3f();
 		tmp.cross(thisRelativeContactPosition, impulse);
-		tmp.scale(thisAngularVelocityUnit.dot(ci.contactNormal));
 		getInverseInertiaTensor().transform(tmp);
 		angularVelocity.add(tmp);
-		position.scaleAdd(-ci.penetration * penetrationCorrection * inverseMass / (inverseMass + other.inverseMass), ci.contactNormal, position);
+		position.scaleAdd(-ci.penetration * penetrationCorrection * inverseMass / totalInverseMass, ci.contactNormal, position);
+		thisMovementUnit.scale(-ci.penetration * penetrationCorrection / totalInverseMass);
+		UnQuat4f tmp2 = new UnQuat4f(thisMovementUnit.x, thisMovementUnit.y, thisMovementUnit.z, 0);
+		tmp2.scale(0.5f);
+		tmp2.mul(orientation);
+		orientation.add(tmp2);
+		orientation.normalize();
 		
 		impulse.negate();
 		other.velocity.scaleAdd(other.inverseMass, impulse, other.velocity);
 		tmp.cross(otherRelativeContactPosition, impulse);
-		tmp.scale(otherAngularVelocityUnit.dot(ci.contactNormal));
 		other.getInverseInertiaTensor().transform(tmp);
 		other.angularVelocity.add(tmp);
-		other.position.scaleAdd(ci.penetration * penetrationCorrection * other.inverseMass / (inverseMass + other.inverseMass), ci.contactNormal, other.position);
+		other.position.scaleAdd(ci.penetration * penetrationCorrection * other.inverseMass / totalInverseMass, ci.contactNormal, other.position);
+		otherMovementUnit.scale(ci.penetration * penetrationCorrection / totalInverseMass);
+		tmp2.set(otherMovementUnit.x, otherMovementUnit.y, otherMovementUnit.z, 0);
+		tmp2.scale(0.5f);
+		tmp2.mul(other.orientation);
+		other.orientation.add(tmp2);
+		other.orientation.normalize();
 	}
 }
