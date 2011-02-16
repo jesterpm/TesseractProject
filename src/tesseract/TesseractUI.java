@@ -40,8 +40,8 @@ import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
-import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
+import tesseract.objects.Circle;
 import tesseract.objects.PhysicalObject;
 
 import com.sun.j3d.utils.picking.PickCanvas;
@@ -151,7 +151,6 @@ public class TesseractUI extends JFrame {
 		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
 		o.setRotation();
 		myWorld.addObject(o);
-		myWorld.addObject(new Box(0.20f, 0.09f, 0.10f, new Vector3f(0, 0.25f, 0)));
 	}
 	
 	/**
@@ -346,15 +345,24 @@ public class TesseractUI extends JFrame {
 				PickResult r = pc.pickClosest();
 				
 				if (r != null) {
-					for (int i = r.getSceneGraphPath().nodeCount() - 1;
-						i > 0; i--) {
-						Node n = r.getSceneGraphPath().getNode(i); 
-						if (n.getUserData() instanceof PhysicalObject) {
-							myCurrentObject = 
-								(PhysicalObject) n.getUserData();
-							myCurrentObject.selected(true);
-							
-							break;
+					if (r.getObject().getUserData() instanceof PhysicalObject) {
+						myCurrentObject = 
+							(PhysicalObject) r.getObject().getUserData();
+						myCurrentObject.selected(true);
+						
+					} else {
+						// The PhysicalObject was not found in the selected
+						// object... Check parents.
+						for (int i = r.getSceneGraphPath().nodeCount() - 1;
+							i >= 0; i--) {
+							Node n = r.getSceneGraphPath().getNode(i); 
+							if (n.getUserData() instanceof PhysicalObject) {
+								myCurrentObject = 
+									(PhysicalObject) n.getUserData();
+								myCurrentObject.selected(true);
+								
+								break;
+							}
 						}
 					}
 				}
