@@ -105,22 +105,17 @@ public class ChainLink2 extends PhysicalObject {
 		double theta = 2 * Math.PI / sliceDivisions;
 		float radius = diameter / 2.0f;
 		
-		// Translate the coords to the correct place.
-		Transform3D t3d = new Transform3D();
-		
 		for (int i = 0; i < sliceDivisions; i++) {
 			coords[0][i] = new Point3f(
 					0f,
 					(float) (radius * Math.cos(i * theta)),
 					(float) (radius * Math.sin(i * theta)));
-			
-			// Move to the right place.
-			//t3d.transform(coords[0][i]);
 		}
 		
 		// Create the arc
 		radius = (width - radius) / 2.0f;
 		
+		Transform3D t3d = new Transform3D();
 		t3d.setIdentity();
 		t3d.setTranslation(new Vector3f(0, -radius, 0));
 		
@@ -128,7 +123,6 @@ public class ChainLink2 extends PhysicalObject {
 		tmp.rotZ(Math.PI / (sliceCount / 2.0 - 1));
 		t3d.mul(tmp);
 		tmp.setIdentity();
-		//new Vector3f(-(length / 2.0f - radius), -width / 2.0f, 0));
 		tmp.setTranslation(new Vector3f(0, radius, 0));
 		t3d.mul(tmp);
 		
@@ -167,7 +161,6 @@ public class ChainLink2 extends PhysicalObject {
 				PointArray.COORDINATES,
 				4 * sliceDivisions * sliceCount);
 		
-		// TODO: Remove /2
 		for (int i = 0; i < sliceCount; i++) {
 			geometry.setCoordinates(i * sliceDivisions, coords[i]);
 		}
