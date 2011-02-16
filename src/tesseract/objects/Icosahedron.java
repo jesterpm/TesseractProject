@@ -61,6 +61,7 @@ public class Icosahedron extends PhysicalObject {
 		super(position, mass);
 		
 		setShape(buildIcosahedron(scale));
+		//this.centerOfMass = new Vector3f(0.01f, 0.01f, 0.01f);
 	}
 	
 	/**
