@@ -146,6 +146,7 @@ public abstract class TesseractMenuItem
 	    my_mass_input = new JTextField(10);
 	    my_mass_input.setText("1");
 	    
+	    JLabel blank = new JLabel("");
 	    JLabel position_label = new JLabel("Enter Position:  ");
 	    JLabel radius_label = new JLabel("Enter Radius:  ");
 	    JLabel mass_label = new JLabel("Enter Mass:  ");
@@ -155,6 +156,7 @@ public abstract class TesseractMenuItem
 	    my_default_button = new JCheckBox("Default Shape   ");
 	    
 	    my_param_frame.add(my_default_button);
+	    my_param_frame.add(blank);
 	    my_param_frame.add(position_label);
 	    my_param_frame.add(my_position_input);
 	    my_param_frame.add(radius_label);
