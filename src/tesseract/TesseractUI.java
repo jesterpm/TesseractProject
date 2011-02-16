@@ -23,6 +23,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.CircularXY;
@@ -341,18 +342,18 @@ public class TesseractUI extends JFrame {
 				pc.setShapeLocation(e);
 				PickResult r = pc.pickClosest();
 				
-				if (r.getObject().getUserData() instanceof PhysicalObject) {
+				if (r != null && r.getObject().getUserData() instanceof PhysicalObject) {
 					myCurrentObject = 
 						(PhysicalObject) r.getObject().getUserData();
 					
 					myCurrentObject.selected(true);
 				}
-				
-				System.out.println(r.getObject().getUserData());
 			}
 
 			public void mouseReleased(final MouseEvent e) {
-				myCurrentObject.selected(false);
+				if (myCurrentObject != null) {
+					myCurrentObject.selected(false);
+				}
 				myCurrentObject = null;				
 			}
 		});
@@ -364,8 +365,32 @@ public class TesseractUI extends JFrame {
 			public void mouseDragged(final MouseEvent e) {
 				if (lastDragEvent != null) { 
 					if (myCurrentObject != null) {
-						myCurrentObject.getPosition().x = 0.1f * (e.getX() - lastDragEvent.getX());
-						myCurrentObject.getPosition().y = -0.1f * (e.getY() - lastDragEvent.getY());
+						float scale = 0.001f;
+						
+						int xdiff = e.getX() - lastDragEvent.getX();
+						int ydiff = - e.getY() + lastDragEvent.getY();
+						
+						Point3f p = new Point3f(scale * xdiff, scale * ydiff, 0);
+						Transform3D t3d = new Transform3D();
+						t3d.rotX(cameraXRotation);
+						Transform3D tmp = new Transform3D();
+						tmp.rotY(cameraYRotation);
+						t3d.mul(tmp);
+						t3d.invert();
+						t3d.transform(p);
+						
+						if (e.isAltDown()) {
+							myCurrentObject.getOrientation().x += p.x;
+							myCurrentObject.getOrientation().y += p.y;
+							myCurrentObject.getOrientation().z += p.z;
+							myCurrentObject.getOrientation().w = 1;
+							
+						} else {
+							myCurrentObject.getPosition().x += p.x;
+							myCurrentObject.getPosition().y += p.y;
+							myCurrentObject.getPosition().z += p.z;
+						}
+						
 						myCurrentObject.updateTranformGroup();
 						
 						

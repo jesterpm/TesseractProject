@@ -61,7 +61,14 @@ public class Icosahedron extends PhysicalObject {
 		super(position, mass);
 		
 		setShape(buildIcosahedron(scale));
-		//this.centerOfMass = new Vector3f(0.01f, 0.01f, 0.01f);
+		
+		if (inverseMass != 0) {
+			final float radius = (float) (scale * Math.sqrt(GOLDEN_RATIO * GOLDEN_RATIO + 1));
+			inverseInertiaTensor.m00 = 2f / 5 / inverseMass * radius * radius;
+			inverseInertiaTensor.m11 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.m22 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.invert();
+		}
 	}
 	
 	/**

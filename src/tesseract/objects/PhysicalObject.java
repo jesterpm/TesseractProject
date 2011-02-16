@@ -6,6 +6,7 @@ import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Node;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import alden.CollidableObject;
@@ -98,6 +99,13 @@ public class PhysicalObject extends CollidableObject {
 	 */
 	public Vector3f getPosition() {
 		return position;
+	}
+	
+	/**
+	 * @return The orientation of the object.
+	 */
+	public Quat4f getOrientation() {
+		return this.orientation;
 	}
 
 	/**
