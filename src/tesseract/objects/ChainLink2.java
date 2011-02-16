@@ -83,6 +83,14 @@ public class ChainLink2 extends PhysicalObject {
 		
 		setShape(createShape(SLICE_COUNT, SLICE_DIVISIONS,
 				diameter, length, width));
+		
+		if (inverseMass != 0) {
+			final float radius2 = diameter / 2.0f * diameter / 2.0f;
+			inverseInertiaTensor.m00 = 1 / (8.0f * inverseMass) * (4 * radius2 + 5 * (length * length + width * width));
+			inverseInertiaTensor.m11 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.m22 = 1 / (inverseMass) * (radius2 + 0.75f * (length * length + width * width));
+			inverseInertiaTensor.invert();
+		}
 	}
 
 	/**

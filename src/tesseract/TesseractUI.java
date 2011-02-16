@@ -380,10 +380,11 @@ public class TesseractUI extends JFrame {
 						t3d.transform(p);
 						
 						if (e.isAltDown()) {
-							myCurrentObject.getOrientation().x += p.x;
-							myCurrentObject.getOrientation().y += p.y;
+							myCurrentObject.getOrientation().y += p.x;
+							myCurrentObject.getOrientation().x += p.y;
 							myCurrentObject.getOrientation().z += p.z;
 							myCurrentObject.getOrientation().w = 1;
+							myCurrentObject.getOrientation().normalize();
 							
 						} else {
 							myCurrentObject.getPosition().x += p.x;
