@@ -1,8 +1,10 @@
 package tesseract.menuitems;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -128,7 +130,7 @@ public abstract class TesseractMenuItem
 		
 		my_param_frame = new JFrame("Parameters");
 		my_param_frame.setBackground(Color.GRAY);
-		my_param_frame.setLayout(new FlowLayout());
+		my_param_frame.setLayout(new GridLayout(5,1));
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
@@ -138,8 +140,11 @@ public abstract class TesseractMenuItem
 	    my_param_frame.setLocation(screenWidth / 4, screenHeight / 4);
 	    
 	    my_position_input = new JTextField(10);
+	    my_position_input.setText("0,0,0");
 	    my_radius_input = new JTextField(10);
+	    my_radius_input.setText(".1");
 	    my_mass_input = new JTextField(10);
+	    my_mass_input.setText("1");
 	    
 	    JLabel position_label = new JLabel("Enter Position:  ");
 	    JLabel radius_label = new JLabel("Enter Radius:  ");
@@ -157,8 +162,7 @@ public abstract class TesseractMenuItem
 	    my_param_frame.add(mass_label);
 	    my_param_frame.add(my_mass_input);
 	    my_param_frame.add(my_enter_button);
-	    
-	    
+
 	    my_param_frame.setAlwaysOnTop(true);
 	    my_param_frame.pack();
 	    my_param_frame.setVisible(isVisible());
