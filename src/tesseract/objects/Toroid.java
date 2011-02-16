@@ -37,7 +37,8 @@ public class Toroid extends PhysicalObject {
 			final float arcRadius, final int arcDivisions) {
 		super(position, mass);
 		
-		setShape(buildToroid(scale, sliceRadius, sliceDivisions, arcRadius, arcDivisions));
+		setShape(buildToroid(scale, sliceRadius, sliceDivisions,
+				arcRadius, arcDivisions));
 	}
 	
 	
