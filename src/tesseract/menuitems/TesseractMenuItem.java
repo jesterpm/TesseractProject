@@ -130,7 +130,7 @@ public abstract class TesseractMenuItem
 		
 		my_param_frame = new JFrame("Parameters");
 		my_param_frame.setBackground(Color.GRAY);
-		my_param_frame.setLayout(new GridLayout(5,1));
+		my_param_frame.setLayout(new GridLayout(5,2));
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
