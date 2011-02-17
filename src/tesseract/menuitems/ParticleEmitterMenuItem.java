@@ -45,6 +45,8 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 	public void actionPerformed(final ActionEvent arg0) {
 		createParameterMenu();
 		
+		
+		
 		//If the default button is checked, the frame will close.
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();

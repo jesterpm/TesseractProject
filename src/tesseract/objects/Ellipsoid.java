@@ -38,6 +38,11 @@ public class Ellipsoid extends PhysicalObject {
 	private static final int DEFAULT_DIVISIONS = 50;
 	
 	/**
+	 * The radius of the base sphere
+	 */
+	private float my_radius;
+	
+	/**
 	 * Create a new Ellipsoid.
 	 * 
 	 * @param position Initial position.
@@ -54,7 +59,20 @@ public class Ellipsoid extends PhysicalObject {
 			final Appearance appearance, final float b, final float c) {
 		super(position, mass);
 		
+		my_radius = radius;
+		
 		setShape(createShape(radius, primflags, appearance, divisions, b, c));
+		
+		final float rSq = radius * radius;
+		final float a = 1.0f;
+		
+		if (inverseMass != 0) {
+			inverseInertiaTensor.m00 = 1f / 5 / inverseMass * (b * rSq + c * rSq);
+			inverseInertiaTensor.m11 = 1f / 5 / inverseMass * (a * rSq + c * rSq);
+			inverseInertiaTensor.m22 = 1f / 5 / inverseMass * (a * rSq + b * rSq);
+			inverseInertiaTensor.invert();
+		}
+		updateTransformGroup();
 	}
 	
 	/**
@@ -66,21 +84,38 @@ public class Ellipsoid extends PhysicalObject {
 	public Ellipsoid(final Vector3f position, final float radius) {
 		super(position, DEFAULT_MASS);
 		
-		setShape(createDefaultEllipsoid(radius));
+		my_radius = radius;
+		
+		final float rSq = radius * radius;
+		final float a = 1.0f;
+		final float b = 1.0f;
+		final float c = 1.5f;
+		
+		
+		setShape(createDefaultEllipsoid(radius, a, b, c));
+		
+		if (inverseMass != 0) {
+			inverseInertiaTensor.m00 = 1f / 5 / inverseMass * (b * rSq + c * rSq);
+			inverseInertiaTensor.m11 = 1f / 5 / inverseMass * (a * rSq + c * rSq);
+			inverseInertiaTensor.m22 = 1f / 5 / inverseMass * (a * rSq + b * rSq);
+			inverseInertiaTensor.invert();
+		}
+		updateTransformGroup();
 	}
 	
 	/**
 	 * This creates a default Ellipsoid for the 2 argument constructor.
 	 * @param radius the siz of the ellipsoid
 	 */
-	private TransformGroup createDefaultEllipsoid(final float radius) {
+	private TransformGroup createDefaultEllipsoid(final float radius, final float a,
+			final float b, final float c) {
 		
 		Sphere sphere = new Sphere(radius,
 				new Sphere().getPrimitiveFlags()
 				| Sphere.ENABLE_GEOMETRY_PICKING,
 				DEFAULT_DIVISIONS);
 		Transform3D tmp = new Transform3D();
-		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.5f));
+		tmp.set(new Matrix3f(a, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
 		TransformGroup tg = new TransformGroup(tmp);
 		tg.addChild(sphere);
 		return tg;
