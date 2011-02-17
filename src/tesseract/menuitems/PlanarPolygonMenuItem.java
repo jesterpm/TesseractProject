@@ -62,6 +62,7 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 		});
 		
 		enterButton.addActionListener(new ActionListener() {
+			final int divs = 5;
 			public void actionPerformed(final ActionEvent event) {
 					String string = getPositionField().getText();
 					Vector3f pos = parseVector(string);
@@ -76,7 +77,7 @@ public class PlanarPolygonMenuItem extends TesseractMenuItem {
 					setMass(mass);
 	
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(new PlanarPolygon(getPosition(), getRadius()));
+					myWorld.addObject(new PlanarPolygon(getPosition(), getMass(), getRadius(), divs));
 					params.dispose();
 				}
 			}

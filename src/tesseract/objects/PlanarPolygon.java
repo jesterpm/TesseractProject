@@ -19,6 +19,7 @@ import javax.media.j3d.Texture2D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TriangleFanArray;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord2f;
 import javax.vecmath.Vector3f;
@@ -46,6 +47,10 @@ public class PlanarPolygon extends PhysicalObject {
 	private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
 	//private static final float DEFAULT_MASS = 6;
 	
+	public Vector3f normal;
+	// Right-hand side of the plane equation: Ax + By + Cz = D
+	public float intercept;
+	
 	/**
 	 * Number of divisions in the sphere.
 	 */
@@ -69,7 +74,6 @@ public class PlanarPolygon extends PhysicalObject {
 		
 		setShape(createShape(radius, divisions));
 	}
-	
 	/**
 	 * Create a new Ellipsoid.
 	 * 
