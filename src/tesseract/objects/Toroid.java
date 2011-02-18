@@ -41,12 +41,14 @@ public class Toroid extends PhysicalObject {
 				arcRadius, arcDivisions));
 		if (inverseMass != 0) {
 			float a = sliceRadius * sliceRadius;
-			float c = arcRadius * arcRadius;
-			inverseInertiaTensor.m00 = 5f * a / 8f + c / 2f;
-			inverseInertiaTensor.m11 = 5f * a / 8f + c / 2f;;
-			inverseInertiaTensor.m22 = 3f * a / 4 + c;
+			float b = arcRadius * arcRadius;
+			inverseInertiaTensor.m00 = ((4f * a + 5f * b) / 8f) * mass;
+			inverseInertiaTensor.m11 = ((4f * a + 5f * b) / 8f) * mass;
+			inverseInertiaTensor.m22 = (a + (3f/4f) * b) * mass;
 			inverseInertiaTensor.invert();
 		}
+		
+		
 	}
 	
 	
@@ -62,11 +64,13 @@ public class Toroid extends PhysicalObject {
 		Point3f[][] coordinates = new Point3f[arcDivisions][sliceDivisions];
 		final float arcAngle = (float) (Math.PI * 2.0);
 		final float sliceDivisionAngle = 2 * (float) Math.PI / sliceDivisions;
-		
+		Transform3D center = new Transform3D();
+		center.setTranslation(new Vector3f(-(arcRadius), 0, 0));
 		for (int i = 0; i < sliceDivisions; i++) {
 			coordinates[0][i] = new Point3f(sliceRadius 
 					* (float) Math.cos(i * sliceDivisionAngle), 0f, sliceRadius 
-					* (float) Math.sin(i * sliceDivisionAngle));	
+					* (float) Math.sin(i * sliceDivisionAngle));
+			
 		}
 		
 		Transform3D trans3D = new Transform3D();
@@ -77,12 +81,20 @@ public class Toroid extends PhysicalObject {
 		tmp.setIdentity();
 		tmp.setTranslation(new Vector3f(-arcRadius, 0, 0));
 		trans3D.mul(tmp);
+		//trans3D.mul(center);
 		
 		for (int j = 1; j < arcDivisions; j++) {
 			for (int i = 0; i < sliceDivisions; i++) {
 				coordinates[j][i] = new Point3f(coordinates[j - 1][i]);
 				trans3D.transform(coordinates[j][i]);
-				coordinates[j][i].scale(scale);
+				//center.transform(coordinates[j][i]);
+				//coordinates[j][i].scale(scale);
+				
+			}
+		}
+		for (int j = 0; j < arcDivisions; j++) {
+			for (int i = 0; i < sliceDivisions; i++) {
+				center.transform(coordinates[j][i]);
 			}
 		}
 		
