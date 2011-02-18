@@ -39,6 +39,14 @@ public class Toroid extends PhysicalObject {
 		
 		setShape(buildToroid(scale, sliceRadius, sliceDivisions,
 				arcRadius, arcDivisions));
+		if (inverseMass != 0) {
+			float a = sliceRadius * sliceRadius;
+			float c = arcRadius * arcRadius;
+			inverseInertiaTensor.m00 = 5f * a / 8f + c / 2f;
+			inverseInertiaTensor.m11 = 5f * a / 8f + c / 2f;;
+			inverseInertiaTensor.m22 = 3f * a / 4 + c;
+			inverseInertiaTensor.invert();
+		}
 	}
 	
 	
