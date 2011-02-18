@@ -43,7 +43,12 @@ public class Gravity extends Force {
 	 * @return A vector describing the force
 	 */
 	protected Vector3f calculateForce(final PhysicalObject obj) {
-		return new Vector3f(0, -myGravity, 0);
+		if (obj.getInverseMass() != 0 ) {
+			return new Vector3f(0, -myGravity / obj.getInverseMass(), 0);
+			
+		} else {
+			return new Vector3f();
+		}
 	}
 
 }

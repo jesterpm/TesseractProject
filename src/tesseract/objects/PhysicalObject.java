@@ -139,4 +139,8 @@ public class PhysicalObject extends CollidableObject {
 	public boolean isNodeNull() {
 		return this.node == null;
 	}
+	
+	public float getInverseMass() {
+		return this.inverseMass;
+	}
 }
