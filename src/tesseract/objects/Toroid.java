@@ -111,8 +111,9 @@ public class Toroid extends PhysicalObject {
 		
 		
 		GeometryInfo gInfo = new GeometryInfo(geometry);
-		new NormalGenerator().generateNormals(gInfo);
 		gInfo.convertToIndexedTriangles();
+		new NormalGenerator().generateNormals(gInfo);
+		
 		Shape3D shape = new Shape3D(gInfo.getGeometryArray());
 
 		Appearance app = new Appearance();
