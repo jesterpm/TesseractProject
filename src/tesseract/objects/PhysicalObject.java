@@ -66,12 +66,12 @@ public class PhysicalObject extends CollidableObject {
 				shape.setCapability(Node.ALLOW_LOCAL_TO_VWORLD_READ);
 				shape.setCapability(Node.ALLOW_LOCAL_TO_VWORLD_READ);
 
-				for (int i = 0; i < shape.numGeometries(); i++) {
+				/*for (int i = 0; i < shape.numGeometries(); i++) {
 					shape.getGeometry(i).setCapability(
 							GeometryArray.ALLOW_COUNT_READ);
 					shape.getGeometry(i).setCapability(
 							GeometryArray.ALLOW_COORDINATE_READ);
-				}
+				}*/
 
 			}
 		}
@@ -122,5 +122,21 @@ public class PhysicalObject extends CollidableObject {
 	 */
 	public void updateTranformGroup() {
 		super.updateTransformGroup();
+	}
+
+	public Vector3f getVelocity() {
+		return this.velocity;
+	}
+	
+	public Vector3f getCenterOfMass() {
+		return this.centerOfMass;
+	}
+
+	public boolean isCollidable() {
+		return collidable;
+	}
+	
+	public boolean isNodeNull() {
+		return this.node == null;
 	}
 }

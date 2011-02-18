@@ -103,7 +103,7 @@ public abstract class CollidableObject {
 		clearCaches();
 	}
 
-	protected ArrayList<Vector3f> getVertices() {
+	public ArrayList<Vector3f> getVertices() {
 		if (vertexCache == null)
 			vertexCache = CollisionDetector.extractVertices(node);
 		return vertexCache;

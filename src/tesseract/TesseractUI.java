@@ -27,6 +27,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.forces.AirDrag;
 import tesseract.forces.CircularXY;
 import tesseract.forces.CircularXZ;
 import tesseract.forces.Force;
@@ -40,8 +41,8 @@ import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
+import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
-import tesseract.objects.Circle;
 import tesseract.objects.PhysicalObject;
 
 import com.sun.j3d.utils.picking.PickCanvas;
@@ -147,10 +148,16 @@ public class TesseractUI extends JFrame {
 		// TODO: REMOVE TEST CODE
 		
 		// Lookie! Linked chainlinks!
-		myWorld.addObject(new ChainLink2(new Vector3f(0.15f, 0, 0), 1));
+		//myWorld.addObject(new ChainLink2(new Vector3f(0.15f, 0, 0), 1));
 		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
 		o.setRotation();
-		myWorld.addObject(o);
+		
+		myWorld.addForce(new AirDrag());
+		
+		myWorld.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
+		myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
+		
+		//myWorld.addObject(o);
 	}
 	
 	/**
