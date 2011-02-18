@@ -16,6 +16,14 @@ import javax.vecmath.Vector3f;
 import tesseract.World;
 import tesseract.objects.Icosahedron;
 
+/**
+ * NewIcosahedronMenutItem
+ * 
+ * Defines a menu item to add an Icosahedron to the world.
+ * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
+ * 
+ * @author Phillip Cardon
+ */
 public class NewIcosahedronMenuItem extends MenuItem {
 	private static final float DEFAULT_MASS = 2f;
 	private static final long serialVersionUID = 1936364496102891064L;

@@ -24,7 +24,15 @@ import javax.vecmath.Vector3f;
 
 import tesseract.World;
 
-abstract public class MenuItem extends JMenuItem implements ActionListener{
+/**
+ * NewIcosahedronMenutItem
+ * 
+ * Defines a menu item to add an Icosahedron to the world.
+ * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
+ * 
+ * @author Phillip Cardon
+ */
+public abstract class MenuItem extends JMenuItem implements ActionListener{
 	
 	/**
 	 * 

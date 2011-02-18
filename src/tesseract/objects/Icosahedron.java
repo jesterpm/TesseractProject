@@ -34,7 +34,7 @@ public class Icosahedron extends PhysicalObject {
 	/**
 	 * Default Icosohedran Scale.
 	 */
-	private static final float DEFAULT_SCALE = 0.2f;
+	public static final float DEFAULT_SCALE = 0.2f;
 	
 	/**
 	 * Vertex count in Icosohedran.
