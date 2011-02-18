@@ -73,6 +73,14 @@ public class PlanarPolygon extends PhysicalObject {
 		super(position, mass);
 		
 		setShape(createShape(radius, divisions));
+		
+		if (inverseMass != 0) {
+			inverseInertiaTensor.m00 = 1f / 4 / inverseMass * radius * radius;
+			inverseInertiaTensor.m11 = 2 * inverseInertiaTensor.m00;
+			inverseInertiaTensor.m22 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.invert();
+		}
+		updateTransformGroup();
 	}
 	/**
 	 * Create a new Ellipsoid.
@@ -84,6 +92,14 @@ public class PlanarPolygon extends PhysicalObject {
 		super(position, DEFAULT_MASS);
 		
 		setShape(createShape(radius, DEFAULT_DIVISIONS));
+		
+		if (inverseMass != 0) {
+			inverseInertiaTensor.m00 = 1f / 4 / inverseMass * radius * radius;
+			inverseInertiaTensor.m11 = 2 * inverseInertiaTensor.m00;
+			inverseInertiaTensor.m22 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.invert();
+		}
+		updateTransformGroup();
 
 	}
 

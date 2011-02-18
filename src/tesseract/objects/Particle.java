@@ -78,6 +78,8 @@ public class Particle extends PhysicalObject {
 		Sphere sphere = new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING,
 				DIVISIONS, appearance);
 		TransformGroup tg = new TransformGroup();
+		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		tg.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		tg.addChild(sphere);
 		return tg;
 	}

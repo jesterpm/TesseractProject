@@ -110,12 +110,13 @@ public class Ellipsoid extends PhysicalObject {
 	private TransformGroup createDefaultEllipsoid(final float radius, final float a,
 			final float b, final float c) {
 		
-		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags(), DEFAULT_DIVISIONS);
-			//	| Sphere.ENABLE_GEOMETRY_PICKING,
-			//	DEFAULT_DIVISIONS);
+		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags() | Sphere.ENABLE_GEOMETRY_PICKING,
+				DEFAULT_DIVISIONS);
 		Transform3D tmp = new Transform3D();
 		tmp.set(new Matrix3f(a, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
 		TransformGroup tg = new TransformGroup(tmp);
+		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		tg.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		tg.addChild(sphere);
 		return tg;
 	}
