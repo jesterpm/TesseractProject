@@ -139,6 +139,8 @@ public class Ellipsoid extends PhysicalObject {
 		Transform3D tmp = new Transform3D();
 		tmp.set(new Matrix3f(1.0f, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
 		TransformGroup tg = new TransformGroup(tmp);
+		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		tg.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		tg.addChild(sphere);
 		
 		return tg;

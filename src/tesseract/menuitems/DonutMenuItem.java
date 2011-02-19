@@ -27,7 +27,7 @@ public class DonutMenuItem extends TesseractMenuItem {
 	
 	private float scale = 1f;
 	private float sliceRadius = .06f;  //inside whole
-	private int sliceDivisions = 50;
+	private int sliceDivisions = 25;
 	private float arcRadius = .08f; //outside whole
 	private int arcDivisions = 30;
 

@@ -61,6 +61,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener{
 	
 	
 	public MenuItem() {};
+	
 	public MenuItem (Map <String, Object> theParams, World theWorld) {
 		myFrame = new JFrame();
 		myPanel = new JPanel(new GridLayout(myParameters.keySet().size(), 2));

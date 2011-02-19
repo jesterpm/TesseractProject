@@ -41,6 +41,7 @@ import tesseract.menuitems.IcosahedronMenuItem;
 import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
+import tesseract.menuitems.SurfBoardMenuItem;
 import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
 import tesseract.objects.PhysicalObject;
@@ -132,7 +133,8 @@ public class TesseractUI extends JFrame {
 				new EllipsoidMenuItem(myWorld),
 				new IcosahedronMenuItem(myWorld),
 				new ChainLinkMenuItem(myWorld),
-				new DonutMenuItem(myWorld)
+				new DonutMenuItem(myWorld),
+				new SurfBoardMenuItem(myWorld)
 		};
 		createMenu();
 		setupCanvas();
