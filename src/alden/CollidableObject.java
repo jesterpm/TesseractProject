@@ -212,6 +212,26 @@ public abstract class CollidableObject {
 		if (totalInverseMass == 0)
 			return;
 		
+		/* Dynamic Friction */
+		if (dynamicFriction > 0) {
+			Vector3f perpVelocity = new Vector3f();
+			perpVelocity.scaleAdd(initialClosingSpeed, ci.contactNormal, previousVelocity);
+			if (perpVelocity.length() > 0) {
+				perpVelocity.normalize();
+				Vector3f acceleration = new Vector3f();
+				acceleration.scaleAdd(-1, previousVelocity, velocity);
+				velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, velocity);
+			}
+			
+			perpVelocity.scaleAdd(initialClosingSpeed, ci.contactNormal, other.previousVelocity);
+			if (perpVelocity.length() > 0) {
+				perpVelocity.normalize();
+				Vector3f acceleration = new Vector3f();
+				acceleration.scaleAdd(-1, other.previousVelocity, other.velocity);
+				other.velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, other.velocity);
+			}
+		}
+		
 		Vector3f thisMovementUnit = new Vector3f();
 		thisMovementUnit.cross(thisRelativeContactPosition, ci.contactNormal);
 		getInverseInertiaTensor().transform(thisMovementUnit);
