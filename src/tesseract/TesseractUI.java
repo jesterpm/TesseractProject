@@ -45,6 +45,7 @@ import tesseract.menuitems.SurfBoardMenuItem;
 import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.Sphere;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
@@ -154,10 +155,13 @@ public class TesseractUI extends JFrame {
 		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
 		o.setRotation();
 		
-		myWorld.addForce(new AirDrag());
+		//myWorld.addForce(new AirDrag());
 		
-		myWorld.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
-		myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
+		//World.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
+		//myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
+		PhysicalObject s = new Sphere(.05f, new Vector3f());
+		s.setAngularVelocity(new Vector3f(0, 0, -1));
+		myWorld.addObject(s);
 		
 		//myWorld.addObject(o);
 	}

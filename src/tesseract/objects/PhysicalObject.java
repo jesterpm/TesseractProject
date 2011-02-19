@@ -143,4 +143,8 @@ public class PhysicalObject extends CollidableObject {
 	public float getInverseMass() {
 		return this.inverseMass;
 	}
+
+	public void setAngularVelocity(final Vector3f velocity) {
+		this.angularVelocity = velocity;
+	}
 }

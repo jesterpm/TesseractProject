@@ -74,9 +74,9 @@ public class AirDrag extends Force {
 		
 		float surfaceArea = areaOfHull(hull);
 		
-		float force = 0.5f * v.length() * COEFFICIENT * surfaceArea; 
+		float force = 0.5f * v.lengthSquared() * COEFFICIENT * surfaceArea; 
 		
-		System.out.println(v.length());
+		System.out.println(v.lengthSquared());
 		System.out.println(force);
 		
 		v.normalize();
@@ -84,7 +84,7 @@ public class AirDrag extends Force {
 		
 		System.out.println(v);
 		
-		return v;
+		return new Vector3f();
 		
 	}
 	

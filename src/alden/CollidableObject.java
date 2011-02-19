@@ -13,11 +13,13 @@ public abstract class CollidableObject {
 	protected Vector3f forceAccumulator;
 	protected Quat4f orientation;
 	protected Vector3f angularVelocity;
+	protected Vector3f previousRotationalVelocity;
 	protected Vector3f torqueAccumulator;
 	protected Matrix3f inverseInertiaTensor;
 	protected float coefficientOfRestitution;
 	protected float penetrationCorrection;
 	protected float dynamicFriction;
+	protected float rotationalFriction;
 	protected BranchGroup BG;
 	protected TransformGroup TG;
 	protected Node node;
@@ -43,11 +45,13 @@ public abstract class CollidableObject {
 		forceAccumulator = new Vector3f();
 		orientation = new Quat4f(0, 0, 0, 1);
 		angularVelocity = new Vector3f();
+		previousRotationalVelocity = new Vector3f();
 		torqueAccumulator = new Vector3f();
 		inverseInertiaTensor = new Matrix3f();
 		coefficientOfRestitution = 0.75f;
 		penetrationCorrection = 1.05f;
 		dynamicFriction = 0.02f;
+		rotationalFriction = 0.017f;
 		TG = new TransformGroup();
 		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		BG = new BranchGroup();
@@ -194,13 +198,58 @@ public abstract class CollidableObject {
 		Vector3f thisRelativeContactPosition = new Vector3f();
 		thisRelativeContactPosition.scaleAdd(-1, position, ci.contactPoint);
 		thisRelativeContactPosition.scaleAdd(-1, centerOfMass, thisRelativeContactPosition);
-		Vector3f thisContactVelocity = new Vector3f();
-		thisContactVelocity.cross(angularVelocity, thisRelativeContactPosition);
-		thisContactVelocity.add(previousVelocity);
 		
 		Vector3f otherRelativeContactPosition = new Vector3f();
 		otherRelativeContactPosition.scaleAdd(-1, other.position, ci.contactPoint);
 		otherRelativeContactPosition.scaleAdd(-1, other.centerOfMass, otherRelativeContactPosition);
+		
+		/* Dynamic Friction */
+		if (dynamicFriction > 0) {
+			Vector3f acceleration = new Vector3f();
+			Vector3f perpVelocity = new Vector3f();
+			float contactSpeed = ci.contactNormal.dot(velocity) - ci.contactNormal.dot(other.velocity);
+			
+			perpVelocity.scaleAdd(-contactSpeed, ci.contactNormal, previousVelocity);
+			if (perpVelocity.length() > 0) {
+				perpVelocity.normalize();
+				acceleration.scaleAdd(-1, previousVelocity, velocity);
+				velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, velocity);
+			}
+			
+			perpVelocity.scaleAdd(contactSpeed, ci.contactNormal, other.previousVelocity);
+			if (perpVelocity.length() > 0) {
+				perpVelocity.normalize();
+				acceleration.scaleAdd(-1, other.previousVelocity, other.velocity);
+				other.velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, other.velocity);
+			}
+			
+			/* Rotational Friction */
+			Vector3f w = new Vector3f();
+			
+			float radius = thisRelativeContactPosition.length();
+			w.cross(angularVelocity, ci.contactNormal);
+			velocity.scaleAdd(-1, previousRotationalVelocity, velocity);
+			previousRotationalVelocity.scale(radius, w);
+			velocity.scaleAdd(radius, w, velocity);
+			
+			radius = otherRelativeContactPosition.length();
+			w.cross(other.angularVelocity, ci.contactNormal);
+			other.velocity.scaleAdd(-1, other.previousRotationalVelocity, other.velocity);
+			other.previousRotationalVelocity.scale(radius, w);
+			other.velocity.scaleAdd(radius, w, other.velocity);
+			
+			
+			angularVelocity.scaleAdd(-rotationalFriction, angularVelocity);
+			other.angularVelocity.scaleAdd(-rotationalFriction, other.angularVelocity);
+
+			
+		}
+		
+		
+		Vector3f thisContactVelocity = new Vector3f();
+		thisContactVelocity.cross(angularVelocity, thisRelativeContactPosition);
+		thisContactVelocity.add(previousVelocity);
+		
 		Vector3f otherContactVelocity = new Vector3f();
 		otherContactVelocity.cross(other.angularVelocity, otherRelativeContactPosition);
 		otherContactVelocity.add(other.previousVelocity);
@@ -212,25 +261,7 @@ public abstract class CollidableObject {
 		if (totalInverseMass == 0)
 			return;
 		
-		/* Dynamic Friction */
-		if (dynamicFriction > 0) {
-			Vector3f perpVelocity = new Vector3f();
-			perpVelocity.scaleAdd(initialClosingSpeed, ci.contactNormal, previousVelocity);
-			if (perpVelocity.length() > 0) {
-				perpVelocity.normalize();
-				Vector3f acceleration = new Vector3f();
-				acceleration.scaleAdd(-1, previousVelocity, velocity);
-				velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, velocity);
-			}
-			
-			perpVelocity.scaleAdd(initialClosingSpeed, ci.contactNormal, other.previousVelocity);
-			if (perpVelocity.length() > 0) {
-				perpVelocity.normalize();
-				Vector3f acceleration = new Vector3f();
-				acceleration.scaleAdd(-1, other.previousVelocity, other.velocity);
-				other.velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, other.velocity);
-			}
-		}
+		
 		
 		Vector3f thisMovementUnit = new Vector3f();
 		thisMovementUnit.cross(thisRelativeContactPosition, ci.contactNormal);
