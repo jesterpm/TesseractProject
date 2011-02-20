@@ -32,40 +32,69 @@ import tesseract.World;
  * 
  * @author Phillip Cardon
  */
-public abstract class MenuItem extends JMenuItem implements ActionListener{
+public abstract class MenuItem extends JMenuItem implements ActionListener {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4191575308469669044L;
+	/**
+	 * default position.
+	 */
 	protected static final Vector3f DEFAULT_POSITION = new Vector3f(0, 0, 0);
+	/**
+	 * Jframe to hold panel.
+	 */
 	private JFrame myFrame;
+	/**
+	 * Jpanel for variable text boxes.
+	 */
 	private JPanel myPanel;
+	/**
+	 * JTextFields.
+	 */
 	private JTextField[] myFields;
-	private Map <String, Object> myParameters;
+	/**
+	 * Variable name/type mapping.
+	 */
+	protected Map <String, Object> myParameters;
+	/**
+	 * Variable/Textfield mapping.
+	 */
 	protected Map <String, JTextField> myReadData;
+	/**
+	 * World to add objects to.
+	 */
 	protected World myWorld;
 	/**
-	 * A Parameter setting JFrame
+	 * A Parameter setting JFrame.
 	 */
-	private JFrame my_param_frame;
+	private JFrame myParamFrame;
 	
 	/**
-	 * The button that get all inputs for shape
+	 * The button that get all inputs for shape.
 	 */
-	private JButton my_enter_button;
+	private JButton myEnterButton;
 	/**
-	 * The default button
+	 * The default button.
 	 */
-	private JCheckBox my_default_button;
+	private JCheckBox myDefaultButton;
 	
+	/**
+	 * Default constructor.
+	 */
+	public MenuItem() { }
 	
-	public MenuItem() {};
-	
-	public MenuItem (Map <String, Object> theParams, World theWorld) {
+	/**
+	 * Constructor.
+	 * @param theWorld world parameter.
+	 */
+	public MenuItem(final World theWorld, String theLabel) {
+		super(theLabel);
 		myFrame = new JFrame();
-		myPanel = new JPanel(new GridLayout(myParameters.keySet().size(), 2));
-		myParameters = theParams;
+		myParameters = new HashMap<String, Object>();
+		myPanel = new JPanel();
+		
 		myFields = new JTextField[myParameters.keySet().size()];
 		myReadData = new HashMap <String, JTextField>();
 		myWorld = theWorld;
@@ -74,29 +103,39 @@ public abstract class MenuItem extends JMenuItem implements ActionListener{
 		addActionListener(this);
 	}
 	
-	public void makePanel() {
+	/**
+	 * Create Panel.
+	 */
+	protected void makePanel() {
 		Set<String> varNames = myParameters.keySet();
+		myFields = new JTextField[myParameters.keySet().size()];
+		myPanel.setLayout(new GridLayout(myParameters.size(), 2));
 		int i = 0;
 		for (String s : varNames) {
+			myFields[i] = new JTextField();
 			myPanel.add(new JLabel(s));
 			myPanel.add(myFields[i]);
 			myReadData.put(s, myFields[i]);
 			i++;
 		}
+		//myPanel = new JPanel(new GridLayout(myParameters.keySet().size(), 2));
 	}
 	
-protected void createParameterMenu() {
+	/**
+	 * 
+	 */
+	protected void createParameterMenu() {
 		
-		my_param_frame = new JFrame("Parameters");
-		my_param_frame.setBackground(Color.GRAY);
-		my_param_frame.setLayout(new BorderLayout());
+		myParamFrame = new JFrame("Parameters");
+		myParamFrame.setBackground(Color.GRAY);
+		myParamFrame.setLayout(new BorderLayout());
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
 	    int screenHeight = screenSize.height;
 	    int screenWidth = screenSize.width;
-	    my_param_frame.setSize(screenWidth / 4, screenHeight / 4);
-	    my_param_frame.setLocation(screenWidth / 4, screenHeight / 4);
+	    myParamFrame.setSize(screenWidth / 4, screenHeight / 4);
+	    myParamFrame.setLocation(screenWidth / 4, screenHeight / 4);
 	    /*
 	    my_position_input = new JTextField(10);
 	    my_position_input.setText("0,0,0");
@@ -110,29 +149,41 @@ protected void createParameterMenu() {
 	    //JLabel radius_label = new JLabel("Enter Radius:  ");
 	    //JLabel mass_label = new JLabel("Enter Mass:  ");
 	    
-	    my_enter_button = new JButton("ENTER");
+	    myEnterButton = new JButton("ENTER");
 	    
-	    my_default_button = new JCheckBox("Default Shape   ");
+	    myDefaultButton = new JCheckBox("Default Shape   ");
 	    
-	    my_param_frame.add(my_default_button, BorderLayout.NORTH);
-	    my_param_frame.add(myPanel, BorderLayout.CENTER);
-	    my_param_frame.add(my_enter_button, BorderLayout.SOUTH);
+	    myParamFrame.add(myDefaultButton, BorderLayout.NORTH);
+	    myParamFrame.add(myPanel, BorderLayout.CENTER);
+	    myParamFrame.add(myEnterButton, BorderLayout.SOUTH);
 
-	    my_param_frame.setAlwaysOnTop(true);
-	    my_param_frame.pack();
-	    my_param_frame.setVisible(isVisible());
+	    myParamFrame.setAlwaysOnTop(true);
+	    myParamFrame.pack();
+	    myParamFrame.setVisible(isVisible());
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public JCheckBox getDefaultButton() {
-		return my_default_button;
+		return myDefaultButton;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public JButton getEnterButton() {
-		return my_enter_button;
+		return myEnterButton;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public JFrame getParamFrame() {
-		return my_param_frame;
+		return myParamFrame;
 	}
 
 	/**

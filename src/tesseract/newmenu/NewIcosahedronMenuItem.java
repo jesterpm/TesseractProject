@@ -27,21 +27,24 @@ import tesseract.objects.Icosahedron;
 public class NewIcosahedronMenuItem extends MenuItem {
 	private static final float DEFAULT_MASS = 2f;
 	private static final long serialVersionUID = 1936364496102891064L;
-	private static Map <String, Object> myParams = new HashMap<String, Object>();
+	//private static Map <String, Object> myParams;
 	
 	
 	public NewIcosahedronMenuItem (World theWorld) {
-		super (myParams, theWorld);
+		super(theWorld, "Icosahedron(NEW)");
 		buildParams();
+		this.makePanel();
+		
 	}
 	
 	private void buildParams() {
-		myParams.put("Scale", new Float(0f));
-		this.makePanel();
+		myParameters.put("Scale", new Float(0f));
+		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		createParameterMenu();
 		final JCheckBox defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
@@ -57,31 +60,17 @@ public class NewIcosahedronMenuItem extends MenuItem {
 		});
 		enterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent event) {
-				Set<String> itr = myParams.keySet();	
-				//List<Object> cParams = new LinkedList<Object>();
+				Set<String> itr = myParameters.keySet();	
 				for (String s : itr) {
-					Object o = myParams.get(s);
+					Object o = myParameters.get(s);
 					String p = myReadData.get(s).getText();
 					if (o.getClass().equals(new Float(0f).getClass())) {
-						myParams.put(s, new Float(Float.parseFloat(p)));
+						myParameters.put(s, new Float(Float.parseFloat(p)));
 					} else if (o.getClass().equals(new Vector3f().getClass())) {
-						myParams.put(s, parseVector(p));
+						myParameters.put(s, parseVector(p));
 					}
 						
 				}
-				/*
-					String string = getPositionField().getText();
-					Vector3f pos = parseVector(string);
-					setPosition(pos);
-				
-					String string2 = getRadiusField().getText();
-					float radius = Float.parseFloat(string2);
-					setRadius(radius);
-
-					String string3 = getMassField().getText();
-					float mass = Float.parseFloat(string3);
-					setMass(mass);
-	*/
 				if (event.getSource() == enterButton) {
 					myWorld.addObject(new Icosahedron(getPosition(), getMass(), getScale()));
 					params.dispose();
@@ -92,7 +81,7 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	}
 	
 	private float getScale() {
-		return ((Float) myParams.get("Scale")).floatValue();
+		return ((Float) myParameters.get("Scale")).floatValue();
 	}
 
 }
