@@ -23,6 +23,17 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * @version 0.9a
  */
 public class Toroid extends PhysicalObject {
+	
+	/**
+	 * Float 4.
+	 */
+	private static final float INEERTIA_TENSOR_CONSTANT4 = 4f;
+	
+	/**
+	 * Float 5.
+	 */
+	private static final float INEERTIA_TENSOR_CONSTANT5 = 5f;
+	
 	/**
 	 * @param position starting position.
 	 * @param mass of object.
@@ -42,13 +53,15 @@ public class Toroid extends PhysicalObject {
 		if (inverseMass != 0) {
 			float a = sliceRadius * sliceRadius;
 			float b = arcRadius * arcRadius;
-			inverseInertiaTensor.m00 = ((4f * a + 5f * b) / 8f) * mass;
-			inverseInertiaTensor.m11 = ((4f * a + 5f * b) / 8f) * mass;
-			inverseInertiaTensor.m22 = (a + (3f/4f) * b) * mass;
+			inverseInertiaTensor.m00 = ((INEERTIA_TENSOR_CONSTANT4 * a
+					+ INEERTIA_TENSOR_CONSTANT5 * b)
+					/ (INEERTIA_TENSOR_CONSTANT4 * 2)) * mass;
+			inverseInertiaTensor.m11 = inverseInertiaTensor.m00;
+			inverseInertiaTensor.m22 = (a + ((INEERTIA_TENSOR_CONSTANT4 
+					* 2 - INEERTIA_TENSOR_CONSTANT5)
+					/ INEERTIA_TENSOR_CONSTANT4) * b) * mass;
 			inverseInertiaTensor.invert();
 		}
-		
-		
 	}
 	
 	
@@ -56,11 +69,14 @@ public class Toroid extends PhysicalObject {
 	 * Creates donut.
 	 * @param sliceRadius radius of slice "flesh."
 	 * @param sliceDivisions resolution of slice "flesh" circles.
+	 * @param scale of toroid (NYI)
 	 * @param arcRadius Radius of donut circle
 	 * @param arcDivisions resolution of slices on donut.
+	 * @return Shape3D generated.
 	 */
-	public Shape3D buildToroid(final float scale, final float sliceRadius, final int sliceDivisions,
-			final float arcRadius, final int arcDivisions) {
+	public Shape3D buildToroid(final float scale, final float sliceRadius,
+			final int sliceDivisions, final float arcRadius,
+			final int arcDivisions) {
 		Point3f[][] coordinates = new Point3f[arcDivisions][sliceDivisions];
 		final float arcAngle = (float) (Math.PI * 2.0);
 		final float sliceDivisionAngle = 2 * (float) Math.PI / sliceDivisions;
@@ -99,8 +115,8 @@ public class Toroid extends PhysicalObject {
 		}
 		
 		IndexedQuadArray geometry = new IndexedQuadArray(arcDivisions 
-				* sliceDivisions, PointArray.COORDINATES, 4 * sliceDivisions 
-				* (arcDivisions - 1));
+				* sliceDivisions, PointArray.COORDINATES,
+				(2 * 2) * sliceDivisions * (arcDivisions - 1));
 		for (int j = 0; j < arcDivisions; j++) {
 			geometry.setCoordinates(j * sliceDivisions, coordinates[j]);
 		}

@@ -11,16 +11,17 @@ import javax.vecmath.Vector3f;
 
 import tesseract.World;
 import tesseract.objects.Icosahedron;
+import tesseract.objects.Toroid;
 
 /**
- * NewIcosahedronMenutItem
+ * NewToroidMenuItem
  * 
  * Defines a menu item to add an Icosahedron to the world.
  * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
  * 
  * @author Phillip Cardon
  */
-public class NewIcosahedronMenuItem extends MenuItem {
+public class NewToroidMenuItem extends MenuItem {
 	
 	/**
 	 * 
@@ -32,8 +33,8 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	 * Constructor.
 	 * @param theWorld to add objects to.
 	 */
-	public NewIcosahedronMenuItem(final World theWorld) {
-		super(theWorld, "Icosahedron(NEW)");
+	public NewToroidMenuItem(final World theWorld) {
+		super(theWorld, "Toroid(NEW)");
 		buildParams();
 		
 		
@@ -44,10 +45,19 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	 * Sets default text box text.
 	 */
 	private void buildParams() {
-		myParameters.put("Scale", new Float(0f));
+		myParameters.put("Tube Radius", new Float(0f));
+		myParameters.put("Tube Resolution", new Integer(0));
+		myParameters.put("Toroid Radius", new Float(0f));
+		myParameters.put("Toroid Resolution", new Integer(0));
 		this.makePanel();
-		myReadData.get("Scale").setText(((Float) 
-				Icosahedron.DEFAULT_SCALE).toString());
+		myReadData.get("Position").setText(
+				MenuItem.DEFAULT_POSITION.toString());
+		myReadData.get("Mass").setText(((Float)
+				MenuItem.DEFAULT_MASS).toString());
+		myReadData.get("Tube Radius").setText(".06");
+		myReadData.get("Tube Resolution").setText("25");
+		myReadData.get("Toroid Radius").setText(".08");
+		myReadData.get("Toroid Resolution").setText("30");
 	}
 
 	@Override
@@ -60,8 +70,8 @@ public class NewIcosahedronMenuItem extends MenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new Icosahedron(MenuItem.DEFAULT_POSITION,
-							DEFAULT_MASS, Icosahedron.DEFAULT_SCALE));
+					myWorld.addObject(new Toroid(MenuItem.DEFAULT_POSITION,
+							MenuItem.DEFAULT_MASS, 0f, .06f, 25, .08f, 30));
 					params.dispose();
 				}
 			}
@@ -76,25 +86,23 @@ public class NewIcosahedronMenuItem extends MenuItem {
 						myParameters.put(s, new Float(Float.parseFloat(p)));
 					} else if (o.getClass().equals(new Vector3f().getClass())) {
 						myParameters.put(s, parseVector(p));
+					} else if (o.getClass().equals(new Integer(0).getClass())) {
+						myParameters.put(s, new Integer(Integer.parseInt(p)));
 					}
 						
 				}
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(new Icosahedron(
-							getPosition(), getMass(), getScale()));
+					myWorld.addObject(new Toroid(getPosition(), getMass(), 0f,
+						((Float) myParameters.get("Tube Radius")).floatValue(),
+						((Integer) myParameters.get("Tube Resolution")
+								).intValue(),
+						((Float) myParameters.get("Toroid Radius")
+								).floatValue(),
+						((Integer) myParameters.get("Toroid Resolution")
+								).intValue()));
 					params.dispose();
 				}
 			}
 		});
-
 	}
-	
-	/**
-	 * Gets the Scale for Icosahedron.
-	 * @return the scale.
-	 */
-	private float getScale() {
-		return ((Float) myParameters.get("Scale")).floatValue();
-	}
-
 }

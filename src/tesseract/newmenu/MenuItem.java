@@ -3,13 +3,10 @@ package tesseract.newmenu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +39,11 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * default position.
 	 */
 	protected static final Vector3f DEFAULT_POSITION = new Vector3f(0, 0, 0);
+	
+	/**
+	 * 
+	 */
+	protected static final float DEFAULT_MASS = 2f;
 	/**
 	 * Jframe to hold panel.
 	 */
@@ -50,10 +52,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * Jpanel for variable text boxes.
 	 */
 	private JPanel myPanel;
-	/**
-	 * JTextFields.
-	 */
-	private JTextField[] myFields;
+
 	/**
 	 * Variable name/type mapping.
 	 */
@@ -88,17 +87,16 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	/**
 	 * Constructor.
 	 * @param theWorld world parameter.
+	 * @param theLabel for menu item.
 	 */
-	public MenuItem(final World theWorld, String theLabel) {
+	public MenuItem(final World theWorld, final String theLabel) {
 		super(theLabel);
 		myFrame = new JFrame();
 		myParameters = new HashMap<String, Object>();
 		myPanel = new JPanel();
-		
-		myFields = new JTextField[myParameters.keySet().size()];
 		myReadData = new HashMap <String, JTextField>();
 		myWorld = theWorld;
-		myParameters.put("Positon", new Vector3f());
+		myParameters.put("Position", new Vector3f());
 		myParameters.put("Mass", new Float(0f));
 		addActionListener(this);
 	}
@@ -108,17 +106,17 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 */
 	protected void makePanel() {
 		Set<String> varNames = myParameters.keySet();
-		myFields = new JTextField[myParameters.keySet().size()];
 		myPanel.setLayout(new GridLayout(myParameters.size(), 2));
-		int i = 0;
 		for (String s : varNames) {
-			myFields[i] = new JTextField();
 			myPanel.add(new JLabel(s));
-			myPanel.add(myFields[i]);
-			myReadData.put(s, myFields[i]);
-			i++;
+			myReadData.put(s, new JTextField());
+			myPanel.add(myReadData.get(s));
 		}
-		//myPanel = new JPanel(new GridLayout(myParameters.keySet().size(), 2));
+		myReadData.get("Position").setText(
+				MenuItem.DEFAULT_POSITION.toString().substring(1,
+						MenuItem.DEFAULT_POSITION.toString().length() - 1));
+		myReadData.get("Mass").setText(((Float)
+				MenuItem.DEFAULT_MASS).toString());
 	}
 	
 	/**
@@ -164,7 +162,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	
 	/**
 	 * 
-	 * @return
+	 * @return Default Button
 	 */
 	public JCheckBox getDefaultButton() {
 		return myDefaultButton;
@@ -172,7 +170,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	
 	/**
 	 * 
-	 * @return
+	 * @return enter button
 	 */
 	public JButton getEnterButton() {
 		return myEnterButton;
@@ -180,7 +178,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	
 	/**
 	 * 
-	 * @return
+	 * @return parameter frame
 	 */
 	public JFrame getParamFrame() {
 		return myParamFrame;
@@ -194,6 +192,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * @author Jesse Morgan, Steve Bradshaw
 	 */
 	protected Vector3f parseVector(final String input)  {
+	
 		String[] split = input.split(",");
 		
 		float x = Float.parseFloat(split[0]);
@@ -203,10 +202,18 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 		return new Vector3f(x, y, z);
 	}
 	
+	/**
+	 * 
+	 * @return position from vector.
+	 */
 	protected Vector3f getPosition() {
 		return (Vector3f) myParameters.get("Position");
 	}
 	
+	/**
+	 * 
+	 * @return mass.
+	 */
 	protected float getMass() {
 		return ((Float) myParameters.get("Mass")).floatValue();
 	}
