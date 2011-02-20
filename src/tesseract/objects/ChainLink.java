@@ -24,6 +24,7 @@ import com.sun.j3d.utils.geometry.NormalGenerator;
  * CHAINLINK LENGHT NOT YET IMPLEMENTED
  * @author Phillip Cardon
  * @version 0.1a
+ * @deprecated
  */
 public class ChainLink extends PhysicalObject {
 	//CONSTANTS

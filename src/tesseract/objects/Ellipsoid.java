@@ -74,6 +74,36 @@ public class Ellipsoid extends PhysicalObject {
 		}
 		updateTransformGroup();
 	}
+
+	/**
+	 * Create a new Ellipsoid.
+	 * @author Phillip Cardon
+	 * @param position Initial position.
+	 * @param mass mass of ellipsoid
+	 * @param radius a float for the size of the base sphere.
+	 */
+	public Ellipsoid(final Vector3f position, final float mass,
+			final float radius) {
+		super(position, mass);
+		
+		my_radius = radius;
+		
+		final float rSq = radius * radius;
+		final float a = 1.0f;
+		final float b = 1.0f;
+		final float c = 1.5f;
+		
+		
+		setShape(createDefaultEllipsoid(radius, a, b, c));
+		
+		if (inverseMass != 0) {
+			inverseInertiaTensor.m00 = 1f / 5 / inverseMass * (b * rSq + c * rSq);
+			inverseInertiaTensor.m11 = 1f / 5 / inverseMass * (a * rSq + c * rSq);
+			inverseInertiaTensor.m22 = 1f / 5 / inverseMass * (a * rSq + b * rSq);
+			inverseInertiaTensor.invert();
+		}
+		updateTransformGroup();
+	}
 	
 	/**
 	 * Create a new Ellipsoid.

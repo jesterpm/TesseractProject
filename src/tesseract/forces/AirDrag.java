@@ -115,6 +115,11 @@ public class AirDrag extends Force {
 		System.out.println(ad.areaOfHull(newPoints));
 	}
 	
+	/**
+	 * 
+	 * @param hull vector list.
+	 * @return area
+	 */
 	private float areaOfHull(final List<Vector2f> hull) {
 		float area = 0;
 		Vector2f p = hull.get(0);
@@ -124,7 +129,7 @@ public class AirDrag extends Force {
 			Vector2f ab = new Vector2f();
 			Vector2f ac = new Vector2f();
 			
-			ab.sub(hull.get(i-1), p);
+			ab.sub(hull.get(i - 1), p);
 			ac.sub(hull.get(i), p);
 			
 			area += 0.5f * (ab.x * ac.y - ac.x * ab.y);
@@ -133,15 +138,21 @@ public class AirDrag extends Force {
 		return area;
 	}
 	
+	/**
+	 * 
+	 * @param points point list.
+	 * @return point list.
+	 */
 	private List<Vector2f> convexHull(final ArrayList<Vector2f> points) {
 		Collections.sort(points, new Vector2fAngleCompare(points.get(0)));
 		
 		points.set(0, points.get(points.size() - 1));
 		
 		int m = 2;
-		for (int i = 3; i < points.size(); i++) {
+		for (int i = m + 1; i < points.size(); i++) {
 			try {
-			while (i < points.size() - 1 && ccw(points.get(m - 1), points.get(m), points.get(i)) <= 0) {
+			while (i < points.size() - 1 && ccw(points.get(m - 1),
+					points.get(m), points.get(i)) <= 0) {
 				if (m == 2) {
 					final Vector2f vec = points.get(m);
 					points.set(m, points.get(i));
@@ -163,26 +174,54 @@ public class AirDrag extends Force {
 			points.set(i, vec);
 		}
 		
-		return points.subList(0, m+1);
+		return points.subList(0, m + 1);
 	}
 	
+	/**
+	 * 
+	 * @param v1 vector.
+	 * @param v2 vector.
+	 * @param v3 vector.
+	 * @return result
+	 */
 	private float ccw(final Vector2f v1, final Vector2f v2, final Vector2f v3) {
-		return (v2.x - v1.x) * (v3.y - v1.y)- (v2.y - v1.y) * (v3.x - v1.x);  
+		return (v2.x - v1.x) * (v3.y - v1.y) - (v2.y - v1.y) * (v3.x - v1.x);  
 	}
 	
-
+	
+	/**
+	 * 
+	 * 
+	 *
+	 */
 	private class Vector2fAngleCompare implements Comparator<Vector2f> {
+		/**
+		 * Base vector.
+		 */
 		Vector2f base;
 		
+		/**
+		 * constructor.
+		 * @param theBase the base.
+		 */
 		public Vector2fAngleCompare(final Vector2f theBase) {
 			base = theBase;
 		}
 		
-		
-		public int compare(Vector2f o1, Vector2f o2) {
+		/**
+		 * @param o1 vector to compare
+		 * @param o2 vector2 to compare
+		 * @return comparison
+		 */
+		public int compare(final Vector2f o1, final Vector2f o2) {
 			return (int) Math.signum(vecAngle(o1) - vecAngle(o2));
 		}	
 		
+		/**
+		 * 
+		 * @param vector to look at.
+		 * @return result
+		 */
 		private float vecAngle(final Vector2f vector) {
 			final Vector2f v = new Vector2f();
 			v.sub(vector, base);

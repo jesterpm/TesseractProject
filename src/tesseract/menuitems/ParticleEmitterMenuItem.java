@@ -55,7 +55,8 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new ParticleEmitter(new Vector3f(0f,.49f, 0f),
+					myWorld.addObject(new ParticleEmitter(
+							new Vector3f(0f,.49f, 0f),
 							.5f, new Color3f(1f,0f,0f)));
 					params.dispose();
 				}
@@ -77,7 +78,8 @@ public class ParticleEmitterMenuItem extends TesseractMenuItem {
 					setMass(mass);
 	
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(new ParticleEmitter(getPosition(), .5f, new Color3f(1f,0f,0f)));
+					myWorld.addObject(new ParticleEmitter(getPosition(),
+							.5f, new Color3f(1f,0f,0f)));
 					params.dispose();
 				}
 			}

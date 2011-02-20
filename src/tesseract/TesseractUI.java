@@ -401,9 +401,10 @@ public class TesseractUI extends JFrame {
 						float scale = 0.001f;
 						
 						int xdiff = e.getX() - lastDragEvent.getX();
-						int ydiff = - e.getY() + lastDragEvent.getY();
+						int ydiff = -e.getY() + lastDragEvent.getY();
 						
-						Point3f p = new Point3f(scale * xdiff, scale * ydiff, 0);
+						Point3f p = new Point3f(scale * xdiff, scale 
+								* ydiff, 0);
 						Transform3D t3d = new Transform3D();
 						t3d.rotX(cameraXRotation);
 						Transform3D tmp = new Transform3D();

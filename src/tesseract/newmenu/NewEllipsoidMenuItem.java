@@ -10,34 +10,35 @@ import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.Icosahedron;
-import tesseract.objects.Toroid;
+import tesseract.objects.Ellipsoid;
 
 /**
- * NewToroidMenuItem
+ * NewIcosahedronMenutItem
  * 
- * Defines a menu item to add an Toroid to the world.
+ * Defines a menu item to add an Ellipsoid to the world.
  * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
  * 
  * @author Phillip Cardon
  */
-public class NewToroidMenuItem extends MenuItem {
+public class NewEllipsoidMenuItem extends MenuItem {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1936364496102891064L;
-	//private static Map <String, Object> myParams;
+	
+	/**
+	 * A Default radius.
+	 */
+	private static final float DEFAULT_RADIUS = 0.1f;
 	
 	/**
 	 * Constructor.
 	 * @param theWorld to add objects to.
 	 */
-	public NewToroidMenuItem(final World theWorld) {
-		super(theWorld, "Toroid(NEW)");
+	public NewEllipsoidMenuItem(final World theWorld) {
+		super(theWorld, "Ellipsoid(NEW)");
 		buildParams();
-		
-		
 	}
 	
 	/**
@@ -45,19 +46,10 @@ public class NewToroidMenuItem extends MenuItem {
 	 * Sets default text box text.
 	 */
 	private void buildParams() {
-		myParameters.put("Tube Radius", new Float(0f));
-		myParameters.put("Tube Resolution", new Integer(0));
-		myParameters.put("Toroid Radius", new Float(0f));
-		myParameters.put("Toroid Resolution", new Integer(0));
+		myParameters.put("Radius", new Float(0f));
 		this.makePanel();
-		myReadData.get("Position").setText(
-				MenuItem.DEFAULT_POSITION.toString());
-		myReadData.get("Mass").setText(((Float)
-				MenuItem.DEFAULT_MASS).toString());
-		myReadData.get("Tube Radius").setText(".06");
-		myReadData.get("Tube Resolution").setText("25");
-		myReadData.get("Toroid Radius").setText(".08");
-		myReadData.get("Toroid Resolution").setText("30");
+		myReadData.get("Radius").setText(((Float) 
+				DEFAULT_RADIUS).toString());
 	}
 
 	@Override
@@ -70,8 +62,8 @@ public class NewToroidMenuItem extends MenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (defaultButton.isSelected()) {
-					myWorld.addObject(new Toroid(MenuItem.DEFAULT_POSITION,
-							MenuItem.DEFAULT_MASS, 0f, .06f, 25, .08f, 30));
+					myWorld.addObject(new Ellipsoid(getPosition(),
+							DEFAULT_RADIUS));
 					params.dispose();
 				}
 			}
@@ -86,20 +78,12 @@ public class NewToroidMenuItem extends MenuItem {
 						myParameters.put(s, new Float(Float.parseFloat(p)));
 					} else if (o.getClass().equals(new Vector3f().getClass())) {
 						myParameters.put(s, parseVector(p));
-					} else if (o.getClass().equals(new Integer(0).getClass())) {
-						myParameters.put(s, new Integer(Integer.parseInt(p)));
 					}
 						
 				}
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(new Toroid(getPosition(), getMass(), 0f,
-						((Float) myParameters.get("Tube Radius")).floatValue(),
-						((Integer) myParameters.get("Tube Resolution")
-								).intValue(),
-						((Float) myParameters.get("Toroid Radius")
-								).floatValue(),
-						((Integer) myParameters.get("Toroid Resolution")
-								).intValue()));
+					myWorld.addObject(new Ellipsoid(getPosition(), getMass(),
+							((Float) myParameters.get("Radius")).floatValue()));
 					params.dispose();
 				}
 			}
