@@ -51,7 +51,7 @@ public abstract class CollidableObject {
 		coefficientOfRestitution = 0.75f;
 		penetrationCorrection = 1.05f;
 		dynamicFriction = 0.02f;
-		rotationalFriction = 0.017f;
+		rotationalFriction = 0.3f;
 		TG = new TransformGroup();
 		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		BG = new BranchGroup();
@@ -203,6 +203,21 @@ public abstract class CollidableObject {
 		otherRelativeContactPosition.scaleAdd(-1, other.position, ci.contactPoint);
 		otherRelativeContactPosition.scaleAdd(-1, other.centerOfMass, otherRelativeContactPosition);
 		
+		Vector3f thisContactVelocity = new Vector3f();
+		thisContactVelocity.cross(angularVelocity, thisRelativeContactPosition);
+		thisContactVelocity.add(previousVelocity);
+		
+		Vector3f otherContactVelocity = new Vector3f();
+		otherContactVelocity.cross(other.angularVelocity, otherRelativeContactPosition);
+		otherContactVelocity.add(other.previousVelocity);
+		
+		float initialClosingSpeed = ci.contactNormal.dot(thisContactVelocity) - ci.contactNormal.dot(otherContactVelocity);
+		float finalClosingSpeed = -initialClosingSpeed * coefficientOfRestitution;
+		float deltaClosingSpeed = finalClosingSpeed - initialClosingSpeed;
+		float totalInverseMass = inverseMass + other.inverseMass;
+		if (totalInverseMass == 0)
+			return;
+		
 		/* Dynamic Friction */
 		if (dynamicFriction > 0) {
 			Vector3f acceleration = new Vector3f();
@@ -239,29 +254,9 @@ public abstract class CollidableObject {
 			other.velocity.scaleAdd(radius, w, other.velocity);
 			
 			
-			angularVelocity.scaleAdd(-rotationalFriction, angularVelocity);
-			other.angularVelocity.scaleAdd(-rotationalFriction, other.angularVelocity);
-
-			
+			angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(angularVelocity), angularVelocity, angularVelocity);
+			other.angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(other.angularVelocity), other.angularVelocity, other.angularVelocity);		
 		}
-		
-		
-		Vector3f thisContactVelocity = new Vector3f();
-		thisContactVelocity.cross(angularVelocity, thisRelativeContactPosition);
-		thisContactVelocity.add(previousVelocity);
-		
-		Vector3f otherContactVelocity = new Vector3f();
-		otherContactVelocity.cross(other.angularVelocity, otherRelativeContactPosition);
-		otherContactVelocity.add(other.previousVelocity);
-		
-		float initialClosingSpeed = ci.contactNormal.dot(thisContactVelocity) - ci.contactNormal.dot(otherContactVelocity);
-		float finalClosingSpeed = -initialClosingSpeed * coefficientOfRestitution;
-		float deltaClosingSpeed = finalClosingSpeed - initialClosingSpeed;
-		float totalInverseMass = inverseMass + other.inverseMass;
-		if (totalInverseMass == 0)
-			return;
-		
-		
 		
 		Vector3f thisMovementUnit = new Vector3f();
 		thisMovementUnit.cross(thisRelativeContactPosition, ci.contactNormal);
