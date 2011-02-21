@@ -327,6 +327,7 @@ public class TesseractUI extends JFrame {
 				circularXY.setSelected(false);
 				originLinear.setSelected(false);
 				originQuadradic.setSelected(false);
+				airDrag.setSelected(false);
 			}
 		});
 		simulationMenu.add(resetSim);
