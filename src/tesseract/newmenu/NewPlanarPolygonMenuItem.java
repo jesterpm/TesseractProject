@@ -10,18 +10,17 @@ import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.ChainLink2;
-import tesseract.objects.Icosahedron;
+import tesseract.objects.PlanarPolygon;
 
 /**
  * NewIcosahedronMenutItem
  * 
- * Defines a menu item to add an ChainLink to the world.
+ * Defines a menu item to add a Planar Polygon to the world.
  * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
  * 
  * @author Phillip Cardon
  */
-public class NewChainLinkMenuItem extends MenuItem {
+public class NewPlanarPolygonMenuItem extends MenuItem {
 	
 	/**
 	 * 
@@ -33,9 +32,11 @@ public class NewChainLinkMenuItem extends MenuItem {
 	 * Constructor.
 	 * @param theWorld to add objects to.
 	 */
-	public NewChainLinkMenuItem(final World theWorld) {
-		super(theWorld, "ChainLink(NEW)");
+	public NewPlanarPolygonMenuItem(final World theWorld) {
+		super(theWorld, "Planar Polygon(NEW)");
 		buildParams();
+		
+		
 	}
 	
 	/**
@@ -43,16 +44,13 @@ public class NewChainLinkMenuItem extends MenuItem {
 	 * Sets default text box text.
 	 */
 	private void buildParams() {
-		myParameters.put("Diameter", new Float(0f));
-		myParameters.put("Length", new Float(0f));
-		myParameters.put("Width", new Float(0f));
+		myParameters.put("Radius", new Float(PlanarPolygon.DEFAULT_RADIUS));
+		myParameters.put("Divisions", new Integer(0));
 		this.makePanel();
-		myReadData.get("Diameter").setText(((Float) 
-				ChainLink2.DEFAULT_DIAMETER_RATIO).toString());
-		myReadData.get("Length").setText(((Float) 
-				ChainLink2.DEFAULT_LENGTH).toString());
-		myReadData.get("Width").setText(((Float) 
-				ChainLink2.DEFAULT_WIDTH_RATIO).toString());
+		myReadData.get("Radius").setText(
+				((Float) PlanarPolygon.DEFAULT_RADIUS).toString());
+		myReadData.get("Divisions").setText(
+				((Integer) PlanarPolygon.DEFAULT_DIVISIONS).toString());
 	}
 
 	@Override
@@ -65,8 +63,8 @@ public class NewChainLinkMenuItem extends MenuItem {
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (e.getSource() == defaultButton) {
-					myWorld.addObject(new ChainLink2(MenuItem.DEFAULT_POSITION,
-							MenuItem.DEFAULT_MASS));
+					myWorld.addObject(new PlanarPolygon(getPosition(),
+							PlanarPolygon.DEFAULT_RADIUS));
 					params.dispose();
 				}
 			}
@@ -85,16 +83,16 @@ public class NewChainLinkMenuItem extends MenuItem {
 						
 				}
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(
-					new ChainLink2((Vector3f) myParameters.get("Position"),
-							((Float) myParameters.get("Mass")).floatValue(),
-							((Float) myParameters.get("Diameter")).floatValue(),
-							((Float) myParameters.get("Length")).floatValue(),
-							((Float) myParameters.get("Width")).floatValue()));
+					myWorld.addObject(new PlanarPolygon(getPosition(),
+						getMass(),
+						((Float) myParameters.get("Radius")).floatValue(),
+						((Integer) myParameters.get("Divisions")).intValue()));
 					params.dispose();
 				}
 			}
 		});
 
 	}
+	
+
 }

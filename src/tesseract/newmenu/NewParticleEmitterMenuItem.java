@@ -1,41 +1,50 @@
 package tesseract.newmenu;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.ChainLink2;
 import tesseract.objects.Icosahedron;
+import tesseract.objects.emitters.ParticleEmitter;
 
 /**
  * NewIcosahedronMenutItem
  * 
- * Defines a menu item to add an ChainLink to the world.
+ * Defines a menu item to add an Particle emitter to the world.
  * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
  * 
  * @author Phillip Cardon
  */
-public class NewChainLinkMenuItem extends MenuItem {
+public class NewParticleEmitterMenuItem extends MenuItem {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1936364496102891064L;
-	//private static Map <String, Object> myParams;
+	
+	/**
+	 * Default frequency.
+	 */
+	private static final float DEFAULT_FREQUENCY = 0.5f;
 	
 	/**
 	 * Constructor.
 	 * @param theWorld to add objects to.
 	 */
-	public NewChainLinkMenuItem(final World theWorld) {
-		super(theWorld, "ChainLink(NEW)");
+	public NewParticleEmitterMenuItem(final World theWorld) {
+		super(theWorld, "Particle Emitter(NEW)");
 		buildParams();
+		
+		
 	}
 	
 	/**
@@ -43,16 +52,10 @@ public class NewChainLinkMenuItem extends MenuItem {
 	 * Sets default text box text.
 	 */
 	private void buildParams() {
-		myParameters.put("Diameter", new Float(0f));
-		myParameters.put("Length", new Float(0f));
-		myParameters.put("Width", new Float(0f));
+		myParameters.put("Frequency", new Float(0f));
 		this.makePanel();
-		myReadData.get("Diameter").setText(((Float) 
-				ChainLink2.DEFAULT_DIAMETER_RATIO).toString());
-		myReadData.get("Length").setText(((Float) 
-				ChainLink2.DEFAULT_LENGTH).toString());
-		myReadData.get("Width").setText(((Float) 
-				ChainLink2.DEFAULT_WIDTH_RATIO).toString());
+		myReadData.get("Frequency").setText(((Float) 
+				Icosahedron.DEFAULT_SCALE).toString());
 	}
 
 	@Override
@@ -62,11 +65,13 @@ public class NewChainLinkMenuItem extends MenuItem {
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
 		
+		
+		
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				if (e.getSource() == defaultButton) {
-					myWorld.addObject(new ChainLink2(MenuItem.DEFAULT_POSITION,
-							MenuItem.DEFAULT_MASS));
+					myWorld.addObject(new ParticleEmitter(getPosition(),
+							DEFAULT_FREQUENCY, new Color3f(1f, 0f, 0f)));
 					params.dispose();
 				}
 			}
@@ -85,16 +90,15 @@ public class NewChainLinkMenuItem extends MenuItem {
 						
 				}
 				if (event.getSource() == enterButton) {
-					myWorld.addObject(
-					new ChainLink2((Vector3f) myParameters.get("Position"),
-							((Float) myParameters.get("Mass")).floatValue(),
-							((Float) myParameters.get("Diameter")).floatValue(),
-							((Float) myParameters.get("Length")).floatValue(),
-							((Float) myParameters.get("Width")).floatValue()));
 					params.dispose();
+					Color c = JColorChooser.showDialog(null, "Particle Color",
+							Color.RED);
+					myWorld.addObject(new ParticleEmitter(getPosition(),
+						((Float) myParameters.get("Frequency")).floatValue(),
+						new Color3f(c)));
+					
 				}
 			}
 		});
-
 	}
 }

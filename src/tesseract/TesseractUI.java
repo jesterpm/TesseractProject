@@ -42,7 +42,13 @@ import tesseract.menuitems.ParticleEmitterMenuItem;
 import tesseract.menuitems.ParticleMenuItem;
 import tesseract.menuitems.PlanarPolygonMenuItem;
 import tesseract.menuitems.SurfBoardMenuItem;
+import tesseract.newmenu.NewChainLinkMenuItem;
+import tesseract.newmenu.NewEllipsoidMenuItem;
 import tesseract.newmenu.NewIcosahedronMenuItem;
+import tesseract.newmenu.NewParticleEmitterMenuItem;
+import tesseract.newmenu.NewParticleMenuItem;
+import tesseract.newmenu.NewPlanarPolygonMenuItem;
+import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
 import tesseract.objects.PhysicalObject;
@@ -129,15 +135,14 @@ public class TesseractUI extends JFrame {
 		myCurrentObject = null;
 		
 		myObjectMenuItems = new JMenuItem[] {
-				new ParticleEmitterMenuItem(myWorld),
-				new ParticleMenuItem(myWorld),
-				new PlanarPolygonMenuItem(myWorld),
-				new EllipsoidMenuItem(myWorld),
-				new IcosahedronMenuItem(myWorld),
-				new ChainLinkMenuItem(myWorld),
-				new DonutMenuItem(myWorld),
-				new SurfBoardMenuItem(myWorld),
-				new NewIcosahedronMenuItem(myWorld)
+				new NewParticleEmitterMenuItem(myWorld),
+				new NewParticleMenuItem(myWorld),
+				new NewPlanarPolygonMenuItem(myWorld),
+				new NewEllipsoidMenuItem(myWorld),
+				new NewIcosahedronMenuItem(myWorld),
+				new NewChainLinkMenuItem(myWorld),
+				new NewToroidMenuItem(myWorld),
+				new SurfBoardMenuItem(myWorld)
 		};
 		createMenu();
 		setupCanvas();

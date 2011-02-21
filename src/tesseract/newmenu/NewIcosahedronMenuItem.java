@@ -53,13 +53,13 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		createParameterMenu();
-		final JCheckBox defaultButton = getDefaultButton();
+		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
 		
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				if (defaultButton.isSelected()) {
+				if (e.getSource() == defaultButton) {
 					myWorld.addObject(new Icosahedron(MenuItem.DEFAULT_POSITION,
 							DEFAULT_MASS, Icosahedron.DEFAULT_SCALE));
 					params.dispose();

@@ -54,7 +54,12 @@ public class PlanarPolygon extends PhysicalObject {
 	/**
 	 * Number of divisions in the sphere.
 	 */
-	private static final int DEFAULT_DIVISIONS = 6;
+	public static final int DEFAULT_DIVISIONS = 6;
+	
+	/**
+	 * A Default radius.
+	 */
+	public static final float DEFAULT_RADIUS = 0.1f;
 	
 	/**
 	 * Create a new Ellipsoid.
@@ -62,11 +67,7 @@ public class PlanarPolygon extends PhysicalObject {
 	 * @param position Initial position.
 	 * @param mass Initial mass.
 	 * @param radius the radius of the base sphere.
-	 * @param primflags an int for the base spere primflags.
 	 * @param divisions an in for the shape divisions.
-	 * @param appearance an Appearance object.
-	 * @param b a float for the b portion of the ellipsoid formula.
-	 * @param c a float for the c portion of the ellipsoid formula.
 	 */
 	public PlanarPolygon(final Vector3f position, final float mass,
 			final float radius, final int divisions) {

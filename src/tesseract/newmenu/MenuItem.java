@@ -77,7 +77,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	/**
 	 * The default button.
 	 */
-	private JCheckBox myDefaultButton;
+	private JButton myDefaultButton;
 	
 	/**
 	 * Default constructor.
@@ -96,9 +96,12 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 		myPanel = new JPanel();
 		myReadData = new HashMap <String, JTextField>();
 		myWorld = theWorld;
-		myParameters.put("Position", new Vector3f());
-		myParameters.put("Mass", new Float(0f));
+		myParameters.put("Position", DEFAULT_POSITION);
+		myParameters.put("Mass", new Float(DEFAULT_MASS));
 		addActionListener(this);
+		myParamFrame = new JFrame("Parameters");
+		myParamFrame.setBackground(Color.GRAY);
+		myParamFrame.setLayout(new BorderLayout());
 	}
 	
 	/**
@@ -124,9 +127,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 */
 	protected void createParameterMenu() {
 		
-		myParamFrame = new JFrame("Parameters");
-		myParamFrame.setBackground(Color.GRAY);
-		myParamFrame.setLayout(new BorderLayout());
+		
 		
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
@@ -149,7 +150,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	    
 	    myEnterButton = new JButton("ENTER");
 	    
-	    myDefaultButton = new JCheckBox("Default Shape   ");
+	    myDefaultButton = new JButton("Default Shape");
 	    
 	    myParamFrame.add(myDefaultButton, BorderLayout.NORTH);
 	    myParamFrame.add(myPanel, BorderLayout.CENTER);
@@ -164,7 +165,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * 
 	 * @return Default Button
 	 */
-	public JCheckBox getDefaultButton() {
+	public JButton getDefaultButton() {
 		return myDefaultButton;
 	}
 	
@@ -217,5 +218,4 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	protected float getMass() {
 		return ((Float) myParameters.get("Mass")).floatValue();
 	}
-
 }

@@ -63,13 +63,13 @@ public class NewToroidMenuItem extends MenuItem {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		createParameterMenu();
-		final JCheckBox defaultButton = getDefaultButton();
+		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
 		
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				if (defaultButton.isSelected()) {
+				if (e.getSource() == defaultButton) {
 					myWorld.addObject(new Toroid(MenuItem.DEFAULT_POSITION,
 							MenuItem.DEFAULT_MASS, 0f, .06f, 25, .08f, 30));
 					params.dispose();
