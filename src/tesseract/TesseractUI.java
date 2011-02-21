@@ -152,15 +152,15 @@ public class TesseractUI extends JFrame {
 		
 		// Lookie! Linked chainlinks!
 		//myWorld.addObject(new ChainLink2(new Vector3f(0.15f, 0, 0), 1));
-		ChainLink2 o = new ChainLink2(new Vector3f(), 1);
-		o.setRotation();
+		//ChainLink2 o = new ChainLink2(new Vector3f(), 1);
+		//o.setRotation();
 		
 		//myWorld.addForce(new AirDrag());
 		
 		//World.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
 		//myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
 		PhysicalObject s = new Sphere(.05f, new Vector3f());
-		s.setAngularVelocity(new Vector3f(0, 0, -2));
+		s.setAngularVelocity(new Vector3f(0, 2, 0));
 		myWorld.addObject(s);
 		
 		//myWorld.addObject(o);
@@ -297,7 +297,7 @@ public class TesseractUI extends JFrame {
 		forcesMenu.add(originQuadradic);
 		
 		final JMenuItem airDrag = new JCheckBoxMenuItem("Air Drag", false);
-		originQuadradic.addActionListener(new ActionListener() {
+		airDrag.addActionListener(new ActionListener() {
 				private Force me;
 				
 				// Constructor 
