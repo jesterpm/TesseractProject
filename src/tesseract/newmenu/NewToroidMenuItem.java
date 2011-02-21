@@ -5,12 +5,10 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.Icosahedron;
 import tesseract.objects.Toroid;
 
 /**
@@ -34,7 +32,7 @@ public class NewToroidMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewToroidMenuItem(final World theWorld) {
-		super(theWorld, "Toroid(NEW)");
+		super(theWorld, "Toroid");
 		buildParams();
 		
 		

@@ -1,12 +1,9 @@
 package tesseract.menuitems;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -21,8 +18,9 @@ import tesseract.World;
 
 /**
  * Abstract class for menu items.
- * 
+ * USE MENU ITEM IN tesseract.newmenu CLASS.
  * @author Jesse Morgan, Steve Bradshaw
+ * @deprecated by Phillip Cardon
  */
 public abstract class TesseractMenuItem 
 	extends JMenuItem implements ActionListener {
@@ -40,7 +38,7 @@ public abstract class TesseractMenuItem
 	/**
 	 * A Default position.
 	 */
-	private static final Vector3f DEFAULT_POSITION = new Vector3f(0,0,0);
+	private static final Vector3f DEFAULT_POSITION = new Vector3f(0, 0, 0);
 	
 	/**
 	 * The reference to the world.

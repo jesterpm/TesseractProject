@@ -5,16 +5,14 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
 import tesseract.objects.ChainLink2;
-import tesseract.objects.Icosahedron;
 
 /**
- * NewIcosahedronMenutItem
+ * NewChainLinkMenuItem
  * 
  * Defines a menu item to add an ChainLink to the world.
  * Code recycled from TesseractMenuItem by Steve Bradshaw and Jessie Morgan
@@ -34,7 +32,7 @@ public class NewChainLinkMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewChainLinkMenuItem(final World theWorld) {
-		super(theWorld, "ChainLink(NEW)");
+		super(theWorld, "Chain Link");
 		buildParams();
 	}
 	

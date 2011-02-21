@@ -6,16 +6,13 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.World;
-import tesseract.objects.Icosahedron;
 import tesseract.objects.Particle;
-import tesseract.objects.emitters.ParticleEmitter;
 
 /**
  * NewIcosahedronMenutItem
@@ -42,7 +39,7 @@ public class NewParticleMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewParticleMenuItem(final World theWorld) {
-		super(theWorld, "Particle(NEW)");
+		super(theWorld, "Particle");
 		this.makePanel();
 		
 		

@@ -1,30 +1,24 @@
 package tesseract.menuitems;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.Material;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.vecmath.Color3f;
-import javax.vecmath.Vector3f;
-
-import com.sun.j3d.utils.geometry.Sphere;
 
 import tesseract.World;
 import tesseract.objects.Ellipsoid;
-import tesseract.objects.PlanarPolygon;
+
+import com.sun.j3d.utils.geometry.Sphere;
 
 /**
  * Ellipsoid Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated by Phillip Cardon
  */
 public class SurfBoardMenuItem extends TesseractMenuItem {
 

@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
@@ -37,7 +36,7 @@ public class NewEllipsoidMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewEllipsoidMenuItem(final World theWorld) {
-		super(theWorld, "Ellipsoid(NEW)");
+		super(theWorld, "Ellipsoid");
 		buildParams();
 	}
 	

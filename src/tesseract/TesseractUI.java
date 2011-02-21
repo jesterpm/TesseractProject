@@ -34,20 +34,13 @@ import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.forces.LinearOrigin;
 import tesseract.forces.QuadradicOrigin;
-import tesseract.menuitems.ChainLinkMenuItem;
-import tesseract.menuitems.DonutMenuItem;
-import tesseract.menuitems.EllipsoidMenuItem;
-import tesseract.menuitems.IcosahedronMenuItem;
-import tesseract.menuitems.ParticleEmitterMenuItem;
-import tesseract.menuitems.ParticleMenuItem;
-import tesseract.menuitems.PlanarPolygonMenuItem;
-import tesseract.menuitems.SurfBoardMenuItem;
 import tesseract.newmenu.NewChainLinkMenuItem;
 import tesseract.newmenu.NewEllipsoidMenuItem;
 import tesseract.newmenu.NewIcosahedronMenuItem;
 import tesseract.newmenu.NewParticleEmitterMenuItem;
 import tesseract.newmenu.NewParticleMenuItem;
 import tesseract.newmenu.NewPlanarPolygonMenuItem;
+import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.Box;
 import tesseract.objects.ChainLink2;
@@ -142,7 +135,7 @@ public class TesseractUI extends JFrame {
 				new NewIcosahedronMenuItem(myWorld),
 				new NewChainLinkMenuItem(myWorld),
 				new NewToroidMenuItem(myWorld),
-				new SurfBoardMenuItem(myWorld)
+				new NewSurfBoardMenuItem(myWorld)
 		};
 		createMenu();
 		setupCanvas();

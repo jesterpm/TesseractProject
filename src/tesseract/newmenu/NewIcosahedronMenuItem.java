@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
@@ -33,7 +32,7 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewIcosahedronMenuItem(final World theWorld) {
-		super(theWorld, "Icosahedron(NEW)");
+		super(theWorld, "Icosahedron");
 		buildParams();
 		
 		

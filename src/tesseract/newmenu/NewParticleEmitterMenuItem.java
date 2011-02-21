@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.vecmath.Color3f;
@@ -41,7 +40,7 @@ public class NewParticleEmitterMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewParticleEmitterMenuItem(final World theWorld) {
-		super(theWorld, "Particle Emitter(NEW)");
+		super(theWorld, "Particle Emitter");
 		buildParams();
 		
 		

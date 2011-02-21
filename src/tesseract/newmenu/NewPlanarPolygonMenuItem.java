@@ -33,7 +33,7 @@ public class NewPlanarPolygonMenuItem extends MenuItem {
 	 * @param theWorld to add objects to.
 	 */
 	public NewPlanarPolygonMenuItem(final World theWorld) {
-		super(theWorld, "Planar Polygon(NEW)");
+		super(theWorld, "Planar Polygon");
 		buildParams();
 		
 		
