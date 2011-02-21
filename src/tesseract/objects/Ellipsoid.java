@@ -37,11 +37,7 @@ public class Ellipsoid extends PhysicalObject {
 	 */
 	private static final int DEFAULT_DIVISIONS = 50;
 	
-	/**
-	 * The radius of the base sphere
-	 */
-	private float my_radius;
-	
+
 	/**
 	 * Create a new Ellipsoid.
 	 * 
@@ -58,8 +54,6 @@ public class Ellipsoid extends PhysicalObject {
 			final float radius,	final int primflags, final int divisions,
 			final Appearance appearance, final float b, final float c) {
 		super(position, mass);
-		
-		my_radius = radius;
 		
 		setShape(createShape(radius, primflags, appearance, divisions, b, c));
 		
@@ -85,8 +79,6 @@ public class Ellipsoid extends PhysicalObject {
 	public Ellipsoid(final Vector3f position, final float mass,
 			final float radius) {
 		super(position, mass);
-		
-		my_radius = radius;
 		
 		final float rSq = radius * radius;
 		final float a = 1.0f;
@@ -114,8 +106,6 @@ public class Ellipsoid extends PhysicalObject {
 	public Ellipsoid(final Vector3f position, final float radius) {
 		super(position, DEFAULT_MASS);
 		
-		my_radius = radius;
-		
 		final float rSq = radius * radius;
 		final float a = 1.0f;
 		final float b = 1.0f;
@@ -135,7 +125,11 @@ public class Ellipsoid extends PhysicalObject {
 	
 	/**
 	 * This creates a default Ellipsoid for the 2 argument constructor.
-	 * @param radius the siz of the ellipsoid
+	 * @param radius the size of the ellipsoid
+	 * @param a float in the ellipsoid formula.
+	 * @param b float in the ellipsoid formula.
+	 * @param c float in the ellipsoid formula.
+	 * @return TransformGroup with the shape.
 	 */
 	private TransformGroup createDefaultEllipsoid(final float radius, final float a,
 			final float b, final float c) {
@@ -160,6 +154,7 @@ public class Ellipsoid extends PhysicalObject {
 	 * @param divisions an int for the number of divisons
 	 * @param b a float for the y axis transform
 	 * @param c a float for the z axis transfrom
+	 * @return TransformGroup with the shape.
 	 */
 	private TransformGroup createShape(final float radius, final int primflags,
 			final Appearance appearance, final int divisions, final float b,

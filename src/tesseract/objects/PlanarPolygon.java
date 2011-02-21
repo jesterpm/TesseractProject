@@ -8,7 +8,6 @@ package tesseract.objects;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Geometry;
-import javax.media.j3d.Group;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Material;
 import javax.media.j3d.Node;
@@ -16,27 +15,20 @@ import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Texture;
 import javax.media.j3d.Texture2D;
-import javax.media.j3d.Transform3D;
 import javax.media.j3d.TriangleFanArray;
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord2f;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
-import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
 
 /**
- * This class creates an ellipsoid using the formula 
- * (x/a)^2  +  (y/b)^2  +  (z/c)^2 = 1 using a matrix3f transformation
- * on a basic Sphere.  This class sets 'a' to a constant 1.0 and allows
- * 'b' and 'c'  to alter the ellipsoid's shape along with the radius field 
- * Sphere.  Since this is a sphere, the normals are already calculated.
+ * This class creates an planar polygon using Mathew Aldens design
+ * of a circle, but this adds lava texture and lower divisions
  * 
- * @author Steve Bradshaw
+ * @author Steve Bradshaw & Mathew Alden
  * @version 8 Feb 2011
  */
 public class PlanarPolygon extends PhysicalObject {
@@ -45,11 +37,6 @@ public class PlanarPolygon extends PhysicalObject {
 	 * Default mass.
 	 */
 	private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
-	//private static final float DEFAULT_MASS = 6;
-	
-	public Vector3f normal;
-	// Right-hand side of the plane equation: Ax + By + Cz = D
-	public float intercept;
 	
 	/**
 	 * Number of divisions in the sphere.
@@ -107,11 +94,11 @@ public class PlanarPolygon extends PhysicalObject {
 	/**
 	 * This method creates a planar polygon shape with lava texture.
 	 * 
-	 * @param radius a float for the size of the base polygon
-	 * @param divisions an int for the number of divisons
-	 * @param appearance an Appearance object
+	 * @param radius a float for the size of the base polygon.
+	 * @param divisions an int for the number of divisons.
+	 * @param appearance an Appearance object.
+	 * @return Node a polygon.
 	 */
-
 	private Node createShape(final float radius, final int divisions) {
 		TriangleFanArray geometry = new TriangleFanArray(divisions,
 				TriangleFanArray.COORDINATES | TriangleFanArray.TEXTURE_COORDINATE_2, new int[] {divisions});
