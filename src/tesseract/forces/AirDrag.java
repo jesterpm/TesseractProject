@@ -79,7 +79,7 @@ public class AirDrag extends Force {
 		v.normalize();
 		v.scale(-force);
 		
-		return new Vector3f();
+		return v;
 		
 	}
 	
