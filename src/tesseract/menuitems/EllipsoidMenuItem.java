@@ -20,6 +20,7 @@ import tesseract.objects.PlanarPolygon;
  * Ellipsoid Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated By Phillip Cardon
  */
 public class EllipsoidMenuItem extends TesseractMenuItem {
 

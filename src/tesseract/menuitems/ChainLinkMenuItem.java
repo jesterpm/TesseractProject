@@ -22,6 +22,7 @@ import tesseract.objects.PlanarPolygon;
  * Icosahedron Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated By Phillip Cardon
  */
 public class ChainLinkMenuItem extends TesseractMenuItem {
 

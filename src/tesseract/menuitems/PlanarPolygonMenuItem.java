@@ -22,6 +22,7 @@ import tesseract.objects.PlanarPolygon;
  * Planar Polygon Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated By Phillip Cardon
  */
 public class PlanarPolygonMenuItem extends TesseractMenuItem {
 

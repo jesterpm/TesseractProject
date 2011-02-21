@@ -15,6 +15,7 @@ import tesseract.objects.Particle;
  * Particle Menu Item.
  * 
  * @author Jesse Morgan
+ * @deprecated By Phillip Cardon
  */
 public class ParticleMenuItem extends TesseractMenuItem {
 

@@ -20,6 +20,7 @@ import tesseract.objects.emitters.ParticleEmitter;
  * Particle Emitter Menu Item.
  * 
  * @author Jesse Morgan
+ * @deprecated By Phillip Cardon
  */
 public class ParticleEmitterMenuItem extends TesseractMenuItem {
 

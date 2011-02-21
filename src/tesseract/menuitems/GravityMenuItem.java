@@ -9,6 +9,7 @@ import tesseract.forces.Gravity;
  * Gravity Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated by Phillip Cardon
  */
 public class GravityMenuItem extends TesseractMenuItem {
 

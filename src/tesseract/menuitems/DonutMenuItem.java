@@ -17,6 +17,7 @@ import tesseract.objects.Toroid;
  * Icosahedron Menu Item.
  * 
  * @author Steve Bradshaw
+ * @deprecated By Phillip Cardon
  */
 public class DonutMenuItem extends TesseractMenuItem {
 
