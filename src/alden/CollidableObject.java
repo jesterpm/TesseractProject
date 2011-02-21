@@ -51,7 +51,7 @@ public abstract class CollidableObject {
 		coefficientOfRestitution = 0.75f;
 		penetrationCorrection = 1.05f;
 		dynamicFriction = 0.02f;
-		rotationalFriction = 0.3f;
+		rotationalFriction = 0.05f;
 		TG = new TransformGroup();
 		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		BG = new BranchGroup();
@@ -237,25 +237,6 @@ public abstract class CollidableObject {
 				acceleration.scaleAdd(-1, other.previousVelocity, other.velocity);
 				other.velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, other.velocity);
 			}
-			
-			/* Rotational Friction */
-			Vector3f w = new Vector3f();
-			
-			float radius = thisRelativeContactPosition.length();
-			w.cross(angularVelocity, ci.contactNormal);
-			velocity.scaleAdd(-1, previousRotationalVelocity, velocity);
-			previousRotationalVelocity.scale(radius, w);
-			velocity.scaleAdd(radius, w, velocity);
-			
-			radius = otherRelativeContactPosition.length();
-			w.cross(other.angularVelocity, ci.contactNormal);
-			other.velocity.scaleAdd(-1, other.previousRotationalVelocity, other.velocity);
-			other.previousRotationalVelocity.scale(radius, w);
-			other.velocity.scaleAdd(radius, w, other.velocity);
-			
-			
-			angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(angularVelocity), angularVelocity, angularVelocity);
-			other.angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(other.angularVelocity), other.angularVelocity, other.angularVelocity);		
 		}
 		
 		Vector3f thisMovementUnit = new Vector3f();
@@ -300,5 +281,31 @@ public abstract class CollidableObject {
 		tmp2.mul(other.orientation);
 		other.orientation.add(tmp2);
 		other.orientation.normalize();
+		
+		if (rotationalFriction > 0) {
+			/* Rotational Friction */
+			Vector3f w = new Vector3f();
+			
+			/*float radius = thisRelativeContactPosition.length();
+			w.cross(angularVelocity, ci.contactNormal);
+			velocity.scaleAdd(-1, previousRotationalVelocity, velocity);
+			previousRotationalVelocity.scale(radius, w);
+			velocity.scaleAdd(radius, w, velocity);
+			w.cross(previousRotationalVelocity, ci.contactNormal);
+			angularVelocity.scaleAdd(-0.5f * w.dot(angularVelocity), w, angularVelocity);
+			
+			radius = otherRelativeContactPosition.length();
+			w.cross(other.angularVelocity, ci.contactNormal);
+			other.velocity.scaleAdd(-1, other.previousRotationalVelocity, other.velocity);
+			other.previousRotationalVelocity.scale(radius, w);
+			other.velocity.scaleAdd(radius , w, other.velocity);
+			w.cross(other.previousRotationalVelocity, ci.contactNormal);
+			other.angularVelocity.scaleAdd(-0.5f * w.dot(other.angularVelocity), w, other.angularVelocity);
+			*/
+			
+			angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(angularVelocity), ci.contactNormal, angularVelocity);
+			other.angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(other.angularVelocity), ci.contactNormal, other.angularVelocity);
+			
+		}
 	}
 }

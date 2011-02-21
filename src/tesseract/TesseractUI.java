@@ -160,7 +160,7 @@ public class TesseractUI extends JFrame {
 		//World.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
 		//myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
 		PhysicalObject s = new Sphere(.05f, new Vector3f());
-		s.setAngularVelocity(new Vector3f(0, 0, 2));
+		s.setAngularVelocity(new Vector3f(0, 0, -2));
 		myWorld.addObject(s);
 		
 		//myWorld.addObject(o);
@@ -295,6 +295,25 @@ public class TesseractUI extends JFrame {
 				}			
 			});
 		forcesMenu.add(originQuadradic);
+		
+		final JMenuItem airDrag = new JCheckBoxMenuItem("Air Drag", false);
+		originQuadradic.addActionListener(new ActionListener() {
+				private Force me;
+				
+				// Constructor 
+				{
+					me = new AirDrag();
+				}
+				
+				public void actionPerformed(ActionEvent e) {
+					if (((JCheckBoxMenuItem) e.getSource()).isSelected()) {
+						myWorld.addForce(me);
+					} else {
+						myWorld.removeForce(me);
+					}
+				}			
+			});
+		forcesMenu.add(airDrag);
 		
 		menuBar.add(forcesMenu);
 		

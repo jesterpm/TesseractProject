@@ -76,43 +76,11 @@ public class AirDrag extends Force {
 		
 		float force = 0.5f * v.lengthSquared() * COEFFICIENT * surfaceArea; 
 		
-		System.out.println(v.lengthSquared());
-		System.out.println(force);
-		
 		v.normalize();
 		v.scale(-force);
 		
-		System.out.println(v);
-		
 		return new Vector3f();
 		
-	}
-	
-	public static void main(String[] args) {
-		AirDrag ad = new AirDrag();
-		
-		ArrayList<Vector2f> points = new ArrayList<Vector2f>();
-		
-		/*points.add(new Vector2f(2, 1));
-		points.add(new Vector2f(2, 3));
-		points.add(new Vector2f(3, 4.5f));
-		points.add(new Vector2f(4, 2));
-		points.add(new Vector2f(4, 7));
-		points.add(new Vector2f(1, 2));
-		points.add(new Vector2f(1, 5));
-		points.add(new Vector2f(1.5f, 7));*/
-		
-		points.add(new Vector2f(0, 0));
-		points.add(new Vector2f(0, 3));
-		points.add(new Vector2f(3, 3));
-		points.add(new Vector2f(3, 0));
-		points.add(new Vector2f(1, 2));
-		points.add(new Vector2f(0, 1));
-		
-		List<Vector2f> newPoints = ad.convexHull(points);
-		System.out.println(newPoints);
-		
-		System.out.println(ad.areaOfHull(newPoints));
 	}
 	
 	/**
@@ -139,7 +107,7 @@ public class AirDrag extends Force {
 	}
 	
 	/**
-	 * 
+	 * Graham's convex hull algorithm from pseudocode on wikipedia.
 	 * @param points point list.
 	 * @return point list.
 	 */
