@@ -63,6 +63,12 @@ public class NewToroidMenuItem extends MenuItem {
 	public void actionPerformed(final ActionEvent e) {
 		this.getParamFrame().pack();
 		this.getParamFrame().setVisible(true);
+	}
+	
+	/**
+	 * makeListeners and attach to buttons.
+	 */
+	private void makeListeners() {
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

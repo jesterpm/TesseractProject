@@ -52,6 +52,7 @@ public class NewChainLinkMenuItem extends MenuItem {
 		myReadData.get("Width").setText(((Float) 
 				ChainLink2.DEFAULT_WIDTH_RATIO).toString());
 		createParameterMenu();
+		makeListeners();
 	}
 
 	@Override
@@ -59,6 +60,12 @@ public class NewChainLinkMenuItem extends MenuItem {
 		//createParameterMenu();
 		this.getParamFrame().pack();
 		this.getParamFrame().setVisible(true);
+	}
+	
+	/**
+	 * makeListeners and attach to buttons.
+	 */
+	private void makeListeners() {
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
