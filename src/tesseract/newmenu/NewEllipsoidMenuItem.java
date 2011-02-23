@@ -82,7 +82,8 @@ public class NewEllipsoidMenuItem extends MenuItem {
 				}
 				if (event.getSource() == enterButton) {
 					myWorld.addObject(new Ellipsoid(getPosition(), getMass(),
-							((Float) myParameters.get("Radius")).floatValue()));
+							((Float) myParameters.get("Radius")).floatValue(), 
+							myColor));
 					params.dispose();
 				}
 			}

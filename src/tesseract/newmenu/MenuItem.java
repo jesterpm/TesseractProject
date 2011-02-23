@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -65,6 +67,12 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * World to add objects to.
 	 */
 	protected World myWorld;
+	
+	/**
+	 * Color to make object.
+	 */
+	protected Color myColor;
+	
 	/**
 	 * A Parameter setting JFrame.
 	 */
@@ -74,10 +82,18 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * The button that get all inputs for shape.
 	 */
 	private JButton myEnterButton;
+	
+	/**
+	 * The button that get all inputs for shape.
+	 */
+	private JButton myColorButton;
+	
 	/**
 	 * The default button.
 	 */
 	private JButton myDefaultButton;
+	
+	private boolean useColorButton;
 	
 	/**
 	 * Default constructor.
@@ -91,6 +107,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 */
 	public MenuItem(final World theWorld, final String theLabel) {
 		super(theLabel);
+		useColorButton = true;
 		myFrame = new JFrame();
 		myParameters = new HashMap<String, Object>();
 		myPanel = new JPanel();
@@ -102,6 +119,19 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 		myParamFrame = new JFrame("Parameters");
 		myParamFrame.setBackground(Color.GRAY);
 		myParamFrame.setLayout(new BorderLayout());
+		myColorButton = new JButton("Color");
+		myColor = Color.RED;
+	}
+	
+	/**
+	 * Constructor.
+	 * @param theWorld world parameter.
+	 * @param theLabel for menu item.
+	 * @param theColor use color button.
+	 */
+	public MenuItem(final World theWorld, final String theLabel, boolean theColor) {
+		this(theWorld, theLabel);
+		useColorButton = theColor;
 	}
 	
 	/**
@@ -128,7 +158,14 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	protected void createParameterMenu() {
 		
 		
-		
+		myColorButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				myColor = JColorChooser.showDialog(null, "Particle Color",
+						Color.RED);
+				
+			}});
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
 	    int screenHeight = screenSize.height;
@@ -152,9 +189,19 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	    
 	    myDefaultButton = new JButton("Default Shape");
 	    
+	    if (useColorButton) {
+	    	JPanel temp = new JPanel();
+	    	temp.setLayout(new GridLayout(1, 2));
+		    temp.add(myColorButton);
+		    temp.add(myEnterButton);
+		    myParamFrame.add(temp, BorderLayout.SOUTH);
+	    } else {
+	    	myParamFrame.add(myEnterButton, BorderLayout.SOUTH);
+	    }
+	    
 	    myParamFrame.add(myDefaultButton, BorderLayout.NORTH);
 	    myParamFrame.add(myPanel, BorderLayout.CENTER);
-	    myParamFrame.add(myEnterButton, BorderLayout.SOUTH);
+	    
 
 	    myParamFrame.setAlwaysOnTop(true);
 	    myParamFrame.pack();

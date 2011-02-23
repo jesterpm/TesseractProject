@@ -88,7 +88,8 @@ public class NewChainLinkMenuItem extends MenuItem {
 							((Float) myParameters.get("Mass")).floatValue(),
 							((Float) myParameters.get("Diameter")).floatValue(),
 							((Float) myParameters.get("Length")).floatValue(),
-							((Float) myParameters.get("Width")).floatValue()));
+							((Float) myParameters.get("Width")).floatValue(),
+							myColor));
 					params.dispose();
 				}
 			}

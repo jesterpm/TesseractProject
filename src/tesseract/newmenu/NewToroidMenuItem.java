@@ -97,7 +97,7 @@ public class NewToroidMenuItem extends MenuItem {
 						((Float) myParameters.get("Toroid Radius")
 								).floatValue(),
 						((Integer) myParameters.get("Toroid Resolution")
-								).intValue()));
+								).intValue(), myColor));
 					params.dispose();
 				}
 			}

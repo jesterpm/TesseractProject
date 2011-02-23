@@ -80,7 +80,7 @@ public class NewIcosahedronMenuItem extends MenuItem {
 				}
 				if (event.getSource() == enterButton) {
 					myWorld.addObject(new Icosahedron(
-							getPosition(), getMass(), getScale()));
+							getPosition(), getMass(), getScale(), myColor));
 					params.dispose();
 				}
 			}

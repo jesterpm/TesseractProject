@@ -90,11 +90,11 @@ public class NewParticleEmitterMenuItem extends MenuItem {
 				}
 				if (event.getSource() == enterButton) {
 					params.dispose();
-					Color c = JColorChooser.showDialog(null, "Particle Color",
-							Color.RED);
+					//Color c = JColorChooser.showDialog(null, "Particle Color",
+						//	Color.RED);
 					myWorld.addObject(new ParticleEmitter(getPosition(),
 						((Float) myParameters.get("Frequency")).floatValue(),
-						new Color3f(c)));
+						new Color3f(myColor)));
 					
 				}
 			}
