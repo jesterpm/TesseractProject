@@ -51,11 +51,14 @@ public class NewChainLinkMenuItem extends MenuItem {
 				ChainLink2.DEFAULT_LENGTH).toString());
 		myReadData.get("Width").setText(((Float) 
 				ChainLink2.DEFAULT_WIDTH_RATIO).toString());
+		createParameterMenu();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		//createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

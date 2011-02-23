@@ -41,8 +41,7 @@ public class NewParticleMenuItem extends MenuItem {
 	public NewParticleMenuItem(final World theWorld) {
 		super(theWorld, "Particle");
 		this.makePanel();
-		
-		
+		createParameterMenu();
 	}
 	
 	/**
@@ -58,7 +57,8 @@ public class NewParticleMenuItem extends MenuItem {
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

@@ -51,11 +51,13 @@ public class NewPlanarPolygonMenuItem extends MenuItem {
 				((Float) PlanarPolygon.DEFAULT_RADIUS).toString());
 		myReadData.get("Divisions").setText(
 				((Integer) PlanarPolygon.DEFAULT_DIVISIONS).toString());
+		createParameterMenu();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

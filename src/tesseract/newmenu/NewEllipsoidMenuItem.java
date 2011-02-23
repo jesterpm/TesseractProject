@@ -49,11 +49,13 @@ public class NewEllipsoidMenuItem extends MenuItem {
 		this.makePanel();
 		myReadData.get("Radius").setText(((Float) 
 				DEFAULT_RADIUS).toString());
+		createParameterMenu();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

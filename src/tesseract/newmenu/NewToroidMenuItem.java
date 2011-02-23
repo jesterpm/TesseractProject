@@ -56,11 +56,13 @@ public class NewToroidMenuItem extends MenuItem {
 		myReadData.get("Tube Resolution").setText("25");
 		myReadData.get("Toroid Radius").setText(".08");
 		myReadData.get("Toroid Resolution").setText("30");
+		createParameterMenu();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();

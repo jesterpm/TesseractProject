@@ -96,11 +96,6 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	private boolean useColorButton;
 	
 	/**
-	 * Default constructor.
-	 */
-	public MenuItem() { }
-	
-	/**
 	 * Constructor.
 	 * @param theWorld world parameter.
 	 * @param theLabel for menu item.
@@ -129,9 +124,10 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 * @param theLabel for menu item.
 	 * @param theColor use color button.
 	 */
-	public MenuItem(final World theWorld, final String theLabel, boolean theColor) {
+	public MenuItem(final World theWorld, final String theLabel,
+			boolean theColorButton) {
 		this(theWorld, theLabel);
-		useColorButton = theColor;
+		useColorButton = theColorButton;
 	}
 	
 	/**
@@ -158,14 +154,14 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	protected void createParameterMenu() {
 		
 		
-		myColorButton.addActionListener(new ActionListener(){
+		myColorButton.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(final ActionEvent arg0) {
 				myColor = JColorChooser.showDialog(null, "Particle Color",
 						Color.RED);
 				
-			}});
+			} });
 		Toolkit tk = Toolkit.getDefaultToolkit();
 	    Dimension screenSize = tk.getScreenSize();
 	    int screenHeight = screenSize.height;
@@ -204,8 +200,8 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	    
 
 	    myParamFrame.setAlwaysOnTop(true);
-	    myParamFrame.pack();
-	    myParamFrame.setVisible(isVisible());
+	    //myParamFrame.pack();
+	    //myParamFrame.setVisible(isVisible());
 	}
 	
 	/**

@@ -34,8 +34,6 @@ public class NewIcosahedronMenuItem extends MenuItem {
 	public NewIcosahedronMenuItem(final World theWorld) {
 		super(theWorld, "Icosahedron");
 		buildParams();
-		
-		
 	}
 	
 	/**
@@ -47,11 +45,13 @@ public class NewIcosahedronMenuItem extends MenuItem {
 		this.makePanel();
 		myReadData.get("Scale").setText(((Float) 
 				Icosahedron.DEFAULT_SCALE).toString());
+		createParameterMenu();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		createParameterMenu();
+		this.getParamFrame().pack();
+		this.getParamFrame().setVisible(true);
 		final JButton defaultButton = getDefaultButton();
 		final JFrame params = getParamFrame();
 		final JButton enterButton = getEnterButton();
