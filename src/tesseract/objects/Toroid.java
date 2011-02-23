@@ -5,12 +5,15 @@
  */
 package tesseract.objects;
 
+import java.awt.Color;
+
 import javax.media.j3d.Appearance;
 import javax.media.j3d.IndexedQuadArray;
 import javax.media.j3d.Material;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -35,6 +38,16 @@ public class Toroid extends PhysicalObject {
 	private static final float INEERTIA_TENSOR_CONSTANT5 = 5f;
 	
 	/**
+	 * Default color.
+	 */
+	private static final Color3f DEFAULT_COLOR = new Color3f(1, 0, 0);
+	
+	/**
+	 * Object color.
+	 */
+	private final Color3f myColor;
+	
+	/**
 	 * @param position starting position.
 	 * @param mass of object.
 	 * @param scale mesh scale.
@@ -46,8 +59,25 @@ public class Toroid extends PhysicalObject {
 	public Toroid(final Vector3f position, final float mass, final float scale,
 			final float sliceRadius, final int sliceDivisions,
 			final float arcRadius, final int arcDivisions) {
+		this(position, mass, scale, sliceRadius, sliceDivisions,
+				arcRadius, arcDivisions, DEFAULT_COLOR.get());
+	}
+	
+	/**
+	 * @param position starting position.
+	 * @param mass of object.
+	 * @param scale mesh scale.
+	 * @param sliceRadius radius of slice "flesh."
+	 * @param sliceDivisions resolution of slice "flesh" circles.
+	 * @param arcRadius Radius of donut circle
+	 * @param arcDivisions resolution of slices on donut.
+	 * @param theColor of toroid.
+	 */
+	public Toroid(final Vector3f position, final float mass, final float scale,
+			final float sliceRadius, final int sliceDivisions,
+			final float arcRadius, final int arcDivisions, Color theColor) {
 		super(position, mass);
-		
+		myColor = new Color3f(theColor);
 		setShape(buildToroid(scale, sliceRadius, sliceDivisions,
 				arcRadius, arcDivisions));
 		if (inverseMass != 0) {
@@ -154,7 +184,7 @@ public class Toroid extends PhysicalObject {
 
 		Appearance app = new Appearance();
 		Material mat = new Material();
-		mat.setDiffuseColor(1, 0, 0);
+		mat.setDiffuseColor(myColor);
 		app.setMaterial(mat);
 		shape.setAppearance(app);
 	

@@ -1,11 +1,14 @@
 package tesseract.objects;
 
+import java.awt.Color;
+
 import javax.media.j3d.Appearance;
 import javax.media.j3d.IndexedQuadArray;
 import javax.media.j3d.Material;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -44,6 +47,16 @@ public class ChainLink2 extends PhysicalObject {
 	protected static final int SLICE_DIVISIONS = 16;
 	
 	/**
+	 * default color.
+	 */
+	public static final Color3f DEFAULT_COLOR = new Color3f(1, 0, 0);
+	
+	/**
+	 * Object color.
+	 */
+	 private final Color3f myColor;
+	
+	/**
 	 * Construct a chain link.
 	 * 
 	 * @param thePosition Position.
@@ -51,7 +64,8 @@ public class ChainLink2 extends PhysicalObject {
 	 */
 	public ChainLink2(final Vector3f thePosition, final float mass) {
 		this(thePosition, mass, DEFAULT_LENGTH * DEFAULT_DIAMETER_RATIO,
-				DEFAULT_LENGTH, DEFAULT_LENGTH * DEFAULT_WIDTH_RATIO);
+				DEFAULT_LENGTH, DEFAULT_LENGTH * DEFAULT_WIDTH_RATIO,
+				DEFAULT_COLOR.get());
 	}
 	
 	/**
@@ -65,7 +79,7 @@ public class ChainLink2 extends PhysicalObject {
 	public ChainLink2(final Vector3f thePosition, final float mass,
 			final float length) {
 		this(thePosition, mass, length * DEFAULT_DIAMETER_RATIO,
-				length, length * DEFAULT_WIDTH_RATIO);
+				length, length * DEFAULT_WIDTH_RATIO, DEFAULT_COLOR.get());
 	}
 	
 	/**
@@ -76,11 +90,28 @@ public class ChainLink2 extends PhysicalObject {
 	 * @param diameter Diameter of link.
 	 * @param length Length of link.
 	 * @param width Width of link.
+	 * @param theColor color of link.
 	 */
 	public ChainLink2(final Vector3f thePosition, final float mass,
 			final float diameter, final float length, final float width) {
+		this(thePosition, mass, diameter, length, width, DEFAULT_COLOR.get());
+	}
+	
+	/**
+	 * Construct a Chain Link.
+	 * 
+	 * @param thePosition Position.
+	 * @param mass Mass.
+	 * @param diameter Diameter of link.
+	 * @param length Length of link.
+	 * @param width Width of link.
+	 * @param theColor color of link.
+	 */
+	public ChainLink2(final Vector3f thePosition, final float mass,
+			final float diameter, final float length, final float width,
+			final Color theColor) {
 		super(thePosition, mass);
-		
+		myColor = new Color3f(theColor);
 		setShape(createShape(SLICE_COUNT, SLICE_DIVISIONS,
 				diameter, length, width));
 		
@@ -205,7 +236,7 @@ public class ChainLink2 extends PhysicalObject {
 		Shape3D shape = new Shape3D(gInfo.getGeometryArray());
 		Appearance app = new Appearance();
 		Material mat = new Material();
-		mat.setDiffuseColor(1, 0, 0);
+		mat.setDiffuseColor(myColor);
 		app.setMaterial(mat);
 		shape.setAppearance(app);
 		

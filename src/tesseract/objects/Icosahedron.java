@@ -5,6 +5,8 @@
  */
 package tesseract.objects;
 
+import java.awt.Color;
+
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.GeometryArray;
@@ -12,6 +14,7 @@ import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TriangleArray;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -46,7 +49,15 @@ public class Icosahedron extends PhysicalObject {
 	 */
 	private static final float GOLDEN_RATIO = (float) ((1.0 + Math.sqrt(5.0))
 			/ 2.0);
+	/**
+	 * Default Object color.
+	 */
+	private static final Color3f DEFAULT_COLOR = new Color3f(.9f, .05f, .05f);
 	
+	/**
+	 * User definable color.
+	 */
+	private final Color3f myColor;
 
 	//CONSTRUCTORS
 	/**
@@ -54,12 +65,12 @@ public class Icosahedron extends PhysicalObject {
 	 * @param position start position.
 	 * @param mass start mass.
 	 * @param scale of object.
+	 * @param theColor of object.
 	 */
 	public Icosahedron(final Vector3f position, final float mass,
-			final float scale) {
-		
+			final float scale, final Color theColor) {
 		super(position, mass);
-		
+		myColor = new Color3f(theColor);
 		setShape(buildIcosahedron(scale));
 		
 		if (inverseMass != 0) {
@@ -69,6 +80,17 @@ public class Icosahedron extends PhysicalObject {
 			inverseInertiaTensor.m22 = inverseInertiaTensor.m00;
 			inverseInertiaTensor.invert();
 		}
+	}
+	
+	/**
+	 * Create new Icosahedron.
+	 * @param position start position.
+	 * @param mass start mass.
+	 * @param scale of object.
+	 */
+	public Icosahedron(final Vector3f position, final float mass,
+			final float scale) {
+		this(position, mass, scale, DEFAULT_COLOR.get());
 	}
 	
 	/**
@@ -206,10 +228,10 @@ public class Icosahedron extends PhysicalObject {
 		Shape3D shape = new Shape3D(geo.getGeometryArray());
 		Appearance meshApp = new Appearance();
 		Material surface = new Material();
-		surface.setDiffuseColor(.9f, .05f, .05f);
+		surface.setDiffuseColor(myColor);
 		meshApp.setMaterial(surface);
-		meshApp.setColoringAttributes(new ColoringAttributes(.9f,
-				.05f, .05f, ColoringAttributes.NICEST));
+		meshApp.setColoringAttributes(new ColoringAttributes(myColor,
+				ColoringAttributes.NICEST));
 		shape.setAppearance(meshApp);
 		
 		return shape;

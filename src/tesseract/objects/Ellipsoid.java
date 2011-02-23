@@ -6,9 +6,14 @@
 
 package tesseract.objects;
 
+import java.awt.Color;
+
 import javax.media.j3d.Appearance;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.Material;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -33,11 +38,21 @@ public class Ellipsoid extends PhysicalObject {
 	private static final float DEFAULT_MASS = 10;
 	
 	/**
+	 * Default Object color.
+	 */
+	private static final Color3f DEFAULT_COLOR = new Color3f(.9f, .05f, .05f);
+	
+	/**
+	 * User definable color.
+	 */
+	private final Color3f myColor; 
+	
+	/**
 	 * Number of divisions in the sphere.
 	 */
 	private static final int DEFAULT_DIVISIONS = 50;
 	
-
+	
 	/**
 	 * Create a new Ellipsoid.
 	 * 
@@ -49,12 +64,14 @@ public class Ellipsoid extends PhysicalObject {
 	 * @param appearance an Appearance object.
 	 * @param b a float for the b portion of the ellipsoid formula.
 	 * @param c a float for the c portion of the ellipsoid formula.
+	 * @param theColor of the object.
 	 */
 	public Ellipsoid(final Vector3f position, final float mass,
 			final float radius,	final int primflags, final int divisions,
 			final Appearance appearance, final float b, final float c) {
 		super(position, mass);
-		
+		myColor = new Color3f();
+		appearance.getMaterial().getDiffuseColor(myColor);
 		setShape(createShape(radius, primflags, appearance, divisions, b, c));
 		
 		final float rSq = radius * radius;
@@ -68,18 +85,32 @@ public class Ellipsoid extends PhysicalObject {
 		}
 		updateTransformGroup();
 	}
-
+	
 	/**
 	 * Create a new Ellipsoid.
 	 * @author Phillip Cardon
 	 * @param position Initial position.
 	 * @param mass mass of ellipsoid
 	 * @param radius a float for the size of the base sphere.
+	 * @param theColor of the object.
 	 */
 	public Ellipsoid(final Vector3f position, final float mass,
 			final float radius) {
+		this(position, mass, radius, DEFAULT_COLOR.get());
+	}
+	
+	/**
+	 * Create a new Ellipsoid.
+	 * @author Phillip Cardon
+	 * @param position Initial position.
+	 * @param mass mass of ellipsoid
+	 * @param radius a float for the size of the base sphere.
+	 * @param theColor of the object.
+	 */
+	public Ellipsoid(final Vector3f position, final float mass,
+			final float radius, Color theColor) {
 		super(position, mass);
-		
+		myColor = new Color3f(theColor);
 		final float rSq = radius * radius;
 		final float a = 1.0f;
 		final float b = 1.0f;
@@ -104,8 +135,20 @@ public class Ellipsoid extends PhysicalObject {
 	 * @param radius a float for the size of the base sphere.
 	 */
 	public Ellipsoid(final Vector3f position, final float radius) {
+		this(position, radius, DEFAULT_COLOR.get());
+	}
+	
+	/**
+	 * Create a new Ellipsoid.
+	 * 
+	 * @param position Initial position.
+	 * @param radius a float for the size of the base sphere.
+	 * @param theColor of object.
+	 */
+	public Ellipsoid(final Vector3f position, final float radius,
+			final Color theColor) {
 		super(position, DEFAULT_MASS);
-		
+		myColor = new Color3f(theColor);
 		final float rSq = radius * radius;
 		final float a = 1.0f;
 		final float b = 1.0f;
@@ -133,9 +176,14 @@ public class Ellipsoid extends PhysicalObject {
 	 */
 	private TransformGroup createDefaultEllipsoid(final float radius, final float a,
 			final float b, final float c) {
-		
+		Appearance meshApp = new Appearance();
+		Material surface = new Material();
+		surface.setDiffuseColor(myColor);
+		meshApp.setMaterial(surface);
+		meshApp.setColoringAttributes(new ColoringAttributes(myColor,
+				ColoringAttributes.NICEST));
 		Sphere sphere = new Sphere(radius, new Sphere().getPrimitiveFlags() | Sphere.ENABLE_GEOMETRY_PICKING,
-				DEFAULT_DIVISIONS);
+				DEFAULT_DIVISIONS, meshApp);
 		Transform3D tmp = new Transform3D();
 		tmp.set(new Matrix3f(a, 0.0f, 0.0f, 0.0f, b, 0.0f, 0.0f, 0.0f, c));
 		TransformGroup tg = new TransformGroup(tmp);
