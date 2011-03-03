@@ -443,10 +443,19 @@ private static final int NODE_TYPE_BRANCH = 1;
 		int type = in.readInt();
 		switch (type) {
 		case NODE_TYPE_BRANCH:
-			// Complete me
-			
+			BranchGroup bgroup = new BranchGroup();
+			int numTGChildren = in.readInt();
+			for (int i = 0; i < numTGChildren; i++) {
+				bgroup.addChild(readNode(in));
+			}
+			return bgroup;
 		case NODE_TYPE_TRANSFORM:
-			// Complete me
+			TransformGroup tgroup = new TransformGroup();
+			int numChildren = in.readInt();
+			for (int i = 0; i < numChildren; i++) {
+				tgroup.addChild(readNode(in));
+			}
+			return tgroup;
 		case NODE_TYPE_PRIMITIVE:
 			BranchGroup bg = new BranchGroup();
 			int shapes = in.readInt();
@@ -462,7 +471,19 @@ private static final int NODE_TYPE_BRANCH = 1;
 			}
 			return bg;
 		case NODE_TYPE_SHAPE:
-			// Complete me
+			BranchGroup shapeBG = new BranchGroup();
+			Shape3D shape = new Shape3D();
+			shape.removeAllGeometries();
+			boolean hasAppearance = in.readBoolean();
+			Appearance shapeApp = new Appearance(); 
+			if(hasAppearance) {
+				shapeApp = readAppearance(in);
+			}
+			int geometries = in.readInt();
+			for (int i = 0; i < geometries; i++)
+				shape.addGeometry(readGeometry(in));
+			shapeBG.addChild(shape);
+			return shapeBG;
 		default:
 			throw new IllegalArgumentException("Illegal node type for serialization");
 		}
