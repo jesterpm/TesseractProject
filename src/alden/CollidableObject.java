@@ -1,10 +1,18 @@
 package alden;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.Primitive;
+
 @SuppressWarnings("restriction")
-public abstract class CollidableObject {
+public abstract class CollidableObject implements Serializable {
+	private static final long serialVersionUID = 3667108226485766929L;
 	protected float inverseMass;
 	// The center of mass in the local coordinate system
 	protected Vector3f centerOfMass;
@@ -20,14 +28,14 @@ public abstract class CollidableObject {
 	protected float penetrationCorrection;
 	protected float dynamicFriction;
 	protected float rotationalFriction;
-	protected BranchGroup BG;
-	protected TransformGroup TG;
-	protected Node node;
-	private ArrayList<Vector3f> vertexCache;
-	private ArrayList<CollisionDetector.Triangle> triangleCache;
-	private Bounds boundsCache;
+	transient protected BranchGroup BG;
+	transient protected TransformGroup TG;
+	transient protected Node node;
+	transient private ArrayList<Vector3f> vertexCache;
+	transient private ArrayList<CollisionDetector.Triangle> triangleCache;
+	transient private Bounds boundsCache;
 	// The inverse inertia tensor in world coordinates
-	private Matrix3f inverseInertiaTensorCache;
+	transient private Matrix3f inverseInertiaTensorCache;
 	
 	public CollidableObject() {
 		this(1);
@@ -307,5 +315,189 @@ public abstract class CollidableObject {
 			other.angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(other.angularVelocity), ci.contactNormal, other.angularVelocity);
 			
 		}
+	}
+
+private static final int NODE_TYPE_BRANCH = 1;
+	private static final int NODE_TYPE_TRANSFORM = 2;
+	private static final int NODE_TYPE_PRIMITIVE = 3;
+	private static final int NODE_TYPE_SHAPE = 4;
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		writeObject(out, node);
+	}
+
+	private static void writeObject(ObjectOutputStream out, Node node) throws IOException {
+		if (node instanceof BranchGroup) {
+			out.writeInt(NODE_TYPE_BRANCH);
+			out.writeInt(((BranchGroup) node).numChildren());
+			for (int i = 0; i < ((BranchGroup) node).numChildren(); i++) {
+				Node childNode = ((BranchGroup) node).getChild(i);
+				writeObject(out, childNode);
+			}
+		} else if (node instanceof TransformGroup) {
+			out.writeInt(NODE_TYPE_TRANSFORM);
+			out.writeInt(((TransformGroup) node).numChildren());
+			for (int i = 0; i < ((TransformGroup) node).numChildren(); i++) {
+				Node childNode = ((TransformGroup) node).getChild(i);
+				writeObject(out, childNode);
+			}
+		} else if (node instanceof Primitive) {
+			out.writeInt(NODE_TYPE_PRIMITIVE);
+			Primitive prim = (Primitive)node;
+			int index = 0;
+			Shape3D shape;
+			out.writeInt(prim.numChildren());
+			while ((shape = prim.getShape(index++)) != null) {
+				Appearance appearance = shape.getAppearance();
+				if (appearance != null) {
+					out.writeBoolean(true);
+					writeObject(out, appearance);
+				} else
+					out.writeBoolean(false);
+				out.writeInt(shape.numGeometries());
+				for (int i = 0; i < shape.numGeometries(); i++)
+					writeObject(out, shape.getGeometry(i));
+			}
+			
+		} else if (node instanceof Shape3D) {
+			out.writeInt(NODE_TYPE_SHAPE);
+			Shape3D shape = (Shape3D) node;
+			Appearance appearance = shape.getAppearance();
+			if (appearance != null) {
+				out.writeBoolean(true);
+				writeObject(out, appearance);
+			} else
+				out.writeBoolean(false);
+			out.writeInt(shape.numGeometries());
+			for (int i = 0; i < shape.numGeometries(); i++)
+				writeObject(out, shape.getGeometry(i));
+			
+		} else 
+			throw new IllegalArgumentException("Illegal node type for serialization");
+	}
+
+	private static void writeObject(ObjectOutputStream out, Geometry geometry) throws IOException {
+		GeometryInfo gi = new GeometryInfo((GeometryArray)geometry);
+		gi.convertToIndexedTriangles();
+		geometry = gi.getIndexedGeometryArray();
+		IndexedTriangleArray trueGeometry = (IndexedTriangleArray)geometry;
+		
+		int format = trueGeometry.getVertexFormat() & (IndexedTriangleArray.COORDINATES | IndexedTriangleArray.NORMALS);
+		out.writeInt(format);
+		Point3f vertices[] = new Point3f[trueGeometry.getValidVertexCount()];
+		for (int i = 0; i < vertices.length; i++) {
+			vertices[i] = new Point3f();
+			trueGeometry.getCoordinate(i, vertices[i]);
+		}
+		out.writeObject(vertices);
+		int indices[] = new int[trueGeometry.getValidIndexCount()];
+		trueGeometry.getCoordinateIndices(0, indices);
+		out.writeObject(indices);
+		
+		if ((format & IndexedTriangleArray.NORMALS) != 0) {
+			Vector3f normals[] = new Vector3f[trueGeometry.getValidVertexCount()];
+			for (int i = 0; i < normals.length; i++) {
+				normals[i] = new Vector3f();
+				trueGeometry.getNormal(i, normals[i]);
+			}
+			out.writeObject(normals);
+			trueGeometry.getNormalIndices(0, indices);
+			out.writeObject(indices);
+		}
+	}
+
+	private static void writeObject(ObjectOutputStream out, Appearance appearance) throws IOException {
+		Material material = appearance.getMaterial();
+		if (material != null) {
+			out.writeBoolean(true);
+			Color3f color = new Color3f();
+			material.getAmbientColor(color);
+			out.writeObject(color);
+			color = new Color3f();
+			material.getDiffuseColor(color);
+			out.writeObject(color);
+			color = new Color3f();
+			material.getSpecularColor(color);
+			out.writeObject(color);
+			color = new Color3f();
+			material.getEmissiveColor(color);
+			out.writeObject(color);
+			out.writeFloat(material.getShininess());
+			out.writeInt(material.getColorTarget());
+		} else
+			out.writeBoolean(false);
+	}
+
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		TG = new TransformGroup();
+		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		BG = new BranchGroup();
+		BG.setCapability(BranchGroup.ALLOW_DETACH);
+		BG.addChild(TG);
+		setShape(readNode(in));
+	}
+
+	private static Node readNode(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		int type = in.readInt();
+		switch (type) {
+		case NODE_TYPE_BRANCH:
+			// Complete me
+			
+		case NODE_TYPE_TRANSFORM:
+			// Complete me
+		case NODE_TYPE_PRIMITIVE:
+			BranchGroup bg = new BranchGroup();
+			int shapes = in.readInt();
+			for (int i = 0; i < shapes; i++) {
+				Shape3D shape = new Shape3D();
+				shape.removeAllGeometries();
+				if (in.readBoolean())
+					shape.setAppearance(readAppearance(in));
+				int geometries = in.readInt();
+				for (int j = 0; j < geometries; j++)
+					shape.addGeometry(readGeometry(in));
+				bg.addChild(shape);			
+			}
+			return bg;
+		case NODE_TYPE_SHAPE:
+			// Complete me
+		default:
+			throw new IllegalArgumentException("Illegal node type for serialization");
+		}
+	}
+
+	private static GeometryArray readGeometry(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		int format = in.readInt();
+		Point3f vertices[] = (Point3f[])in.readObject();
+		int indices[] = (int[])in.readObject();
+		IndexedTriangleArray geometry = new IndexedTriangleArray(vertices.length, format, indices.length);
+		geometry.setCoordinates(0, vertices);
+		geometry.setCoordinateIndices(0, indices);
+
+		if ((format & IndexedTriangleArray.NORMALS) != 0) {
+			Vector3f normals[] = (Vector3f[])in.readObject();
+			indices = (int[])in.readObject();
+			geometry.setNormals(0, normals);
+			geometry.setNormalIndices(0, indices);
+		}
+		
+		return geometry;
+	}
+
+	private static Appearance readAppearance(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		Appearance appearance = new Appearance();
+		if (in.readBoolean()) {
+			Material material = new Material();
+			material.setAmbientColor((Color3f)in.readObject());
+			material.setDiffuseColor((Color3f)in.readObject());
+			material.setSpecularColor((Color3f)in.readObject());
+			material.setEmissiveColor((Color3f)in.readObject());
+			material.setShininess(in.readFloat());
+			material.setColorTarget(in.readInt());
+			appearance.setMaterial(material);
+		}
+		return appearance;
 	}
 }
