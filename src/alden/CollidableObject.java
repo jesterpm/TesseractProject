@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
+
 import javax.media.j3d.*;
 import javax.vecmath.*;
 
@@ -337,6 +338,11 @@ private static final int NODE_TYPE_BRANCH = 1;
 			}
 		} else if (node instanceof TransformGroup) {
 			out.writeInt(NODE_TYPE_TRANSFORM);
+			Transform3D tgT = new Transform3D();
+			Matrix4f matrix = new Matrix4f();
+			((TransformGroup) node).getTransform(tgT);
+			tgT.get(matrix);
+			out.writeObject(matrix);
 			out.writeInt(((TransformGroup) node).numChildren());
 			for (int i = 0; i < ((TransformGroup) node).numChildren(); i++) {
 				Node childNode = ((TransformGroup) node).getChild(i);
@@ -451,6 +457,9 @@ private static final int NODE_TYPE_BRANCH = 1;
 			return bgroup;
 		case NODE_TYPE_TRANSFORM:
 			TransformGroup tgroup = new TransformGroup();
+			Matrix4f matrix = (Matrix4f) in.readObject();
+			Transform3D tgT = new Transform3D(matrix);
+			tgroup.setTransform(tgT);
 			int numChildren = in.readInt();
 			for (int i = 0; i < numChildren; i++) {
 				tgroup.addChild(readNode(in));
