@@ -364,6 +364,21 @@ public class Peer extends Observable {
 	}
 	
 	/**
+	 * A method that sends a CollidableObject to a specific
+	 * <code>Peer</code> in the network.
+	 * 
+	 * @param payload
+	 *            A CollidableObject.
+	 * 
+	 * @return <code>true</code> if the message was successfully sent to the
+	 *         <code>Peer</code>, or <code>false</code> otherwise.
+	 */
+	public synchronized boolean sendPayloadToPeer(PeerInformation peer, CollidableObject payload) {
+		PeerMessage message = createPayloadMessage(payload);
+		return sendMessage(message, peer);
+	}
+	
+	/**
 	 * A method that sends an object to all
 	 * <code>Peer</code>s in the network.
 	 * 
