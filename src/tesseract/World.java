@@ -258,14 +258,6 @@ public class World implements Observer {
 		 */
 		
 		// Collision Detection with Aldens mar4 suggestions
-		PeerInformation neighbor1 = myPeer.getPeerInDirection(my_side1.getPosition().getX(),
-				my_side1.getPosition().getY());
-		PeerInformation neighbor2 = myPeer.getPeerInDirection(my_side2.getPosition().getX(),
-				my_side2.getPosition().getY());
-		PeerInformation neighbor3 = myPeer.getPeerInDirection(my_side3.getPosition().getX(),
-				my_side3.getPosition().getY());
-		PeerInformation neighbor4 = myPeer.getPeerInDirection(my_side4.getPosition().getX(),
-				my_side4.getPosition().getY());
 		
 		for (int i = 0; i < myObjects.size() - 1; i++) {
 			for (int j = i + 1; j < myObjects.size(); j++) {
@@ -274,6 +266,15 @@ public class World implements Observer {
 
 				//if 'i' is a side and a neighbor exists, transmit j object to that node
 				if (collisions.size() > 0) {
+					
+					PeerInformation neighbor1 = myPeer.getPeerInDirection(my_side1.getPosition().getX(),
+							my_side1.getPosition().getY());
+					PeerInformation neighbor2 = myPeer.getPeerInDirection(my_side2.getPosition().getX(),
+							my_side2.getPosition().getY());
+					PeerInformation neighbor3 = myPeer.getPeerInDirection(my_side3.getPosition().getX(),
+							my_side3.getPosition().getY());
+					PeerInformation neighbor4 = myPeer.getPeerInDirection(my_side4.getPosition().getX(),
+							my_side4.getPosition().getY());
 					
 					if (myObjects.get(i).equals(my_side1) && neighbor1 != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
