@@ -158,8 +158,18 @@ public abstract class CollidableObject implements Serializable {
 		inverseInertiaTensorCache = null;
 	}
 
+	//Alden mar4 change
 	public void resolveCollisions(CollidableObject other) {
-		ArrayList<CollisionInfo> collisions = CollisionDetector.calculateCollisions(this, other);
+		resolveCollisions(other, CollisionDetector.calculateCollisions(this, other));
+	}
+	
+	/*public void resolveCollisions(CollidableObject other) {
+	ArrayList<CollisionInfo> collisions = CollisionDetector.calculateCollisions(this, other);
+	if (collisions.isEmpty())
+		return;
+	*/
+	//Alden mar4 change
+	public void resolveCollisions(CollidableObject other, ArrayList<CollisionInfo> collisions) {
 		if (collisions.isEmpty())
 			return;
 
@@ -318,7 +328,7 @@ public abstract class CollidableObject implements Serializable {
 		}
 	}
 
-private static final int NODE_TYPE_BRANCH = 1;
+	private static final int NODE_TYPE_BRANCH = 1;
 	private static final int NODE_TYPE_TRANSFORM = 2;
 	private static final int NODE_TYPE_PRIMITIVE = 3;
 	private static final int NODE_TYPE_SHAPE = 4;
