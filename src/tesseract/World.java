@@ -262,35 +262,50 @@ public class World implements Observer {
 				ArrayList<CollisionInfo> collisions = 
 					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
 				if (collisions.size() > 0) {
-					//if 'i' is a side transmit j object
-					if (myObjects.get(i).equals(my_side1)) {
+					//if 'i' side and a neighbor exists, transmit j object to that node
+					if (myObjects.get(i).equals(my_side1) && myPeer.getPeerInDirection
+							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(j));
-					} else if (myObjects.get(i).equals(my_side2)) {
+					} 
+					if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
+							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(j));
-					} else if (myObjects.get(i).equals(my_side3)) {
+					}
+					if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
+							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(j));
-					} else if (myObjects.get(i).equals(my_side4)) {
+					}
+					if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
+							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(j));
-					
+					}
 					//if 'j' is a side transmit i object
-					} else if (myObjects.get(j).equals(my_side1)) {
+					if (myObjects.get(j).equals(my_side1)&& myPeer.getPeerInDirection
+							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(i));
-					} else if (myObjects.get(j).equals(my_side2)) {
+					}
+					if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
+							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(i));
-					} else if (myObjects.get(j).equals(my_side3)) {
+					}
+					if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
+							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(i));
-					} else if (myObjects.get(j).equals(my_side4)) {
+					}
+					if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
+							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
+					} else {
+						myObjects.get(i).resolveCollisions(myObjects.get(j));
 					}
-					myObjects.get(i).resolveCollisions(myObjects.get(j));
 				}
 				
 			}
