@@ -514,7 +514,7 @@ public class Peer extends Observable {
 			
 			if (mesg.id != null && mesg.id.equals(PeerMessage.DEFAULT_ID)) {
 				setChanged();
-				notifyObservers(mesg.extra);
+				notifyObservers(mesg);
 			}
 			
 			break;
@@ -584,5 +584,9 @@ public class Peer extends Observable {
 	private void logMessage(String text) {
 		if (logEnabled)
 			System.out.println(new Date() + " -- " + text);
+	}
+	
+	public String getMyName() {
+		return myInfo.toString();
 	}
 }

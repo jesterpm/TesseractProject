@@ -36,6 +36,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.chatbox.Chatbox;
 import tesseract.forces.AirDrag;
 import tesseract.forces.CircularXY;
 import tesseract.forces.CircularXZ;
@@ -52,7 +53,6 @@ import tesseract.newmenu.NewPlanarPolygonMenuItem;
 import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.PhysicalObject;
-import tesseract.objects.Sphere;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
@@ -97,6 +97,11 @@ public class TesseractUI extends JFrame {
 	private Peer myPeer;
 	
 	/**
+	 * The Chatbox.
+	 */
+	private Chatbox myChatbox;
+	
+	/**
 	 * The Canvas.
 	 */
 	private Canvas3D myCanvas;
@@ -135,7 +140,8 @@ public class TesseractUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
 		myPeer = new Peer(true);
-		
+		myChatbox = new Chatbox(myPeer);
+		myPeer.addObserver(myChatbox);
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
@@ -220,6 +226,7 @@ public class TesseractUI extends JFrame {
 					String ip = JOptionPane.showInputDialog("Enter the IP to connect to:  ");
 					myPeer.connectToNetwork(ip);
 				}
+				myChatbox.setMyName(); //sets myName Field of Chatbox to Peer ID. 
 			}
 		});
 		networkMenu.add(join);
@@ -363,12 +370,28 @@ public class TesseractUI extends JFrame {
 		exit.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				// TODO: I feel this is the wrong way of exiting...
+				// TODO: Properly shutdown network connection here!
 				System.exit(0);
 			}
 		});
 		simulationMenu.add(exit);
 		
+		//*
+		//JMenu networkMenu = new JMenu("Communication");
+		JMenuItem chat = new JMenuItem("Chat");
+		chat.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				myChatbox.setVisible(true);				
+			}
+		});
+		networkMenu.add(chat);
+		//menuBar.add(networkMenu);//*/
 		setJMenuBar(menuBar);
+		
+		
+		
 	}
 	
 	/**
