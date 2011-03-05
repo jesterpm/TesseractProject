@@ -485,12 +485,15 @@ private static final int NODE_TYPE_BRANCH = 1;
 			shape.removeAllGeometries();
 			boolean hasAppearance = in.readBoolean();
 			Appearance shapeApp = new Appearance(); 
-			if(hasAppearance) {
+			if (hasAppearance) {
 				shapeApp = readAppearance(in);
 			}
 			int geometries = in.readInt();
 			for (int i = 0; i < geometries; i++)
 				shape.addGeometry(readGeometry(in));
+			if (hasAppearance) {
+				shape.setAppearance(shapeApp);
+			}
 			shapeBG.addChild(shape);
 			return shapeBG;
 		default:
