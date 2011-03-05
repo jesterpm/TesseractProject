@@ -91,7 +91,7 @@ public class Chatbox extends JFrame implements Observer {
 		scroller = new JScrollPane(chatRoomDisplay);
 		submitButton = new JButton("Submit");
 		chatField = new JTextField(70);
-		this.setName("Chat");
+		this.setTitle("Tesseract Chatbox");
 		chats = new StringBuilder();
 		buildFrame();
 		attachListeners();
@@ -124,11 +124,17 @@ public class Chatbox extends JFrame implements Observer {
 	
 	/**
 	 * Sets name of this client (local use only).
-	 * @param theName of this client
-	 * @return name set.
 	 */
 	public void setMyName() {
 		myName = myPeer.getMyName();
+		StringBuilder split = new StringBuilder();
+		split.append(myName);
+		int start;
+		int end;
+		start = split.indexOf("(");
+		end = split.indexOf(")") + 1;
+		myName = split.substring(start, end);
+		this.setTitle("Tesseract Chatbox @ " + myPeer.getMyName());
 	}
 	
 	/**
@@ -159,9 +165,17 @@ public class Chatbox extends JFrame implements Observer {
 			if (msg.extra.getClass().equals(String.class)) {
 				String incMsg = (String) msg.extra;
 				String source = msg.sender.toString();
+				StringBuilder split = new StringBuilder();
+				split.append(source);
+				int start;
+				int end;
+				start = split.indexOf("(");
+				end = split.indexOf(")") + 1;
+				source = split.substring(start, end);
 				chats.append("\n");
 				chats.append(source + ": " + incMsg);
 				chatRoomDisplay.setText(chats.toString());
+				chatRoomDisplay.setCaretPosition(chats.toString().length() - 1);
 			} else {
 				System.err.println("Message Extra Field is"
 						+ " of unsupported type.");
@@ -197,11 +211,13 @@ public class Chatbox extends JFrame implements Observer {
 		public void keyReleased(final KeyEvent e) {
 				if (e.getKeyCode() == 10) {
 					toSend = chatField.getText();
-					chats.append("\n");
-					chats.append(myName + ": " + toSend);
-					chatRoomDisplay.setText(chats.toString());
-					chatField.setText("");
-					myPeer.sendExtraToAllPeers(toSend);
+					if (!toSend.equals("")) {
+						chats.append("\n");
+						chats.append(myName + ": " + toSend);
+						chatRoomDisplay.setText(chats.toString());
+						chatField.setText("");
+						myPeer.sendExtraToAllPeers(toSend);
+					}
 				}
 		    }
 	}

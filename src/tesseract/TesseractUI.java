@@ -371,6 +371,7 @@ public class TesseractUI extends JFrame {
 			public void actionPerformed(final ActionEvent e) {
 				// TODO: I feel this is the wrong way of exiting...
 				// TODO: Properly shutdown network connection here!
+				myPeer.disconnectFromNetwork();
 				System.exit(0);
 			}
 		});
