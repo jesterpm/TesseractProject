@@ -9,18 +9,27 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.vecmath.Point3d;
@@ -157,7 +166,7 @@ public class TesseractUI extends JFrame {
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
 		
-		myPeer.connectToNetwork("127.0.0.1");
+		//myPeer.connectToNetwork("127.0.0.1");
 		//myPeer.createNetwork();
 	}
 	
@@ -193,6 +202,28 @@ public class TesseractUI extends JFrame {
 			objectsMenu.add(item);
 		}
 		menuBar.add(objectsMenu);
+		
+		//Network
+		JMenu networkMenu = new JMenu("Network");
+		final JMenuItem join = new JMenuItem("Join Network"); 
+		join.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				int isFirst = JOptionPane.showConfirmDialog(
+					    myCanvas,
+					    "Is this the first node in the network?",
+					    "",
+					    JOptionPane.YES_NO_OPTION);
+				if (isFirst == 0) {
+					myPeer.createNetwork();
+				} else {
+					String ip = JOptionPane.showInputDialog("Enter the IP to connect to:  ");
+					myPeer.connectToNetwork(ip);
+				}
+			}
+		});
+		networkMenu.add(join);
+		menuBar.add(networkMenu);
 		
 		//Forces
 		JMenu forcesMenu = new JMenu("Add Forces");
