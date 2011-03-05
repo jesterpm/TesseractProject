@@ -25,7 +25,7 @@ import common.PeerMessage;
 /**
  * Chat box.
  * @author Phillip Cardon
- * @version 0.1 untested
+ * @version 1.0 working!
  */
 public class Chatbox extends JFrame implements Observer {
 	
