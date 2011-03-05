@@ -66,6 +66,26 @@ public class World implements Observer {
 	private static final int UPDATE_RATE = 30;
 	
 	/**
+	 * side of HalfSpace for transmission decisions
+	 */
+	private HalfSpace my_side1;
+	
+	/**
+	 * side of HalfSpace for transmission decisions
+	 */
+	private HalfSpace my_side2;
+	
+	/**
+	 * side of HalfSpace for transmission decisions
+	 */
+	private HalfSpace my_side3;
+	
+	/**
+	 * side of HalfSpace for transmission decisions
+	 */
+	private HalfSpace my_side4;
+	
+	/**
 	 * Create a new world.
 	 * 
 	 * @param bounds The bounding box of the world.
@@ -126,7 +146,7 @@ public class World implements Observer {
 	private void addHalfspaces() {
 		Point3d lower = new Point3d();
 		Point3d upper = new Point3d();
-		myVirtualWorldBounds.getLower(lower);
+		myVirtualWorldBounds.getLower(lower) ;
 		myVirtualWorldBounds.getUpper(upper);
 		
 		// Bottom
@@ -135,12 +155,16 @@ public class World implements Observer {
 		// Top
 		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(0, -1, 0)));
 		
-		// Sides
-		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(0, 0, -1)));
-		myObjects.add(new HalfSpace(new Vector3f(upper), new Vector3f(-1, 0, 0)));
+		// Sides         
+		my_side1 = new HalfSpace(new Vector3f(upper), new Vector3f(0, 0, -1));
+		myObjects.add(my_side1);
+		my_side2 = new HalfSpace(new Vector3f(upper), new Vector3f(-1, 0, 0));
+		myObjects.add(my_side2);
 		
-		myObjects.add(new HalfSpace(new Vector3f(lower), new Vector3f(0, 0, 1)));
-		myObjects.add(new HalfSpace(new Vector3f(lower), new Vector3f(1, 0, 0)));
+		my_side3 = new HalfSpace(new Vector3f(lower), new Vector3f(0, 0, 1));
+		myObjects.add(my_side3);
+		my_side4 = new HalfSpace(new Vector3f(lower), new Vector3f(1, 0, 0));
+		myObjects.add(my_side4);
 		
 	}
 
@@ -237,9 +261,35 @@ public class World implements Observer {
 			for (int j = i + 1; j < myObjects.size(); j++) {
 				ArrayList<CollisionInfo> collisions = 
 					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
-				if (collisions.size() == 0) {
-					continue;
-				}else {
+				if (collisions.size() > 0) {
+					//if 'i' is a side transmit j object
+					if (myObjects.get(i).equals(my_side1)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(j));
+					} else if (myObjects.get(i).equals(my_side2)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(j));
+					} else if (myObjects.get(i).equals(my_side3)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(j));
+					} else if (myObjects.get(i).equals(my_side4)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(j));
+					
+					//if 'j' is a side transmit i object
+					} else if (myObjects.get(j).equals(my_side1)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(i));
+					} else if (myObjects.get(j).equals(my_side2)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(i));
+					} else if (myObjects.get(j).equals(my_side3)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(i));
+					} else if (myObjects.get(j).equals(my_side4)) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
+					}
 					myObjects.get(i).resolveCollisions(myObjects.get(j));
 				}
 				
