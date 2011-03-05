@@ -291,8 +291,6 @@ public class World implements Observer {
 					}
 				
 				//if 'j' is a side transmit i object
-				} else if (collisions.size() > 0) {
-					
 					if (myObjects.get(j).equals(my_side1)&& myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
@@ -317,7 +315,6 @@ public class World implements Observer {
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
 					}
-				} else if  (collisions.size() > 0) {
 					myObjects.get(i).resolveCollisions(myObjects.get(j));
 				}
 			}
