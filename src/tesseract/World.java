@@ -270,17 +270,20 @@ public class World implements Observer {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-					}else if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
+					}
+					if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-					} else if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
+					} 
+					if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-					} else if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
+					} 
+					if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(j));
@@ -295,17 +298,20 @@ public class World implements Observer {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-					} else if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
+					} 
+					if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-					} else if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
+					} 
+					if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-					} else if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
+					} 
+					if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
