@@ -262,36 +262,34 @@ public class World implements Observer {
 				ArrayList<CollisionInfo> collisions = 
 					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
 
-				//if 'i' side and a neighbor exists, transmit j object to that node
-				if (collisions.size() > 0 && myObjects.get(i) instanceof HalfSpace || myObjects.get(j) instanceof HalfSpace ) {
+				//if 'i' is a side and a neighbor exists, transmit j object to that node
+				if (collisions.size() > 0) {
 					
 					if (myObjects.get(i).equals(my_side1) && myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
+						
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(j));
+						
 						myObjects.get(j).detach();
-						myObjects.remove(j);
 					}
 					if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-						myObjects.remove(j);
 					} 
 					if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-						myObjects.remove(j);
 					} 
 					if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(j));
 						myObjects.get(j).detach();
-						myObjects.remove(j);
 					}
 				
 				//if 'j' is a side transmit i object
@@ -300,28 +298,24 @@ public class World implements Observer {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-						myObjects.remove(i);
 					} 
 					if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-						myObjects.remove(i);
 					} 
 					if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-						myObjects.remove(i);
 					} 
 					if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
 						myObjects.get(i).detach();
-						myObjects.remove(i);
 					}
 					
 					myObjects.get(i).resolveCollisions(myObjects.get(j));
