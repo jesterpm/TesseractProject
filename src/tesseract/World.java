@@ -3,12 +3,13 @@ package tesseract;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.BoundingLeaf;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Canvas3D;
 import javax.media.j3d.DirectionalLight;
 import javax.media.j3d.IndexedLineArray;
 import javax.media.j3d.Light;
@@ -19,20 +20,17 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
-import tesseract.objects.PhysicalObject;
-
 import tesseract.objects.HalfSpace;
-
-import com.sun.j3d.utils.picking.PickTool;
-import com.sun.j3d.utils.picking.behaviors.PickTranslateBehavior;
-import com.sun.j3d.utils.picking.behaviors.PickZoomBehavior;
+import tesseract.objects.PhysicalObject;
+import alden.CollidableObject;
+import alden.Peer;
 
 /**
  * Model of the 3D world.
  * 
  * @author Jesse Morgan
  */
-public class World {
+public class World implements Observer {
 	/**
 	 * Root element of the world.
 	 */
@@ -46,25 +44,17 @@ public class World {
 	/**
 	 * A list of the objects in the world. 
 	 */
-	private List<PhysicalObject> myObjects;
+	private List<CollidableObject> myObjects;
 	
 	/**
 	 * A list of the forces in the world.
 	 */
 	private List<Force> myForces;
 	
-	//private List<ParticleEmitter> emitters;
-	//private boolean enableEmitters;
-	
-	// A list of all the particles in the world
-	//private List<Particle> particles;
-	
-	// A list of all the objects particles may collide with
-	//private List<ParticleCollidableObject> collidables;
-	
-	// Available forces
-	//private static final ParticleForceGenerator forces[] = {new Gravity(0.4f)};
-	//private boolean activeForces[];
+	/**
+	 * The peer object for this world.
+	 */
+	private Peer myPeer;
 	
 	/**
 	 * Update rate for the world.
@@ -76,11 +66,13 @@ public class World {
 	 * 
 	 * @param bounds The bounding box of the world.
 	 */
-	public World(final BoundingBox bounds) {
+	public World(final BoundingBox bounds, final Peer peer) {
 		myVirtualWorldBounds = bounds;
-
+		myPeer = peer;
+		myPeer.addObserver(this);
+		
 		myForces = new LinkedList<Force>();
-		myObjects = new LinkedList<PhysicalObject>();
+		myObjects = new LinkedList<CollidableObject>();
 		
 		// TODO: Should this go here?
 		myScene = new BranchGroup();
@@ -174,25 +166,30 @@ public class World {
 	 */
 	public void tick() {
 		// Iterate over objects in the world.
-		Iterator<PhysicalObject> itr = myObjects.iterator();
+		Iterator<CollidableObject> itr = myObjects.iterator();
 	
 		List<PhysicalObject> children = new LinkedList<PhysicalObject>();
 		
 		while (itr.hasNext()) {
-			PhysicalObject obj = itr.next();
+			CollidableObject obj = itr.next();
 
 			// Apply forces
-			for (Force force : myForces) {
-				force.applyForceTo(obj);
+			if (obj instanceof PhysicalObject) {
+				for (Force force : myForces) {
+					force.applyForceTo((PhysicalObject) obj);
+				}
 			}
 			
 			// Update the object's state.
 			obj.updateState(1f / UPDATE_RATE);
 			
 			// Spawn new objects?
-			List<PhysicalObject> newChildren = obj.spawnChildren(1f / UPDATE_RATE);
-			if (newChildren != null) {
-				children.addAll(newChildren);
+			if (obj instanceof PhysicalObject) {
+				List<PhysicalObject> newChildren =
+					((PhysicalObject) obj).spawnChildren(1f / UPDATE_RATE);
+				if (newChildren != null) {
+					children.addAll(newChildren);
+				}
 			}
 
 			// If it leaves the bounds of the world, DESTROY IT
@@ -212,7 +209,7 @@ public class World {
 			}
 		}
 
-		// Add new children to thr world.
+		// Add new children to the world.
 		for (PhysicalObject obj : children) {
 			myScene.addChild(obj.getGroup());
 		}
@@ -232,7 +229,7 @@ public class World {
 	 * 
 	 * @param obj The object to add
 	 */
-	public void addObject(final PhysicalObject obj) {
+	public void addObject(final CollidableObject obj) {
 		myScene.addChild(obj.getGroup());
 		myObjects.add(obj);
 	}
@@ -261,11 +258,29 @@ public class World {
 	public void resetWorld() {
 		myForces.clear();
 		
-		for (PhysicalObject obj : myObjects) {
+		for (CollidableObject obj : myObjects) {
 			obj.detach();
 		}
 		myObjects.clear();
 		
 		addHalfspaces();
+	}
+
+	/**
+	 * Observer Callback.
+	 * Called when a PAYLOAD or EXTRA peer message is recieved.
+	 * 
+	 * @param peer The network peer.
+	 * @param obj The object from the network.
+	 */
+	public void update(final Observable peer, final Object obj) {
+		if (obj != null) {
+			if (obj instanceof PhysicalObject) {
+				addObject((PhysicalObject) obj);
+				
+			} else if (obj instanceof CollidableObject) {
+				addObject((CollidableObject) obj);
+			}
+		}
 	}
 }	

@@ -42,10 +42,9 @@ import tesseract.newmenu.NewParticleMenuItem;
 import tesseract.newmenu.NewPlanarPolygonMenuItem;
 import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
-import tesseract.objects.Box;
-import tesseract.objects.ChainLink2;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.Sphere;
+import alden.Peer;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
@@ -82,6 +81,11 @@ public class TesseractUI extends JFrame {
 	 * A reference to the world.
 	 */
 	private World myWorld;
+	
+	/**
+	 * The Peer Object
+	 */
+	private Peer myPeer;
 	
 	/**
 	 * The Canvas.
@@ -121,9 +125,12 @@ public class TesseractUI extends JFrame {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
+		myPeer = new Peer(true);
+		
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
-						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)));
+						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
+				myPeer);
 		
 		myCurrentObject = null;
 		
@@ -150,20 +157,8 @@ public class TesseractUI extends JFrame {
 		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
 		// TODO: REMOVE TEST CODE
 		
-		// Lookie! Linked chainlinks!
-		//myWorld.addObject(new ChainLink2(new Vector3f(0.15f, 0, 0), 1));
-		//ChainLink2 o = new ChainLink2(new Vector3f(), 1);
-		//o.setRotation();
-		
-		//myWorld.addForce(new AirDrag());
-		
-		//World.addObject(new Box(0.18f, 0.1f, 0.25f, new Vector3f(0.1f, -0.10f, 0)));
-		//myWorld.addObject(new Box(0.18f, 0.25f, 0.1f, new Vector3f(-0.1f, 0, 0)));
-		PhysicalObject s = new Sphere(.05f, new Vector3f());
-		s.setAngularVelocity(new Vector3f(0, 2, 0));
-		myWorld.addObject(s);
-		
-		//myWorld.addObject(o);
+		myPeer.connectToNetwork("127.0.0.1");
+		//myPeer.createNetwork();
 	}
 	
 	/**

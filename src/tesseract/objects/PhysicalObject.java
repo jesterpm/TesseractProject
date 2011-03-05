@@ -2,7 +2,6 @@ package tesseract.objects;
 
 import java.util.List;
 
-import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Node;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.TransformGroup;
@@ -22,10 +21,15 @@ import com.sun.j3d.utils.geometry.Primitive;
  * @author Jesse Morgan
  */
 public class PhysicalObject extends CollidableObject {
+	/**
+	 * Generated Serial UID
+	 */
+	private static final long serialVersionUID = -8418338503604062404L;
+
 	protected boolean collidable;
 	
 	protected boolean mySelected;
-	
+
 	public PhysicalObject(final Vector3f thePosition, final float mass) {
 		super(mass);
 		this.position.set(thePosition);
