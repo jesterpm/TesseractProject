@@ -38,6 +38,36 @@ public abstract class CollidableObject implements Serializable {
 	// The inverse inertia tensor in world coordinates
 	transient private Matrix3f inverseInertiaTensorCache;
 	
+	/**
+	 * Copy Constructor
+	 * @param The CollidableObject to copy.
+	 */
+	protected CollidableObject(CollidableObject o) {
+		inverseMass = o.inverseMass;
+		centerOfMass = o.centerOfMass;
+		position = o.position;
+		previousPosition = o.previousPosition;
+		velocity = o.velocity;
+		previousVelocity = o.previousVelocity;
+		forceAccumulator = o.forceAccumulator;
+		orientation = o.orientation;
+		angularVelocity = o.angularVelocity;
+		previousRotationalVelocity = o.previousRotationalVelocity;
+		torqueAccumulator = o.torqueAccumulator;
+		inverseInertiaTensor = o.inverseInertiaTensor;
+		coefficientOfRestitution = o.coefficientOfRestitution;
+		penetrationCorrection = o.penetrationCorrection;
+		dynamicFriction = o.dynamicFriction;
+		rotationalFriction = o.rotationalFriction;
+		BG = o.BG;
+		TG = o.TG;
+		node = o.node;
+		vertexCache = o.vertexCache;
+		triangleCache = o.triangleCache;
+		boundsCache = o.boundsCache;
+		inverseInertiaTensorCache = o.inverseInertiaTensorCache;
+	}
+	
 	public CollidableObject() {
 		this(1);
 	}

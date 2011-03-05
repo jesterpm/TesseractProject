@@ -29,6 +29,12 @@ public class PhysicalObject extends CollidableObject {
 	protected boolean collidable;
 	
 	protected boolean mySelected;
+	
+	public PhysicalObject(CollidableObject p) {
+		super(p);
+		collidable = true;
+		mySelected = false;
+	}
 
 	public PhysicalObject(final Vector3f thePosition, final float mass) {
 		super(mass);

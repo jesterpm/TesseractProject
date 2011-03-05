@@ -48,7 +48,7 @@ public class World implements Observer {
 	/**
 	 * A list of the objects in the world. 
 	 */
-	private List<CollidableObject> myObjects;
+	private List<PhysicalObject> myObjects;
 	
 	/**
 	 * A list of the forces in the world.
@@ -96,7 +96,7 @@ public class World implements Observer {
 		myPeer.addObserver(this);
 		
 		myForces = new LinkedList<Force>();
-		myObjects = new LinkedList<CollidableObject>();
+		myObjects = new LinkedList<PhysicalObject>();
 		
 		// TODO: Should this go here?
 		myScene = new BranchGroup();
@@ -194,7 +194,7 @@ public class World implements Observer {
 	 */
 	public void tick() {
 		// Iterate over objects in the world.
-		Iterator<CollidableObject> itr = myObjects.iterator();
+		Iterator<PhysicalObject> itr = myObjects.iterator();
 	
 		List<PhysicalObject> children = new LinkedList<PhysicalObject>();
 		
@@ -202,22 +202,18 @@ public class World implements Observer {
 			CollidableObject obj = itr.next();
 
 			// Apply forces
-			if (obj instanceof PhysicalObject) {
-				for (Force force : myForces) {
-					force.applyForceTo((PhysicalObject) obj);
-				}
+			for (Force force : myForces) {
+				force.applyForceTo((PhysicalObject) obj);
 			}
 			
 			// Update the object's state.
 			obj.updateState(1f / UPDATE_RATE);
 			
 			// Spawn new objects?
-			if (obj instanceof PhysicalObject) {
-				List<PhysicalObject> newChildren =
-					((PhysicalObject) obj).spawnChildren(1f / UPDATE_RATE);
-				if (newChildren != null) {
-					children.addAll(newChildren);
-				}
+			List<PhysicalObject> newChildren =
+				((PhysicalObject) obj).spawnChildren(1f / UPDATE_RATE);
+			if (newChildren != null) {
+				children.addAll(newChildren);
 			}
 
 			// If it leaves the bounds of the world, DESTROY IT
@@ -340,7 +336,7 @@ public class World implements Observer {
 	 * 
 	 * @param obj The object to add
 	 */
-	public void addObject(final CollidableObject obj) {
+	public void addObject(final PhysicalObject obj) {
 		myScene.addChild(obj.getGroup());
 		myObjects.add(obj);
 	}
@@ -390,7 +386,7 @@ public class World implements Observer {
 				addObject((PhysicalObject) obj);
 				
 			} else if (obj instanceof CollidableObject) {
-				addObject((CollidableObject) obj);
+				addObject(new PhysicalObject((CollidableObject) obj));
 			}
 		}
 	}
