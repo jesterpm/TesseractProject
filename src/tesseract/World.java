@@ -1,5 +1,6 @@
 package tesseract;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,12 +20,14 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
-import common.CollidableObject;
-import common.Peer;
-
 import tesseract.forces.Force;
 import tesseract.objects.HalfSpace;
 import tesseract.objects.PhysicalObject;
+
+import common.CollidableObject;
+import common.CollisionDetector;
+import common.CollisionInfo;
+import common.Peer;
 
 /**
  * Model of the 3D world.
@@ -202,13 +205,47 @@ public class World implements Observer {
 				itr.remove();
 			}*/
 		}
-		
+
 		// Collision Detection
-		for (int i = 0; i < myObjects.size() - 1; i++) {
+		/*for (int i = 0; i < myObjects.size() - 1; i++) {
 			for (int j = i + 1; j < myObjects.size(); j++) {
 				myObjects.get(i).resolveCollisions(myObjects.get(j));
 			}
+		}*/
+		
+		
+		/*
+		  In the "tick" method of your application, rather than call the old form of 
+		  resolveCollisions to completely handle a collision, you can now:
+		 
+ 		 	1.Directly call CollisionDetector.calculateCollisions to receive an
+			  ArrayList<CollisionInfo> object.
+			2.If the list is empty, then there is no collision between the pair
+			  of objects and nothing further need be done.
+			3.If the list is not empty, then a collision has occurred and you can
+			  check whether the objects involved necessitate a transmission or a standard
+			  collision resolution (a.k.a. bounce).
+			4.If a standard collision resolution is called for, use the new form of
+			   resolveCollisions to pass in the ArrayList<CollisionInfo> object.
+			   
+		  The goal of this change is to prevent the computationally expensive 
+		  collision detection algorithm from being executed twice when objects collide.
+		 */
+		
+		// Collision Detection with Aldens mar4 suggestions
+		for (int i = 0; i < myObjects.size() - 1; i++) {
+			for (int j = i + 1; j < myObjects.size(); j++) {
+				ArrayList<CollisionInfo> collisions = 
+					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
+				if (collisions.size() == 0) {
+					continue;
+				}else {
+					myObjects.get(i).resolveCollisions(myObjects.get(j));
+				}
+				
+			}
 		}
+		
 
 		// Add new children to the world.
 		for (PhysicalObject obj : children) {

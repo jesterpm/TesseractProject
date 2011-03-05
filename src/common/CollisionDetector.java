@@ -245,7 +245,7 @@ public class CollisionDetector {
 				return calculateCollisions((HalfSpace)a, (Particle)b);
 			if (b instanceof Sphere)
 				return calculateCollisions((HalfSpace)a, (Sphere)b);
-			return calculateCollisions((HalfSpace)a, b.getVertices());
+			return calculateCollisions((HalfSpace) a, b.getVertices());
 		}
 		if (b instanceof HalfSpace) {
 			if (a instanceof Particle)
