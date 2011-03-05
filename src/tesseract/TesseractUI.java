@@ -224,7 +224,9 @@ public class TesseractUI extends JFrame {
 					myPeer.createNetwork();
 				} else {
 					String ip = JOptionPane.showInputDialog("Enter the IP to connect to:  ");
-					myPeer.connectToNetwork(ip);
+					if (ip != null ) {
+						myPeer.connectToNetwork(ip);
+					}
 				}
 				myChatbox.setMyName(); //sets myName Field of Chatbox to Peer ID. 
 			}
