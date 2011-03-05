@@ -3,6 +3,7 @@ package tesseract.objects.emitters;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Node;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
@@ -44,6 +45,7 @@ public class ParticleEmitter extends PhysicalObject {
 		
 		super(position, Float.POSITIVE_INFINITY);
 		this.collidable = false;
+		setShape(new BranchGroup());
 		
 		myCount = 0;
 		myFrequency = frequency;
