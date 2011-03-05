@@ -263,7 +263,7 @@ public class World implements Observer {
 					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
 
 				//if 'i' side and a neighbor exists, transmit j object to that node
-				if (collisions.size() > 0 && myObjects.get(i) instanceof HalfSpace) {
+				if (collisions.size() > 0) {
 					
 					if (myObjects.get(i).equals(my_side1) && myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
@@ -288,7 +288,7 @@ public class World implements Observer {
 					}
 				
 				//if 'j' is a side transmit i object
-				} else if (collisions.size() > 0 && myObjects.get(j) instanceof HalfSpace) {
+				} else if (collisions.size() > 0) {
 					
 					if (myObjects.get(j).equals(my_side1)&& myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
