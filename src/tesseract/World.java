@@ -261,53 +261,59 @@ public class World implements Observer {
 			for (int j = i + 1; j < myObjects.size(); j++) {
 				ArrayList<CollisionInfo> collisions = 
 					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
-				if (collisions.size() > 0) {
-					//if 'i' side and a neighbor exists, transmit j object to that node
+
+				//if 'i' side and a neighbor exists, transmit j object to that node
+				if (collisions.size() > 0 && myObjects.get(i) instanceof HalfSpace) {
+					
 					if (myObjects.get(i).equals(my_side1) && myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(j));
-					} 
-					if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
+						myObjects.get(j).detach();
+					}else if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(j));
-					}
-					if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
+						myObjects.get(j).detach();
+					} else if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(j));
-					}
-					if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
+						myObjects.get(j).detach();
+					} else if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(j));
+						myObjects.get(j).detach();
 					}
-					//if 'j' is a side transmit i object
+				
+				//if 'j' is a side transmit i object
+				} else if (collisions.size() > 0 && myObjects.get(j) instanceof HalfSpace) {
+					
 					if (myObjects.get(j).equals(my_side1)&& myPeer.getPeerInDirection
 							(my_side1.getPosition().getX(), my_side1.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side1.getPosition().getX(), my_side1.getPosition().getY()), myObjects.get(i));
-					}
-					if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
+						myObjects.get(i).detach();
+					} else if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
 							(my_side2.getPosition().getX(), my_side2.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side2.getPosition().getX(), my_side2.getPosition().getY()), myObjects.get(i));
-					}
-					if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
+						myObjects.get(i).detach();
+					} else if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
 							(my_side3.getPosition().getX(), my_side3.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side3.getPosition().getX(), my_side3.getPosition().getY()), myObjects.get(i));
-					}
-					if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
+						myObjects.get(i).detach();
+					} else if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
 							(my_side4.getPosition().getX(), my_side4.getPosition().getY()) != null) {
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(my_side4.getPosition().getX(), my_side4.getPosition().getY()), myObjects.get(i));
-					} else {
-						myObjects.get(i).resolveCollisions(myObjects.get(j));
+						myObjects.get(i).detach();
 					}
+				} else if  (collisions.size() > 0) {
+					myObjects.get(i).resolveCollisions(myObjects.get(j));
 				}
-				
 			}
 		}
 		
