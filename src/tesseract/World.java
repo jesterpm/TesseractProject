@@ -19,11 +19,12 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
+import common.CollidableObject;
+import common.Peer;
+
 import tesseract.forces.Force;
 import tesseract.objects.HalfSpace;
 import tesseract.objects.PhysicalObject;
-import alden.CollidableObject;
-import alden.Peer;
 
 /**
  * Model of the 3D world.

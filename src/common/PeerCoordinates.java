@@ -1,4 +1,4 @@
-package alden;
+package common;
 import java.io.*;
 
 public class PeerCoordinates implements Serializable {

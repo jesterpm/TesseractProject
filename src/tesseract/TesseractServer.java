@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import alden.Peer;
+import common.Peer;
+
 
 /**
  * This class is not part of the deliverable. This class is simply a server to

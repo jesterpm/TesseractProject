@@ -2,7 +2,8 @@ package tesseract.objects;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.*;
 
-import alden.CollidableObject;
+import common.CollidableObject;
+
 
 public abstract class Polygon extends PhysicalObject {	
 	public Vector3f normal;

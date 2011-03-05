@@ -44,11 +44,11 @@ import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.Sphere;
-import alden.Peer;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
 import com.sun.j3d.utils.universe.SimpleUniverse;
+import common.Peer;
 
 /**
  * This class is the main UI for the Tesseract Project.

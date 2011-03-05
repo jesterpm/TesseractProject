@@ -8,9 +8,9 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import alden.CollidableObject;
 
 import com.sun.j3d.utils.geometry.Primitive;
+import common.CollidableObject;
 
 /**
  * This class is the parent of all objects in the world.

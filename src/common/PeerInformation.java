@@ -1,4 +1,4 @@
-package alden;
+package common;
 import java.io.*;
 import java.net.*;
 

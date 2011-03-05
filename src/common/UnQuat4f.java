@@ -1,4 +1,4 @@
-package alden;
+package common;
 import javax.vecmath.*;
 
 /**
