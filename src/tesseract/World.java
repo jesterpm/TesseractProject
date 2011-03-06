@@ -330,21 +330,21 @@ public class World implements Observer {
 						
 						//i and j are not a HalfSpaces, then they are regular objects colliding
 						if (!(i_object instanceof HalfSpace) && !(j_object instanceof HalfSpace)) {
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 							
 							System.out.println("Hit others" + i_object.getPosition());
 						}
 					
 						//i is a top or bottom so resolve regular collision	
 						if (i_object.equals(my_top) || i_object.equals(my_bottom)) {
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 							
 							System.out.println("i hit top or bottom" + i_object.getPosition());
 						}
 						
 						//j is a top or bottom so resolve regular collision
 						if (j_object.equals(my_top) || j_object.equals(my_bottom)) {
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 								System.out.println("j hit top or bottom" + j_object.getPosition());
 						}
 
@@ -356,15 +356,14 @@ public class World implements Observer {
 									PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 									System.out.println("PeerInfo: " + info);
 									if (info != null) {
+										//switch positions 
 										myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 												(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 										indexToRemove = j;
 										j_object.detach();
 									}
-							
-									
 								}
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 						}
 
 						if (i_object.equals(my_side2)) { 
@@ -381,9 +380,9 @@ public class World implements Observer {
 									j_object.detach();
 								}
 							}
-							i_object.resolveCollisions(j_object);
-							
+							i_object.resolveCollisions(j_object, collisions);
 						}
+						
 						if (i_object.equals(my_side3)) { 
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
@@ -398,8 +397,7 @@ public class World implements Observer {
 									j_object.detach();
 								}
 							}
-
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 						}
 						if (i_object.equals(my_side4)) {
 							int test = myPeer.getPeerSize();
@@ -415,7 +413,7 @@ public class World implements Observer {
 									j_object.detach();
 								}
 							}
-							i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object, collisions);
 						}
 						
 						//if 'j' side and a neighbor exists, transmit i object to that node
@@ -433,7 +431,7 @@ public class World implements Observer {
 									i_object.detach();
 								}
 							}
-							j_object.resolveCollisions(i_object);
+							j_object.resolveCollisions(i_object, collisions);
 						} 
 						if (j_object.equals(my_side2)) {
 							int test = myPeer.getPeerSize();
@@ -449,8 +447,7 @@ public class World implements Observer {
 									i_object.detach();
 								}
 							}
-							j_object.resolveCollisions(i_object);
-							
+							j_object.resolveCollisions(i_object, collisions);
 						}
 						if (j_object.equals(my_side3)) {
 							int test = myPeer.getPeerSize();
@@ -466,8 +463,7 @@ public class World implements Observer {
 									i_object.detach();
 								}
 							}
-
-							j_object.resolveCollisions(i_object);
+							j_object.resolveCollisions(i_object, collisions);
 						}
 						if (j_object.equals(my_side4)) {
 							int test = myPeer.getPeerSize();
@@ -483,13 +479,14 @@ public class World implements Observer {
 									i_object.detach();
 								}
 							}
-							j_object.resolveCollisions(i_object);
+							j_object.resolveCollisions(i_object, collisions);
 						}
 					} else {
-						i_object.resolveCollisions(j_object);
+						i_object.resolveCollisions(j_object, collisions);
 					}
 				}
 			}
+			//if the object leaves the world, remove it from myObjects list
 			if ( indexToRemove >= 0) {
 				myObjects.remove(indexToRemove);
 				System.out.println("Remove index: " + indexToRemove);
