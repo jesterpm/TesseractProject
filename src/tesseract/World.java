@@ -263,15 +263,74 @@ public class World implements Observer {
 		  The goal of this change is to prevent the computationally expensive 
 		  collision detection algorithm from being executed twice when objects collide.
 		 */
-		
 		// Collision Detection with Aldens mar4 suggestions
+		for (int i = 0; i < myObjects.size() - 1; i++) {
+			for (int j = i + 1; j < myObjects.size(); j++) {
+				ArrayList<CollisionInfo> collisions = 
+					CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(j));
+				if (collisions.size() > 0) {
+					//if 'i' side and a neighbor exists, transmit j object to that node
+					if (myObjects.get(i).equals(my_side1) && myPeer.getPeerInDirection
+							(my_side1.getPosition().getX(), my_side1.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side1.getVelocity().getX(), my_side1.getVelocity().getZ()), myObjects.get(j));
+						myObjects.get(j).detach();
+					} 
+					if (myObjects.get(i).equals(my_side2)&& myPeer.getPeerInDirection
+							(my_side2.getVelocity().getX(), my_side2.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side2.getVelocity().getX(), my_side2.getVelocity().getZ()), myObjects.get(j));
+						myObjects.get(j).detach();
+					}
+					if (myObjects.get(i).equals(my_side3)&& myPeer.getPeerInDirection
+							(my_side3.getPosition().getX(), my_side3.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side3.getVelocity().getX(), my_side3.getVelocity().getZ()), myObjects.get(j));
+						myObjects.get(j).detach();
+					}
+					if (myObjects.get(i).equals(my_side4)&& myPeer.getPeerInDirection
+							(my_side4.getPosition().getX(), my_side4.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side4.getVelocity().getX(), my_side4.getVelocity().getZ()), myObjects.get(j));
+						myObjects.get(j).detach();
+					}
+					//if 'j' is a side, transmit i object
+					if (myObjects.get(j).equals(my_side1)&& myPeer.getPeerInDirection
+							(my_side1.getVelocity().getX(), my_side1.getVelocity().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side1.getVelocity().getX(), my_side1.getVelocity().getZ()), myObjects.get(i));
+						myObjects.get(i).detach();
+					}
+					if (myObjects.get(j).equals(my_side2)&& myPeer.getPeerInDirection
+							(my_side2.getPosition().getX(), my_side2.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side2.getVelocity().getX(), my_side2.getVelocity().getZ()), myObjects.get(i));
+						myObjects.get(i).detach();
+					}
+					if (myObjects.get(j).equals(my_side3)&& myPeer.getPeerInDirection
+							(my_side3.getPosition().getX(), my_side3.getPosition().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side3.getVelocity().getX(), my_side3.getVelocity().getZ()), myObjects.get(i));
+						myObjects.get(i).detach();
+					}
+					if (myObjects.get(j).equals(my_side4)&& myPeer.getPeerInDirection
+							(my_side4.getVelocity().getX(), my_side4.getVelocity().getZ()) != null) {
+						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+								(my_side4.getVelocity().getX(), my_side4.getVelocity().getZ()), myObjects.get(i));
+						myObjects.get(i).detach();
+						
+					} else {
+						myObjects.get(i).resolveCollisions(myObjects.get(j));
+					}
+				}
+			}
+		}
+		/*// Collision Detection with Aldens mar4 suggestions
 		for (int i = 0; i < myObjects.size() - 1; i++) {
 				for (int j = i + 1; j < myObjects.size(); j++) {
 					//Used to get size of CollsionInfo and if > 0 then there is a collison.
 					ArrayList<CollisionInfo> collisions = 
 						CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(j));
-					
-					System.out.println("collision size:  " + collisions.size());
 					
 					if (collisions.size() > 0) {
 					
@@ -325,7 +384,7 @@ public class World implements Observer {
 						continue;
 					}
 				}
-			}
+			}*/
 
 		// Add new children to the world.
 		for (PhysicalObject obj : children) {
