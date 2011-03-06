@@ -352,40 +352,40 @@ public class World implements Observer {
 								(j_object.getVelocity().getX(), j_object.getVelocity().getZ()) != null) {
 							System.out.println("Hit Side 1" + i_object.getPosition());
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-									(j_object.getVelocity().getX(), j_object.getVelocity().getY()), j_object);
+									(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 							indexToRemove = j;
 							j_object.detach();
 							
-							//i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object);
 						} 
 						if (myObjects.get(i).equals(my_side2) && myPeer.getPeerInDirection
 								(j_object.getVelocity().getX(), j_object.getVelocity().getZ()) != null) {
 							System.out.println("Hit Side 2" + i_object.getPosition());
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-									(j_object.getVelocity().getX(), myObjects.get(j).getVelocity().getY()), myObjects.get(j));
+									(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), myObjects.get(j));
 							indexToRemove = j;
 							j_object.detach();
-							//i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object);
 							
 						}
 						if (i_object.equals(my_side3) && myPeer.getPeerInDirection
 								(j_object.getVelocity().getX(), j_object.getVelocity().getZ()) != null) {
 							System.out.println("Hit Side  3" + i_object.getPosition());
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-									(j_object.getVelocity().getX(), myObjects.get(j).getVelocity().getY()), j_object);
+									(j_object.getVelocity().getX(), myObjects.get(j).getVelocity().getZ()), j_object);
 							indexToRemove = j;
 							j_object.detach();
 
-							//i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object);
 						}
 						if (myObjects.get(i).equals(my_side4) && myPeer.getPeerInDirection
 								(j_object.getVelocity().getX(), j_object.getVelocity().getZ()) != null) {
 							System.out.println("Hit Side 4" + i_object.getPosition());
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-									(j_object.getVelocity().getX(), myObjects.get(j).getVelocity().getY()), myObjects.get(j));
+									(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), myObjects.get(j));
 							indexToRemove = j;
 							myObjects.get(j).detach();
-							//i_object.resolveCollisions(j_object);
+							i_object.resolveCollisions(j_object);
 						}
 					}
 				}

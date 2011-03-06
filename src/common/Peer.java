@@ -344,6 +344,15 @@ public class Peer extends Observable {
 		
 		return minPeer;
 	}
+	
+	/**
+	 * Gets the size of peers in the list
+	 * 
+	 * @param returns an int representing the number of peers
+	 */
+	public int getPeerSize() {
+		return peers.size();
+	}
 
 	/**
 	 * A method that sends a CollidableObject to all
