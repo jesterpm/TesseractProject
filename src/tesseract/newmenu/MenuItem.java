@@ -49,7 +49,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	/**
 	 * Jframe to hold panel.
 	 */
-	private JFrame myFrame;
+	//private JFrame myFrame;
 	/**
 	 * Jpanel for variable text boxes.
 	 */
@@ -103,7 +103,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	public MenuItem(final World theWorld, final String theLabel) {
 		super(theLabel);
 		useColorButton = true;
-		myFrame = new JFrame();
+		//myFrame = new JFrame();
 		myParameters = new HashMap<String, Object>();
 		myPanel = new JPanel();
 		myReadData = new HashMap <String, JTextField>();
@@ -260,5 +260,13 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	 */
 	protected float getMass() {
 		return ((Float) myParameters.get("Mass")).floatValue();
+	}
+	
+	/**
+	 * Set Parent
+	 * @param theParent frame.
+	 */
+	public void setParent (final JFrame theParent) {
+		myParamFrame.setLocationRelativeTo(theParent);
 	}
 }
