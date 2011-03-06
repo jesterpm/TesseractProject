@@ -268,23 +268,25 @@ public class World implements Observer {
 		for (int i = 0; i < myObjects.size() - 1; i++) {
 	
 			//Used to get size of CollsionInfo and if > 0 then there is a collison.
-			ArrayList<CollisionInfo> collisions = 
-				CollisionDetector.calculateCollisions(myObjects.get(i),myObjects.get(i + 1));
-
-			if (collisions.size() > 0) {
+	/*		ArrayList<CollisionInfo> collisions = 
+				CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(i + 1));
+			
+			System.out.println("collision size:  " + collisions.size());*/
+			
+		//	if (collisions.size() > 0) {
 				for (int j = i + 1; j < myObjects.size(); j++) {
 					
 					//i and j are not a HalfSpaces, then they are regular objects colliding
 					if (!(myObjects.get(i) instanceof HalfSpace) && !(myObjects.get(j) instanceof HalfSpace)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j), collisions);
+						myObjects.get(i).resolveCollisions(myObjects.get(j));
 					
 					//i is a top or bottom so resolve regular collision	
 					} else if (myObjects.get(i).equals(my_top) || myObjects.get(i).equals(my_bottom)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j), collisions);
+						myObjects.get(i).resolveCollisions(myObjects.get(j));
 						
 					//j is a top or bottom so resolve regular collision
 					} else if (myObjects.get(j).equals(my_top) || myObjects.get(j).equals(my_bottom)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j), collisions);
+						myObjects.get(i).resolveCollisions(myObjects.get(j));
 					
 					//i is now either a side or shape so if it is a side transmit j through side i if a neighbor exits
 					} else if (myObjects.get(i) instanceof HalfSpace && myPeer.getPeerInDirection
@@ -313,7 +315,7 @@ public class World implements Observer {
 						continue;
 					}
 				}
-			}
+		//	}
 		}
 		
 
