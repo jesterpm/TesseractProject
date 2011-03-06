@@ -356,7 +356,7 @@ public class World implements Observer {
 									PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 									System.out.println("PeerInfo: " + info);
 									if (info != null) {
-										j_object.switchPosition(); 
+										j_object.switchZ(); 
 										myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 												(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 										indexToRemove = j;
@@ -374,7 +374,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchPosition();
+									j_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 										(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 									indexToRemove = j;
@@ -392,7 +392,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchPosition();
+									j_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 									indexToRemove = j;
@@ -409,7 +409,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchPosition();
+									j_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
 									indexToRemove = j;
@@ -428,7 +428,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchPosition();
+									i_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
 									indexToRemove = i;
@@ -445,7 +445,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchPosition();
+									i_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
 									indexToRemove = i;
@@ -462,7 +462,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchPosition();
+									i_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
 									indexToRemove = i;
@@ -479,7 +479,7 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchPosition();
+									i_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
 									indexToRemove = i;

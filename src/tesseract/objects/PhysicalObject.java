@@ -112,14 +112,21 @@ public class PhysicalObject extends CollidableObject {
 	}
 	
 	/**
-	 * Switches the position of the object before transmission.
+	 * Switches the z position of the object before transmission.
 	 */
-	public void switchPosition() {
-		float x = position.getX();
-		float z = position.getZ();
+	public void switchZ() {
 
-		position.x = -x;
+		float z = position.getZ();
 		position.z = -z;
+	}
+	
+	/**
+	 * Switches the z position of the object before transmission.
+	 */
+	public void switchX() {
+
+		float x = position.getX();
+		position.x = -x;
 	}
 	
 	/**
