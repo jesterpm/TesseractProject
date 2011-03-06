@@ -498,6 +498,7 @@ public class World implements Observer {
 		if ( indexesToRemove.size() > 0) {
 			for (int i = 0; i < indexesToRemove.size(); i++) {
 				myObjects.remove(indexesToRemove.get(i));
+				indexesToRemove.remove(i);
 				System.out.println("Remove index: " + i);
 			}
 		}
