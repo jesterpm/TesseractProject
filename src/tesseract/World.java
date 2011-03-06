@@ -428,6 +428,8 @@ public class World implements Observer {
 							i_object.detach();
 							j_object.resolveCollisions(i_object);
 						}
+					} else {
+						i_object.resolveCollisions(j_object);
 					}
 				}
 			}
