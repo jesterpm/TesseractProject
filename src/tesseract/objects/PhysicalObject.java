@@ -112,6 +112,17 @@ public class PhysicalObject extends CollidableObject {
 	}
 	
 	/**
+	 * Switches the position of the object before transmission.
+	 */
+	public void switchPosition() {
+		float x = position.getX();
+		float z = position.getZ();
+
+		position.x = -x;
+		position.z = -z;
+	}
+	
+	/**
 	 * @return The orientation of the object.
 	 */
 	public Quat4f getOrientation() {
