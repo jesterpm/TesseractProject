@@ -291,25 +291,31 @@ public class World implements Observer {
 						}
 					
 						//i is now either a side or shape so if it is a side transmit j through side i if a neighbor exits
-						if (myObjects.get(i) instanceof HalfSpace && myPeer.getPeerInDirection
-							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
+						if (myObjects.get(i).equals(my_side1) ||
+							myObjects.get(i).equals(my_side2) ||
+							myObjects.get(i).equals(my_side3) || 
+							myObjects.get(i).equals(my_side4) && myPeer.getPeerInDirection
+							(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getY()) != null) {
 						
 							//transmit j
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-								(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
+								(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getY()),
 								myObjects.get(j));
 						
 							myObjects.get(j).detach();
 						}
 					
 						//j is now either a side or shape so if it is a side transmit i through side j if a neighbor exits 
-						if (myObjects.get(j) instanceof HalfSpace && myPeer.getPeerInDirection
+						if (myObjects.get(j).equals(my_side1) ||
+							myObjects.get(j).equals(my_side2) ||
+							myObjects.get(j).equals(my_side3) || 
+							myObjects.get(j).equals(my_side4) && myPeer.getPeerInDirection
 							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
 						
 							//transmit i
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 									(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
-							myObjects.get(j));
+							myObjects.get(i));
 						
 							myObjects.get(j).detach();
 						}
