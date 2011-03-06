@@ -266,10 +266,6 @@ public class World implements Observer {
 		
 		// Collision Detection with Aldens mar4 suggestions
 		for (int i = 0; i < myObjects.size() - 1; i++) {
-	
-
-			
-			
 				for (int j = i + 1; j < myObjects.size(); j++) {
 					//Used to get size of CollsionInfo and if > 0 then there is a collison.
 					ArrayList<CollisionInfo> collisions = 
@@ -279,39 +275,44 @@ public class World implements Observer {
 					
 					if (collisions.size() > 0) {
 					
-					//i and j are not a HalfSpaces, then they are regular objects colliding
-					if (!(myObjects.get(i) instanceof HalfSpace) && !(myObjects.get(j) instanceof HalfSpace)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j));
+						//i and j are not a HalfSpaces, then they are regular objects colliding
+						if (!(myObjects.get(i) instanceof HalfSpace) && !(myObjects.get(j) instanceof HalfSpace)) {
+							myObjects.get(i).resolveCollisions(myObjects.get(j));
+						}
 					
-					//i is a top or bottom so resolve regular collision	
-					} else if (myObjects.get(i).equals(my_top) || myObjects.get(i).equals(my_bottom)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j));
+						//i is a top or bottom so resolve regular collision	
+						if (myObjects.get(i).equals(my_top) || myObjects.get(i).equals(my_bottom)) {
+							myObjects.get(i).resolveCollisions(myObjects.get(j));
+						}
 						
-					//j is a top or bottom so resolve regular collision
-					} else if (myObjects.get(j).equals(my_top) || myObjects.get(j).equals(my_bottom)) {
-						myObjects.get(i).resolveCollisions(myObjects.get(j));
+						//j is a top or bottom so resolve regular collision
+						if (myObjects.get(j).equals(my_top) || myObjects.get(j).equals(my_bottom)) {
+								myObjects.get(i).resolveCollisions(myObjects.get(j));
+						}
 					
-					//i is now either a side or shape so if it is a side transmit j through side i if a neighbor exits
-					} else if (myObjects.get(i) instanceof HalfSpace && myPeer.getPeerInDirection
+						//i is now either a side or shape so if it is a side transmit j through side i if a neighbor exits
+						if (myObjects.get(i) instanceof HalfSpace && myPeer.getPeerInDirection
 							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
 						
-						//transmit j
-						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+							//transmit j
+							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 								(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
 								myObjects.get(j));
 						
-						myObjects.get(j).detach();
+							myObjects.get(j).detach();
+						}
 					
-					//j is now either a side or shape so if it is a side transmit i through side j if a neighbor exits 
-					} else if (myObjects.get(j) instanceof HalfSpace && myPeer.getPeerInDirection
+						//j is now either a side or shape so if it is a side transmit i through side j if a neighbor exits 
+						if (myObjects.get(j) instanceof HalfSpace && myPeer.getPeerInDirection
 							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
 						
-						//transmit i
-						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-								(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
-								myObjects.get(j));
+							//transmit i
+							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
+									(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
+							myObjects.get(j));
 						
-						myObjects.get(j).detach();
+							myObjects.get(j).detach();
+						}
 					
 					//shouldn't get here
 					} else {
@@ -319,8 +320,6 @@ public class World implements Observer {
 					}
 				}
 			}
-		}
-		
 
 		// Add new children to the world.
 		for (PhysicalObject obj : children) {
