@@ -295,11 +295,11 @@ public class World implements Observer {
 							myObjects.get(i).equals(my_side2) ||
 							myObjects.get(i).equals(my_side3) || 
 							myObjects.get(i).equals(my_side4) && myPeer.getPeerInDirection
-							(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getY()) != null) {
+							(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getZ()) != null) {
 						
 							//transmit j
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-								(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getY()),
+								(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getZ()),
 								myObjects.get(j));
 						
 							myObjects.get(j).detach();
@@ -310,11 +310,11 @@ public class World implements Observer {
 							myObjects.get(j).equals(my_side2) ||
 							myObjects.get(j).equals(my_side3) || 
 							myObjects.get(j).equals(my_side4) && myPeer.getPeerInDirection
-							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
+							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getZ()) != null) {
 						
 							//transmit i
 							myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-									(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
+									(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getZ()),
 							myObjects.get(i));
 						
 							myObjects.get(j).detach();
