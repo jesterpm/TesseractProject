@@ -23,8 +23,8 @@ public class Peer extends Observable {
 	 */
 	public static final int DEFAULT_SERVER_PORT = 5507;
 	
-	private PeerInformation myInfo;
-	private ArrayList<PeerInformation> peers;
+	private PeerInformation myInfo = new PeerInformation();
+	private ArrayList<PeerInformation> peers = new ArrayList<PeerInformation>();
 	private ServerSocket serverSocket;
 	private SwingWorker<Object,Object> worker;
 	
