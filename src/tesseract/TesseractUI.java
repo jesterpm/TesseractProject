@@ -44,6 +44,7 @@ import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.forces.LinearOrigin;
 import tesseract.forces.QuadradicOrigin;
+import tesseract.newmenu.MenuItem;
 import tesseract.newmenu.NewChainLinkMenuItem;
 import tesseract.newmenu.NewEllipsoidMenuItem;
 import tesseract.newmenu.NewIcosahedronMenuItem;
@@ -141,6 +142,7 @@ public class TesseractUI extends JFrame {
 		
 		myPeer = new Peer(true);
 		myChatbox = new Chatbox(myPeer);
+		myChatbox.setLocationRelativeTo(this);
 		myPeer.addObserver(myChatbox);
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
@@ -206,6 +208,7 @@ public class TesseractUI extends JFrame {
 		JMenu objectsMenu = new JMenu("Add Object");
 		for (JMenuItem item : myObjectMenuItems) {
 			objectsMenu.add(item);
+			((MenuItem) item).setParent(this); 
 		}
 		menuBar.add(objectsMenu);
 		
