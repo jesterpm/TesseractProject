@@ -313,7 +313,8 @@ public class World implements Observer {
 		 */
 
 		// Collision Detection with Aldens mar4 suggestions
-		int indexToRemove = -1;
+		//int indexToRemove = -1;
+		ArrayList<Integer> indexesToRemove = new ArrayList<Integer>();
 		for (int i = 0; i < myObjects.size() - 1; i++) {
 	
 			for (int j = i + 1; j < myObjects.size(); j++) {
@@ -359,7 +360,7 @@ public class World implements Observer {
 										j_object.switchZ(); 
 										myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 												(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-										indexToRemove = j;
+										indexesToRemove.add(j);
 										j_object.detach();
 									}
 								}
@@ -377,7 +378,7 @@ public class World implements Observer {
 									j_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 										(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexToRemove = j;
+									indexesToRemove.add(j);
 									j_object.detach();
 								}
 							}
@@ -395,7 +396,7 @@ public class World implements Observer {
 									j_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexToRemove = j;
+									indexesToRemove.add(j);
 									j_object.detach();
 								}
 							}
@@ -412,7 +413,7 @@ public class World implements Observer {
 									j_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexToRemove = j;
+									indexesToRemove.add(j);
 									j_object.detach();
 								}
 							}
@@ -431,7 +432,7 @@ public class World implements Observer {
 									i_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexToRemove = i;
+									indexesToRemove.add(i);
 									i_object.detach();
 								}
 							}
@@ -448,7 +449,7 @@ public class World implements Observer {
 									i_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexToRemove = i;
+									indexesToRemove.add(i);
 									i_object.detach();
 								}
 							}
@@ -465,7 +466,7 @@ public class World implements Observer {
 									i_object.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexToRemove = i;
+									indexesToRemove.add(i);
 									i_object.detach();
 								}
 							}
@@ -482,7 +483,7 @@ public class World implements Observer {
 									i_object.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
 											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexToRemove = i;
+									indexesToRemove.add(i);
 									i_object.detach();
 								}
 							}
@@ -493,10 +494,12 @@ public class World implements Observer {
 					}
 				}
 			}
-			//if the object leaves the world, remove it from myObjects list
-			if ( indexToRemove >= 0) {
-				myObjects.remove(indexToRemove);
-				System.out.println("Remove index: " + indexToRemove);
+			//if the object leaves the world, remove it from myObjects list) {
+			if ( indexesToRemove.size() > 0) {
+				for (int i = 0; i > indexesToRemove.size(); i++) {
+					myObjects.remove(i);
+					System.out.println("Remove index: " + i);
+				}
 			}
 
 		// Add new children to the world.
