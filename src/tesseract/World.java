@@ -420,7 +420,7 @@ public class World implements Observer {
 						}
 						
 						//if 'j' side and a neighbor exists, transmit i object to that node
-						if (j_object.equals(my_side1)) {
+						/*if (j_object.equals(my_side1)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -487,7 +487,7 @@ public class World implements Observer {
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
-						}
+						}*/
 					} else {
 						i_object.resolveCollisions(j_object, collisions);
 					}
