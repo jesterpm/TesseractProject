@@ -57,6 +57,7 @@ public class NewToroidMenuItem extends MenuItem {
 		myReadData.get("Toroid Radius").setText(".08");
 		myReadData.get("Toroid Resolution").setText("30");
 		createParameterMenu();
+		makeListeners();
 	}
 
 	@Override
