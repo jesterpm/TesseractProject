@@ -448,6 +448,7 @@ public abstract class CollidableObject implements Serializable {
 				trueGeometry.getNormal(i, normals[i]);
 			}
 			out.writeObject(normals);
+			indices = new int[trueGeometry.getValidIndexCount()];
 			trueGeometry.getNormalIndices(0, indices);
 			out.writeObject(indices);
 		}
