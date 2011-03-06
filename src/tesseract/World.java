@@ -494,10 +494,16 @@ public class World implements Observer {
 					}
 				}
 			}
+		
+		/*if ( indexToRemove >= 0) {
+			myObjects.remove(indexToRemove);
+			System.out.println("Remove index: " + indexToRemove);
+		}*/
 		//if the object leaves the world, remove it from myObjects list) {
 		if (indexesToRemove.size() > 0) {
-			for (int i = 0; i < indexesToRemove.size(); i++) {
-				myObjects.remove(indexesToRemove.get(i));
+			for (Integer k : indexesToRemove) {
+				int i = k;
+				myObjects.remove(i);
 				System.out.println("Remove index: " + i);
 			}
 			indexesToRemove.clear();
