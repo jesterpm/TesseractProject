@@ -494,13 +494,13 @@ public class World implements Observer {
 					}
 				}
 			}
-			//if the object leaves the world, remove it from myObjects list) {
-			if ( indexesToRemove.size() > 0) {
-				for (int i = 0; i > indexesToRemove.size(); i++) {
-					myObjects.remove(i);
-					System.out.println("Remove index: " + i);
-				}
+		//if the object leaves the world, remove it from myObjects list) {
+		if ( indexesToRemove.size() > 0) {
+			for (int i = 0; i > indexesToRemove.size(); i++) {
+				myObjects.remove(indexesToRemove.get(i));
+				System.out.println("Remove index: " + i);
 			}
+		}
 
 		// Add new children to the world.
 		for (PhysicalObject obj : children) {
