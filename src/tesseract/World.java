@@ -267,14 +267,17 @@ public class World implements Observer {
 		// Collision Detection with Aldens mar4 suggestions
 		for (int i = 0; i < myObjects.size() - 1; i++) {
 	
-			//Used to get size of CollsionInfo and if > 0 then there is a collison.
-	/*		ArrayList<CollisionInfo> collisions = 
-				CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(i + 1));
+
 			
-			System.out.println("collision size:  " + collisions.size());*/
 			
-		//	if (collisions.size() > 0) {
 				for (int j = i + 1; j < myObjects.size(); j++) {
+					//Used to get size of CollsionInfo and if > 0 then there is a collison.
+					ArrayList<CollisionInfo> collisions = 
+						CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(j));
+					
+					System.out.println("collision size:  " + collisions.size());
+					
+					if (collisions.size() > 0) {
 					
 					//i and j are not a HalfSpaces, then they are regular objects colliding
 					if (!(myObjects.get(i) instanceof HalfSpace) && !(myObjects.get(j) instanceof HalfSpace)) {
@@ -290,22 +293,22 @@ public class World implements Observer {
 					
 					//i is now either a side or shape so if it is a side transmit j through side i if a neighbor exits
 					} else if (myObjects.get(i) instanceof HalfSpace && myPeer.getPeerInDirection
-							(myObjects.get(i).getPosition().getX(), myObjects.get(i).getPosition().getY()) != null) {
+							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
 						
 						//transmit j
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-								(myObjects.get(i).getPosition().getX(), myObjects.get(i).getPosition().getY()),
+								(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
 								myObjects.get(j));
 						
 						myObjects.get(j).detach();
 					
 					//j is now either a side or shape so if it is a side transmit i through side j if a neighbor exits 
 					} else if (myObjects.get(j) instanceof HalfSpace && myPeer.getPeerInDirection
-							(myObjects.get(i).getPosition().getX(), myObjects.get(i).getPosition().getY()) != null) {
+							(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()) != null) {
 						
 						//transmit i
 						myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-								(myObjects.get(i).getPosition().getX(), myObjects.get(i).getPosition().getY()),
+								(myObjects.get(i).getVelocity().getX(), myObjects.get(i).getVelocity().getY()),
 								myObjects.get(j));
 						
 						myObjects.get(j).detach();
@@ -315,7 +318,7 @@ public class World implements Observer {
 						continue;
 					}
 				}
-		//	}
+			}
 		}
 		
 
