@@ -480,6 +480,8 @@ public abstract class CollidableObject implements Serializable {
 		in.defaultReadObject();
 		TG = new TransformGroup();
 		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		TG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		BG = new BranchGroup();
 		BG.setCapability(BranchGroup.ALLOW_DETACH);
 		BG.addChild(TG);
@@ -495,6 +497,10 @@ public abstract class CollidableObject implements Serializable {
 			for (int i = 0; i < numTGChildren; i++) {
 				bgroup.addChild(readNode(in));
 			}
+			bgroup.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
+			bgroup.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
+			bgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+			bgroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return bgroup;
 		case NODE_TYPE_TRANSFORM:
 			TransformGroup tgroup = new TransformGroup();
@@ -505,6 +511,10 @@ public abstract class CollidableObject implements Serializable {
 			for (int i = 0; i < numChildren; i++) {
 				tgroup.addChild(readNode(in));
 			}
+			tgroup.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
+			tgroup.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
+			tgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+			tgroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return tgroup;
 		case NODE_TYPE_PRIMITIVE:
 			BranchGroup bg = new BranchGroup();
@@ -519,6 +529,10 @@ public abstract class CollidableObject implements Serializable {
 					shape.addGeometry(readGeometry(in));
 				bg.addChild(shape);			
 			}
+			bg.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
+			bg.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
+			bg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+			bg.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return bg;
 		case NODE_TYPE_SHAPE:
 			BranchGroup shapeBG = new BranchGroup();
@@ -536,6 +550,11 @@ public abstract class CollidableObject implements Serializable {
 				shape.setAppearance(shapeApp);
 			}
 			shapeBG.addChild(shape);
+			
+			shapeBG.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
+			shapeBG.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
+			shapeBG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+			shapeBG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return shapeBG;
 		default:
 			throw new IllegalArgumentException("Illegal node type for serialization");
