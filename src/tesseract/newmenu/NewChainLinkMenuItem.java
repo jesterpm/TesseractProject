@@ -58,6 +58,7 @@ public class NewChainLinkMenuItem extends MenuItem {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		//createParameterMenu();
+		setParent();
 		this.getParamFrame().pack();
 		this.getParamFrame().setVisible(true);
 	}

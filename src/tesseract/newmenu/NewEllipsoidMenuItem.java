@@ -55,6 +55,7 @@ public class NewEllipsoidMenuItem extends MenuItem {
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
+		setParent();
 		this.getParamFrame().pack();
 		this.getParamFrame().setVisible(true);
 	}

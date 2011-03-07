@@ -96,6 +96,11 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	private boolean useColorButton;
 	
 	/**
+	 * Parent frame
+	 */
+	private JFrame myParent;
+	
+	/**
 	 * Constructor.
 	 * @param theWorld world parameter.
 	 * @param theLabel for menu item.
@@ -116,6 +121,7 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 		myParamFrame.setLayout(new BorderLayout());
 		myColorButton = new JButton("Color");
 		myColor = Color.RED;
+		myParent = new JFrame();
 	}
 	
 	/**
@@ -263,10 +269,18 @@ public abstract class MenuItem extends JMenuItem implements ActionListener {
 	}
 	
 	/**
-	 * Set Parent
+	 * Set Parent.
 	 * @param theParent frame.
 	 */
-	public void setParent (final JFrame theParent) {
+	public void setParent(final JFrame theParent) {
 		myParamFrame.setLocationRelativeTo(theParent);
+		myParent = theParent;
+	}
+	
+	/**
+	 * Set Parent.
+	 */
+	public void setParent() {
+		myParamFrame.setLocationRelativeTo(myParent);
 	}
 }
