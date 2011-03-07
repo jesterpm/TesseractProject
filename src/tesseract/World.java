@@ -228,72 +228,11 @@ public class World implements Observer {
 			// Spawn new objects?
 			List<PhysicalObject> newChildren =
 				((PhysicalObject) obj).spawnChildren(1f / UPDATE_RATE);
+			
 			if (newChildren != null) {
 				children.addAll(newChildren);
 			}
-
-			// If it leaves the bounds of the world, DESTROY IT
-			/*if (!obj.isExisting()
-					|| !myVirtualWorldBounds.intersect(
-							new Point3d(obj.getPosition()))
-			) {
-				obj.detach();
-				itr.remove();
-			}*/
 		}
-
-		// Collision Detection
-		/*for (int i = 0; i < myObjects.size() - 1; i++) {
-			for (int j = i + 1; j < myObjects.size(); j++) {
-				myObjects.get(i).resolveCollisions(myObjects.get(j));
-			}
-		}*/
-		
-		// Iterate over objects in the world for collisons.
-		//Iterator<PhysicalObject> itr1 = myObjects.iterator();
-		//Iterator<PhysicalObject> itr2 = myObjects.iterator();
-		//if(itr2.hasNext()) {
-		//	itr2.next();
-	//	}
-	
-/*		while (itr1.hasNext()) {
-			PhysicalObject obj1 = itr1.next();
-			while (itr2.hasNext()) {
-				PhysicalObject obj2 = itr2.next();
-				obj1.resolveCollisions(obj2);y
-			}
-		}
-		*/
-		/*int indexToRemove = -1;
-		for (int i = 0; i < myObjects.size() - 1; i++) {
-			for (int j = i + 1; j < myObjects.size(); j++) {
-				//Used to get size of CollsionInfo and if > 0 then there is a collison.
-				ArrayList<CollisionInfo> collisions = 
-					CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(j));
-				
-				PhysicalObject i_object = myObjects.get(i);
-				PhysicalObject j_object = myObjects.get(j);
-									
-				if (collisions.size() > 0) {
-					if (myObjects.get(i).equals(my_side2)) {
-					System.out.println("Hit Side 2" + myObjects.get(i).getPosition());
-					//myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-				//			(myObjects.get(j).getVelocity().getX(), myObjects.get(j).getVelocity().getY()), myObjects.get(j));
-					indexToRemove = j;
-					myObjects.get(j).detach();
-					//i_object.resolveCollisions(j_object);
-					
-					}
-				myObjects.get(i).resolveCollisions(myObjects.get(j));
-				}
-			}
-		}
-		
-		if ( indexToRemove >= 0) {
-			myObjects.remove(indexToRemove);
-			System.out.println("Remove index: " + indexToRemove);
-		}*/
-		
 		
 		/*
 		  In the "tick" method of your application, rather than call the old form of 
@@ -313,208 +252,48 @@ public class World implements Observer {
 		  collision detection algorithm from being executed twice when objects collide.
 		 */
 
-		// Collision Detection with Aldens mar4 suggestions
-		//int indexToRemove = -1;
-		ArrayList<Integer> indexesToRemove = new ArrayList<Integer>();
 		for (int i = 0; i < myObjects.size() - 1; i++) {
-	
 			for (int j = i + 1; j < myObjects.size(); j++) {
-				
-				//Used to get size of CollsionInfo and if > 0 then there is a collison.
 				ArrayList<CollisionInfo> collisions = 
-				CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(j));
+					CollisionDetector.calculateCollisions(myObjects.get(i), myObjects.get(j));
+				
+				if (collisions.size() > 0) {
+					HalfSpace hs = null;
+					PhysicalObject o = null;
 					
-					PhysicalObject i_object = myObjects.get(i);
-					PhysicalObject j_object = myObjects.get(j);
-										
-					if (collisions.size() > 0) {
+					if (myObjects.get(i) instanceof HalfSpace) {
+						// If i is a halfspace, j must be an object
+						hs = (HalfSpace) myObjects.get(i);
+						o = myObjects.get(j);
 						
 						
-						//i and j are not a HalfSpaces, then they are regular objects colliding
-						if (!(i_object instanceof HalfSpace) && !(j_object instanceof HalfSpace)) {
-							i_object.resolveCollisions(j_object, collisions);
-							
-							System.out.println("Hit others" + i_object.getPosition());
-						}
-					
-						//i is a top or bottom so resolve regular collision	
-						if (i_object.equals(my_top) || i_object.equals(my_bottom)) {
-							i_object.resolveCollisions(j_object, collisions);
-							
-							System.out.println("i hit top or bottom" + i_object.getPosition());
-						}
-						
-						//j is a top or bottom so resolve regular collision
-						if (j_object.equals(my_top) || j_object.equals(my_bottom)) {
-							i_object.resolveCollisions(j_object, collisions);
-								System.out.println("j hit top or bottom" + j_object.getPosition());
-						}
-
-						//if 'i' side and a neighbor exists, transmit j object to that node
-						if (i_object.equals(my_side1)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-								System.out.println("Hit Side 1 J" + i_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//j_object.switchZ(); 
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexesToRemove.add(j);
-									j_object.detach();
-								}
-							}
-							i_object.resolveCollisions(j_object, collisions);
-						}
-
-						if (i_object.equals(my_side2)) { 
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side 2 J" + i_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//j_object.switchX();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-										(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexesToRemove.add(j);
-									j_object.detach();
-								}
-							}
-							i_object.resolveCollisions(j_object, collisions);
-						}
-						
-						if (i_object.equals(my_side3)) { 
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side  3 J" + i_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//j_object.switchZ();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexesToRemove.add(j);
-									j_object.detach();
-								}
-							}
-							i_object.resolveCollisions(j_object, collisions);
-						}
-						if (i_object.equals(my_side4)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side 4 J" + i_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//j_object.switchX();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
-									indexesToRemove.add(j);
-									j_object.detach();
-								}
-							}
-							i_object.resolveCollisions(j_object, collisions);
-						}
-						
-						//if 'j' side and a neighbor exists, transmit i object to that node
-						if (j_object.equals(my_side1)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side 1" + j_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//i_object.switchZ();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexesToRemove.add(i);
-									i_object.detach();
-								}
-							}
-							j_object.resolveCollisions(i_object, collisions);
-						} 
-						if (j_object.equals(my_side2)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side 2" + i_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//i_object.switchX();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexesToRemove.add(i);
-									i_object.detach();
-								}
-							}
-							j_object.resolveCollisions(i_object, collisions);
-						}
-						if (j_object.equals(my_side3)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side  3" + j_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//i_object.switchZ();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexesToRemove.add(i);
-									i_object.detach();
-								}
-							}
-							j_object.resolveCollisions(i_object, collisions);
-						}
-						if (j_object.equals(my_side4)) {
-							int test = myPeer.getPeerSize();
-							if(test > 0) {
-							
-								System.out.println("Hit Side 4" + j_object.getPosition());
-								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
-								System.out.println("PeerInfo: " + info);
-								if (info != null) {
-									//i_object.switchX();
-									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
-									indexesToRemove.add(i);
-									i_object.detach();
-								}
-							}
-							j_object.resolveCollisions(i_object, collisions);
-						}
-					} else {
-						i_object.resolveCollisions(j_object, collisions);
+					} else if (myObjects.get(j) instanceof HalfSpace) {
+						// If j is a halfspace, i must be an object
+						hs = (HalfSpace) myObjects.get(j);
+						o = myObjects.get(i);
 					}
+					
+					// Was there a halfspace involved? If so, was it a side?
+					if (hs != null && hs.normal.y != 1 && hs.normal.y != -1) {
+						// Side collision, is there a peer?
+						PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
+						
+						if (peer != null) {
+							o.switchX();
+							o.switchZ();
+							myPeer.sendPayloadToPeer(peer, o);
+							o.detach();
+							myObjects.remove(o);
+							
+							// Moving on
+							continue;
+						}
+					}
+					
+					// Collision as usual...
+					myObjects.get(i).resolveCollisions(myObjects.get(j), collisions);
 				}
 			}
-		
-		/*if ( indexToRemove >= 0) {
-			myObjects.remove(indexToRemove);
-			System.out.println("Remove index: " + indexToRemove);
-		}*/
-		//if the object leaves the world, remove it from myObjects list) {
-		if (indexesToRemove.size() > 0) {
-			for (Integer k : indexesToRemove) {
-				int i = k;
-				try {
-					myObjects.remove(i);
-					System.out.println("Remove index: " + i);
-				} catch (IndexOutOfBoundsException e) {
-					System.out.println("Array was out of bounds again");
-					System.out.println("k is:" + i);
-					System.out.println("myObjecst size is: " + myObjects.size());
-				}
-			}
-			indexesToRemove.clear();
-			System.out.println("Size of Remove index: " + indexesToRemove.size());
 		}
 
 		// Add new children to the world.
