@@ -274,7 +274,7 @@ public class World implements Observer {
 					}
 					
 					// Was there a halfspace involved? If so, was it a side?
-					if (hs != null && hs.normal.y != 1 && hs.normal.y != -1) {
+					if (hs != null && hs.normal.y != 1 && hs.normal.y != -1 && myPeer.getPeerSize() > 0)  {
 						// Side collision, is there a peer?
 						PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
 						
