@@ -351,7 +351,7 @@ public class World implements Observer {
 						}
 
 						//if 'i' side and a neighbor exists, transmit j object to that node
-						if (i_object.equals(my_side1) || i_object.equals(my_side3)) {
+						if (i_object.equals(my_side1)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 								System.out.println("Hit Side 1 J" + i_object.getPosition());
@@ -368,7 +368,7 @@ public class World implements Observer {
 							i_object.resolveCollisions(j_object, collisions);
 						}
 
-						if (i_object.equals(my_side2) || i_object.equals(my_side4)) { 
+						if (i_object.equals(my_side2)) { 
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -386,7 +386,7 @@ public class World implements Observer {
 							i_object.resolveCollisions(j_object, collisions);
 						}
 						
-						/*if (i_object.equals(my_side3)) { 
+						if (i_object.equals(my_side3)) { 
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -419,10 +419,10 @@ public class World implements Observer {
 								}
 							}
 							i_object.resolveCollisions(j_object, collisions);
-						}*/
+						}
 						
 						//if 'j' side and a neighbor exists, transmit i object to that node
-						if (j_object.equals(my_side1) || j_object.equals(my_side3)) {
+						if (j_object.equals(my_side1)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -439,7 +439,7 @@ public class World implements Observer {
 							}
 							j_object.resolveCollisions(i_object, collisions);
 						} 
-						if (j_object.equals(my_side2) || j_object.equals(my_side4)) {
+						if (j_object.equals(my_side2)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -456,7 +456,7 @@ public class World implements Observer {
 							}
 							j_object.resolveCollisions(i_object, collisions);
 						}
-						/*if (j_object.equals(my_side3)) {
+						if (j_object.equals(my_side3)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
@@ -489,7 +489,7 @@ public class World implements Observer {
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
-						}*/
+						}
 					} else {
 						i_object.resolveCollisions(j_object, collisions);
 					}
