@@ -353,6 +353,13 @@ public class Peer extends Observable {
 	public int getPeerSize() {
 		return peers.size();
 	}
+	
+	/**
+	 * Get the PeerInformation.
+	 */
+	public PeerInformation getPeerInformation() {
+		return this.myInfo;
+	}
 
 	/**
 	 * A method that sends a CollidableObject to all

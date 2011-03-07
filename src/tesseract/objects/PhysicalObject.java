@@ -11,6 +11,7 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Primitive;
 import common.CollidableObject;
+import common.PeerInformation;
 
 /**
  * This class is the parent of all objects in the world.
@@ -127,6 +128,16 @@ public class PhysicalObject extends CollidableObject {
 
 		float x = position.getX();
 		position.x = -x;
+	}
+	
+	/**
+	 * Move the object to the correct side of the new world.
+	 */
+	public void rotateForTransmission(PeerInformation a, PeerInformation b) {
+		double angle = /*Math.atan(-velocity.z / velocity.x) + */ Math.PI + Math.atan((b.location.getY() - a.location.getY()) / (b.location.getX() - a.location.getX()));
+		
+		position.x = (float) (position.x * Math.cos(angle) - position.z * Math.sin(angle));
+		position.z = (float) (position.z * Math.cos(angle) + position.x * Math.sin(angle));	
 	}
 	
 	/**

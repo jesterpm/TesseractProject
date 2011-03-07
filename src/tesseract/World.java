@@ -279,8 +279,7 @@ public class World implements Observer {
 						PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
 						
 						if (peer != null) {
-							o.switchX();
-							o.switchZ();
+							o.rotateForTransmission(myPeer.getPeerInformation(), peer);
 							myPeer.sendPayloadToPeer(peer, o);
 							o.detach();
 							myObjects.remove(o);
