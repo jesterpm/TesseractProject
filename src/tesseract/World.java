@@ -1,5 +1,6 @@
 package tesseract;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -353,15 +354,17 @@ public class World implements Observer {
 						if (i_object.equals(my_side1)) {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
-									System.out.println("Hit Side 1 J" + i_object.getPosition());
+									System.out.println("Hit Side 1 J" + j_object.getPosition());
 									PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 									System.out.println("PeerInfo: " + info);
 									if (info != null) {
-										j_object.switchZ(); 
+										PhysicalObject copy = new PhysicalObject(j_object);
+										copy.switchZ();
 										myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-												(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
+												(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), copy);
 										indexesToRemove.add(j);
 										j_object.detach();
+										copy = null;
 									}
 								}
 							i_object.resolveCollisions(j_object, collisions);
@@ -371,15 +374,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side 2 J" + i_object.getPosition());
+								System.out.println("Hit Side 2 J" + j_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchX();
+									PhysicalObject copy = new PhysicalObject(j_object);
+									copy.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-										(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
+										(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(j);
 									j_object.detach();
+									copy = null;
 								}
 							}
 							i_object.resolveCollisions(j_object, collisions);
@@ -389,15 +394,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side  3 J" + i_object.getPosition());
+								System.out.println("Hit Side  3 J" + j_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchZ();
+									PhysicalObject copy = new PhysicalObject(j_object);
+									copy.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
+											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(j);
 									j_object.detach();
+									copy = null;
 								}
 							}
 							i_object.resolveCollisions(j_object, collisions);
@@ -406,15 +413,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side 4 J" + i_object.getPosition());
+								System.out.println("Hit Side 4 J" + j_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(j_object.getVelocity().getX(), j_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									j_object.switchX();
+									PhysicalObject copy = new PhysicalObject(j_object);
+									copy.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), j_object);
+											(j_object.getVelocity().getX(), j_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(j);
 									j_object.detach();
+									copy = null;
 								}
 							}
 							i_object.resolveCollisions(j_object, collisions);
@@ -425,15 +434,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side 1" + j_object.getPosition());
+								System.out.println("Hit Side 1" + i_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchZ();
+									PhysicalObject copy = new PhysicalObject(i_object);
+									copy.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
+											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(i);
 									i_object.detach();
+									copy = null;
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
@@ -446,11 +457,13 @@ public class World implements Observer {
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchX();
+									PhysicalObject copy = new PhysicalObject(i_object);
+									copy.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
+											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(i);
 									i_object.detach();
+									copy = null;
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
@@ -459,15 +472,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side  3" + j_object.getPosition());
+								System.out.println("Hit Side  3" + i_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchZ();
+									PhysicalObject copy = new PhysicalObject(i_object);
+									copy.switchZ();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
+											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(i);
 									i_object.detach();
+									copy = null;
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
@@ -476,15 +491,17 @@ public class World implements Observer {
 							int test = myPeer.getPeerSize();
 							if(test > 0) {
 							
-								System.out.println("Hit Side 4" + j_object.getPosition());
+								System.out.println("Hit Side 4" + i_object.getPosition());
 								PeerInformation info  = myPeer.getPeerInDirection(i_object.getVelocity().getX(), i_object.getVelocity().getZ());
 								System.out.println("PeerInfo: " + info);
 								if (info != null) {
-									i_object.switchX();
+									PhysicalObject copy = new PhysicalObject(i_object);
+									copy.switchX();
 									myPeer.sendPayloadToPeer(myPeer.getPeerInDirection
-											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), i_object);
+											(i_object.getVelocity().getX(), i_object.getVelocity().getZ()), copy);
 									indexesToRemove.add(i);
 									i_object.detach();
+									copy = null;
 								}
 							}
 							j_object.resolveCollisions(i_object, collisions);
@@ -503,10 +520,17 @@ public class World implements Observer {
 		if (indexesToRemove.size() > 0) {
 			for (Integer k : indexesToRemove) {
 				int i = k;
-				myObjects.remove(i);
-				System.out.println("Remove index: " + i);
+				try {
+					myObjects.remove(i);
+					System.out.println("Remove index: " + i);
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("Array was out of bounds again");
+					System.out.println("k is:" + i);
+					System.out.println("myObjecst size is: " + myObjects.size());
+				}
 			}
 			indexesToRemove.clear();
+			System.out.println("Size of Remove index: " + indexesToRemove.size());
 		}
 
 		// Add new children to the world.
