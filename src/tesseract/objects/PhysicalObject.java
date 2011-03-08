@@ -134,10 +134,12 @@ public class PhysicalObject extends CollidableObject {
 	 * Move the object to the correct side of the new world.
 	 */
 	public void rotateForTransmission(PeerInformation a, PeerInformation b) {
-		double angle = /*Math.atan(-velocity.z / velocity.x) + */ Math.PI + Math.atan((b.location.getY() - a.location.getY()) / (b.location.getX() - a.location.getX()));
+		Vector3f velnormal = new Vector3f(velocity);
+		velnormal.normalize();
+		velnormal.negate();
 		
-		position.x = (float) (position.x * Math.cos(angle) - position.z * Math.sin(angle));
-		position.z = (float) (position.z * Math.cos(angle) + position.x * Math.sin(angle));	
+		position.x = velnormal.x * position.x;
+		position.z = velnormal.z * -position.z;
 	}
 	
 	/**
