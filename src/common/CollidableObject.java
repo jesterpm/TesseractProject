@@ -584,12 +584,15 @@ public abstract class CollidableObject implements Serializable {
 		if (in.readBoolean()) {
 			Material material = new Material();
 			material.setAmbientColor((Color3f)in.readObject());
-			material.setDiffuseColor((Color3f)in.readObject());
+			Color3f color = (Color3f)in.readObject();
+			material.setDiffuseColor(color);
 			material.setSpecularColor((Color3f)in.readObject());
 			material.setEmissiveColor((Color3f)in.readObject());
 			material.setShininess(in.readFloat());
 			material.setColorTarget(in.readInt());
 			appearance.setMaterial(material);
+			appearance.setColoringAttributes(new ColoringAttributes(color,
+					ColoringAttributes.FASTEST));
 		}
 		return appearance;
 	}
