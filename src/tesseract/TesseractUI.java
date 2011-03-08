@@ -38,6 +38,7 @@ import tesseract.forces.Force;
 import tesseract.forces.Gravity;
 import tesseract.forces.LinearOrigin;
 import tesseract.forces.QuadradicOrigin;
+import tesseract.generators.GeneratorsMenu;
 import tesseract.newmenu.MenuItem;
 import tesseract.newmenu.NewChainLinkMenuItem;
 import tesseract.newmenu.NewEllipsoidMenuItem;
@@ -140,6 +141,8 @@ public class TesseractUI extends JFrame {
 		
 		myChatbox = new Chatbox(myPeer);
 		myChatbox.setLocationRelativeTo(this);
+		myChatbox.setMyName(); 
+		
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
@@ -345,6 +348,9 @@ public class TesseractUI extends JFrame {
 		forcesMenu.add(airDrag);
 		
 		menuBar.add(forcesMenu);
+		
+		// Generators
+		menuBar.add(new GeneratorsMenu(myWorld));
 		
 		// Add reset Simulator menu item
 		JMenuItem resetSim = new JMenuItem("Reset Simulator");

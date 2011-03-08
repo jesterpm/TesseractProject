@@ -14,6 +14,11 @@ import common.CollidableObject;
  */
 public class Sphere extends PhysicalObject {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8407634448268590714L;
+
+	/**
 	 * Default Object color.
 	 */
 	private static final Color3f DEFAULT_COLOR = new Color3f(0.7f, 0.7f, 1);

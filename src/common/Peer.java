@@ -283,6 +283,7 @@ public class Peer extends Observable {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
+		} catch (NullPointerException e) {
 		}
 		serverSocket = null;
 		System.out.println(myInfo + " disconnected");
