@@ -52,6 +52,7 @@ public class NewParticleEmitterMenuItem extends MenuItem {
 	 */
 	private void buildParams() {
 		myParameters.put("Frequency", new Float(0f));
+		myParameters.put("Position", new Vector3f(0, 0.49f, 0));
 		this.makePanel();
 		myReadData.get("Frequency").setText(((Float) 
 				Icosahedron.DEFAULT_SCALE).toString());

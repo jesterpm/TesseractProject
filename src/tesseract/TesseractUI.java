@@ -9,27 +9,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.vecmath.Point3d;
@@ -141,9 +135,11 @@ public class TesseractUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		
 		myPeer = new Peer(true);
+		myPeer.createNetwork();
+		setTitle("Tesseract Project " + myPeer.getMyName());
+		
 		myChatbox = new Chatbox(myPeer);
 		myChatbox.setLocationRelativeTo(this);
-		myPeer.addObserver(myChatbox);
 		myWorld = new World(
 				new BoundingBox(new Point3d(-UNIT / 2, -UNIT / 2, -UNIT / 2), 
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
@@ -171,11 +167,12 @@ public class TesseractUI extends JFrame {
 			setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		}
 		
-		// THIS IS WHERE OBJECTS ARE FORCED INTO EXISTANCE
-		// TODO: REMOVE TEST CODE
-		
-		//myPeer.connectToNetwork("127.0.0.1");
-		//myPeer.createNetwork();
+		// Shutdown Nicely
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(final WindowEvent e) {
+				myPeer.disconnectFromNetwork();
+			}
+		});
 	}
 	
 	/**
@@ -218,19 +215,13 @@ public class TesseractUI extends JFrame {
 		join.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				int isFirst = JOptionPane.showConfirmDialog(
-					    myCanvas,
-					    "Is this the first node in the network?",
-					    "",
-					    JOptionPane.YES_NO_OPTION);
-				if (isFirst == 0) {
-					myPeer.createNetwork();
-				} else {
-					String ip = JOptionPane.showInputDialog("Enter the IP to connect to:  ");
-					if (ip != null ) {
-						myPeer.connectToNetwork(ip);
-					}
+				String ip = JOptionPane.showInputDialog("Enter the IP to connect to:  ");
+				if (ip != null ) {
+					myPeer.disconnectFromNetwork();
+					myPeer.connectToNetwork(ip);
+					setTitle("Tesseract Project " + myPeer.getMyName());
 				}
+				
 				myChatbox.setMyName(); //sets myName Field of Chatbox to Peer ID. 
 			}
 		});

@@ -97,6 +97,7 @@ public class Chatbox extends JFrame implements Observer {
 		attachListeners();
 		myName = "OFFLINE";
 		this.setName("Chatbox");
+		thePeer.addObserver(this);
 	}
 	
 	/**

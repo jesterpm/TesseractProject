@@ -618,6 +618,11 @@ public class Peer extends Observable {
 	}
 	
 	public String getMyName() {
-		return myInfo.toString();
+		if (myInfo == null) {
+			return "Not Connected";
+			
+		} else {
+			return myInfo.toString();
+		}
 	}
 }
