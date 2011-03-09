@@ -26,5 +26,6 @@ public class GeneratorsMenu extends JMenu {
 		add(new SphereField(theWorld));
 		add(new ParticleField(theWorld));
 		add(new BoxField(theWorld));
+		add(new ICOField(theWorld));
 	}
 }
