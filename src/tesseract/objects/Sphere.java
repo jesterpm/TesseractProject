@@ -58,8 +58,8 @@ public class Sphere extends PhysicalObject {
 			final Vector3f position, final Color theColor) {
 		super(position, mass);
 		myColor = new Color3f(theColor);
-		setShape(createShape(DEFAULT_DIVISIONS));
 		radius = theRadius;
+		setShape(createShape(DEFAULT_DIVISIONS));
 		
 		if (inverseMass != 0) {
 			inverseInertiaTensor.m00 = 2f / 5 / inverseMass 

@@ -215,8 +215,8 @@ public class World implements Observer {
 	
 		List<PhysicalObject> children = new LinkedList<PhysicalObject>();
 		
-		while (itr.hasNext()) {
-			CollidableObject obj = itr.next();
+		for (int i = 0; i < myObjects.size(); i++) {
+			CollidableObject obj = myObjects.get(i);
 
 			// Apply forces
 			for (Force force : myForces) {
