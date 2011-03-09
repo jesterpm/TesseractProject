@@ -5,6 +5,10 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public class Sphere extends CollidableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7821415888599737442L;
 	protected float radius;
 	
 	public Sphere(float radius, Vector3f position) {

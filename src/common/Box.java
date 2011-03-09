@@ -5,6 +5,11 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public class Box extends CollidableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1261388841430590087L;
+
 	public Box(float width, float height, float depth, Vector3f position) {
 		this(1, width, height, depth, position);
 	}

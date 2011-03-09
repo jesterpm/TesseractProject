@@ -7,6 +7,10 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public class Particle extends CollidableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7803518117766472366L;
 	protected static final float RADIUS = 0.04f;
 	
 	public Particle(Color3f color, Vector3f position, Vector3f velocity) {

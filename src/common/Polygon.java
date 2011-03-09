@@ -5,6 +5,10 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public abstract class Polygon extends CollidableObject {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3884429316406247640L;
 	protected Vector3f normal;
 	// Right-hand side of the plane equation: Ax + By + Cz = D
 	protected float intercept;

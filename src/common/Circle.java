@@ -6,6 +6,11 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public class Circle extends Polygon {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 936268321291207044L;
+
 	public Circle(float radius, Vector3f position, Vector3f normal) {
 		this(1, radius, position, normal);
 	}

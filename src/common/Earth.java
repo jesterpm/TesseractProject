@@ -6,6 +6,10 @@ import javax.vecmath.*;
 
 @SuppressWarnings("restriction")
 public class Earth extends Sphere {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6696594698875803920L;
 	protected float radius;
 	
 	public Earth(float radius, Vector3f position) {
