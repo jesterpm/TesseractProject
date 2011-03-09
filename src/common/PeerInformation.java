@@ -4,7 +4,7 @@ import java.net.*;
 
 public class PeerInformation implements Serializable {
 	private static final long serialVersionUID = 3667108226485766929L;
-	public static final String DEFAULT_ID = "something unique";
+	public static final String DEFAULT_ID = "Tesseract Project";
 
 	public InetAddress address;
 	public int port;

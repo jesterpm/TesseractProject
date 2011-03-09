@@ -544,7 +544,7 @@ public class Peer extends Observable {
 		case EXTRA:
 			logMessage("Received EXTRA message from " + mesg.sender);
 			
-			if (mesg.id != null && mesg.id.equals(PeerMessage.DEFAULT_ID)) {
+			if (mesg.sender.id != null && mesg.sender.id.equals(PeerInformation.DEFAULT_ID)) {
 				setChanged();
 				notifyObservers(mesg);
 			}
