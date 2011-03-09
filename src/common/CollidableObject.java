@@ -1,19 +1,16 @@
 package common;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.*;
 
+import java.io.*;
+import java.util.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
-
-import com.sun.j3d.utils.geometry.GeometryInfo;
-import com.sun.j3d.utils.geometry.Primitive;
+import com.sun.j3d.utils.geometry.*;
+import group2.*;
 
 @SuppressWarnings("restriction")
 public abstract class CollidableObject implements Serializable {
 	private static final long serialVersionUID = 3667108226485766929L;
+
 	protected float inverseMass;
 	// The center of mass in the local coordinate system
 	protected Vector3f centerOfMass;
@@ -22,13 +19,11 @@ public abstract class CollidableObject implements Serializable {
 	protected Vector3f forceAccumulator;
 	protected Quat4f orientation;
 	protected Vector3f angularVelocity;
-	protected Vector3f previousRotationalVelocity;
 	protected Vector3f torqueAccumulator;
 	protected Matrix3f inverseInertiaTensor;
 	protected float coefficientOfRestitution;
 	protected float penetrationCorrection;
 	protected float dynamicFriction;
-	protected float rotationalFriction;
 	transient protected BranchGroup BG;
 	transient protected TransformGroup TG;
 	transient protected Node node;
@@ -52,13 +47,11 @@ public abstract class CollidableObject implements Serializable {
 		forceAccumulator = o.forceAccumulator;
 		orientation = o.orientation;
 		angularVelocity = o.angularVelocity;
-		previousRotationalVelocity = o.previousRotationalVelocity;
 		torqueAccumulator = o.torqueAccumulator;
 		inverseInertiaTensor = o.inverseInertiaTensor;
 		coefficientOfRestitution = o.coefficientOfRestitution;
 		penetrationCorrection = o.penetrationCorrection;
 		dynamicFriction = o.dynamicFriction;
-		rotationalFriction = o.rotationalFriction;
 		BG = o.BG;
 		TG = o.TG;
 		node = o.node;
@@ -84,15 +77,15 @@ public abstract class CollidableObject implements Serializable {
 		forceAccumulator = new Vector3f();
 		orientation = new Quat4f(0, 0, 0, 1);
 		angularVelocity = new Vector3f();
-		previousRotationalVelocity = new Vector3f();
 		torqueAccumulator = new Vector3f();
 		inverseInertiaTensor = new Matrix3f();
-		coefficientOfRestitution = 0.75f;
+		coefficientOfRestitution = 0.85f;
 		penetrationCorrection = 1.05f;
-		dynamicFriction = 0.02f;
-		rotationalFriction = 0.05f;
+		dynamicFriction = 0.04f;
 		TG = new TransformGroup();
 		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		TG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		TG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		BG = new BranchGroup();
 		BG.setCapability(BranchGroup.ALLOW_DETACH);
 		BG.addChild(TG);
@@ -111,8 +104,17 @@ public abstract class CollidableObject implements Serializable {
 	public void detach() {
 		BG.detach();
 	}
+	
+	//ADDED
+	private void updatePositionAndOrientation() {
+		Transform3D tmpTransform = new Transform3D();
+		TG.getTransform(tmpTransform);
+		tmpTransform.get(orientation, position);
+	}
+	//ADDED
 
 	public void updateState(float duration) {
+		updatePositionAndOrientation();		//ADDED
 		previousPosition.set(position);
 		previousVelocity.set(velocity);
 		// The force vector now becomes the acceleration vector.
@@ -187,18 +189,11 @@ public abstract class CollidableObject implements Serializable {
 		boundsCache = null;
 		inverseInertiaTensorCache = null;
 	}
-
-	//Alden mar4 change
+	
 	public void resolveCollisions(CollidableObject other) {
 		resolveCollisions(other, CollisionDetector.calculateCollisions(this, other));
 	}
-	
-	/*public void resolveCollisions(CollidableObject other) {
-	ArrayList<CollisionInfo> collisions = CollisionDetector.calculateCollisions(this, other);
-	if (collisions.isEmpty())
-		return;
-	*/
-	//Alden mar4 change
+
 	public void resolveCollisions(CollidableObject other, ArrayList<CollisionInfo> collisions) {
 		if (collisions.isEmpty())
 			return;
@@ -247,15 +242,13 @@ public abstract class CollidableObject implements Serializable {
 		Vector3f thisRelativeContactPosition = new Vector3f();
 		thisRelativeContactPosition.scaleAdd(-1, position, ci.contactPoint);
 		thisRelativeContactPosition.scaleAdd(-1, centerOfMass, thisRelativeContactPosition);
-		
-		Vector3f otherRelativeContactPosition = new Vector3f();
-		otherRelativeContactPosition.scaleAdd(-1, other.position, ci.contactPoint);
-		otherRelativeContactPosition.scaleAdd(-1, other.centerOfMass, otherRelativeContactPosition);
-		
 		Vector3f thisContactVelocity = new Vector3f();
 		thisContactVelocity.cross(angularVelocity, thisRelativeContactPosition);
 		thisContactVelocity.add(previousVelocity);
 		
+		Vector3f otherRelativeContactPosition = new Vector3f();
+		otherRelativeContactPosition.scaleAdd(-1, other.position, ci.contactPoint);
+		otherRelativeContactPosition.scaleAdd(-1, other.centerOfMass, otherRelativeContactPosition);
 		Vector3f otherContactVelocity = new Vector3f();
 		otherContactVelocity.cross(other.angularVelocity, otherRelativeContactPosition);
 		otherContactVelocity.add(other.previousVelocity);
@@ -266,27 +259,6 @@ public abstract class CollidableObject implements Serializable {
 		float totalInverseMass = inverseMass + other.inverseMass;
 		if (totalInverseMass == 0)
 			return;
-		
-		/* Dynamic Friction */
-		if (dynamicFriction > 0) {
-			Vector3f acceleration = new Vector3f();
-			Vector3f perpVelocity = new Vector3f();
-			float contactSpeed = ci.contactNormal.dot(velocity) - ci.contactNormal.dot(other.velocity);
-			
-			perpVelocity.scaleAdd(-contactSpeed, ci.contactNormal, previousVelocity);
-			if (perpVelocity.length() > 0) {
-				perpVelocity.normalize();
-				acceleration.scaleAdd(-1, previousVelocity, velocity);
-				velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, velocity);
-			}
-			
-			perpVelocity.scaleAdd(contactSpeed, ci.contactNormal, other.previousVelocity);
-			if (perpVelocity.length() > 0) {
-				perpVelocity.normalize();
-				acceleration.scaleAdd(-1, other.previousVelocity, other.velocity);
-				other.velocity.scaleAdd(dynamicFriction * acceleration.dot(ci.contactNormal), perpVelocity, other.velocity);
-			}
-		}
 		
 		Vector3f thisMovementUnit = new Vector3f();
 		thisMovementUnit.cross(thisRelativeContactPosition, ci.contactNormal);
@@ -304,12 +276,18 @@ public abstract class CollidableObject implements Serializable {
 
 		Vector3f impulse = new Vector3f(ci.contactNormal);
 		impulse.scale(deltaClosingSpeed / totalInverseMass);
-	
+		
+		//Added
+		Vector3f frictionalImpulse = new Vector3f();
+		frictionalImpulse.scale(dynamicFriction); //not considering the time of impact
+		//end-added
+		
 		velocity.scaleAdd(inverseMass, impulse, velocity);
 		Vector3f tmp = new Vector3f();
 		tmp.cross(thisRelativeContactPosition, impulse);
 		getInverseInertiaTensor().transform(tmp);
 		angularVelocity.add(tmp);
+				
 		position.scaleAdd(-ci.penetration * penetrationCorrection * inverseMass / totalInverseMass, ci.contactNormal, position);
 		thisMovementUnit.scale(-ci.penetration * penetrationCorrection / totalInverseMass);
 		UnQuat4f tmp2 = new UnQuat4f(thisMovementUnit.x, thisMovementUnit.y, thisMovementUnit.z, 0);
@@ -318,8 +296,27 @@ public abstract class CollidableObject implements Serializable {
 		orientation.add(tmp2);
 		orientation.normalize();
 		
+		// ADDED
+		if(other instanceof Mars ) {
+			Vector3f initialAngularVelocity = new Vector3f();
+
+			Vector3f radius = new Vector3f();
+			radius.scaleAdd(-1, other.centerOfMass, ci.contactPoint);
+			
+			float radiusNum = radius.length();
+			initialAngularVelocity.cross(radius, other.velocity);
+			other.angularVelocity.add(initialAngularVelocity);
+			float torque = -dynamicFriction * radiusNum;
+			other.angularVelocity.scale(torque);		
+		}
+		// END-ADDED
+
 		impulse.negate();
 		other.velocity.scaleAdd(other.inverseMass, impulse, other.velocity);
+		//Added
+		other.velocity.scaleAdd(other.inverseMass, frictionalImpulse, other.velocity);
+		impulse.add(frictionalImpulse);
+		//End-added
 		tmp.cross(otherRelativeContactPosition, impulse);
 		other.getInverseInertiaTensor().transform(tmp);
 		other.angularVelocity.add(tmp);
@@ -330,33 +327,16 @@ public abstract class CollidableObject implements Serializable {
 		tmp2.mul(other.orientation);
 		other.orientation.add(tmp2);
 		other.orientation.normalize();
-		
-		if (rotationalFriction > 0) {
-			/* Rotational Friction */
-			Vector3f w = new Vector3f();
-			
-			/*float radius = thisRelativeContactPosition.length();
-			w.cross(angularVelocity, ci.contactNormal);
-			velocity.scaleAdd(-1, previousRotationalVelocity, velocity);
-			previousRotationalVelocity.scale(radius, w);
-			velocity.scaleAdd(radius, w, velocity);
-			w.cross(previousRotationalVelocity, ci.contactNormal);
-			angularVelocity.scaleAdd(-0.5f * w.dot(angularVelocity), w, angularVelocity);
-			
-			radius = otherRelativeContactPosition.length();
-			w.cross(other.angularVelocity, ci.contactNormal);
-			other.velocity.scaleAdd(-1, other.previousRotationalVelocity, other.velocity);
-			other.previousRotationalVelocity.scale(radius, w);
-			other.velocity.scaleAdd(radius , w, other.velocity);
-			w.cross(other.previousRotationalVelocity, ci.contactNormal);
-			other.angularVelocity.scaleAdd(-0.5f * w.dot(other.angularVelocity), w, other.angularVelocity);
-			*/
-			
-			angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(angularVelocity), ci.contactNormal, angularVelocity);
-			other.angularVelocity.scaleAdd(-rotationalFriction * ci.contactNormal.dot(other.angularVelocity), ci.contactNormal, other.angularVelocity);
-			
-		}
 	}
+	/*
+	private float getMomentofInertia(Matrix3f inverseInertiaTensor2, Vector3f torque) {
+		Vector3f tmp = new Vector3f(torque);
+		tmp.scale(1/torque.length());
+		inverseInertiaTensor2.transform(tmp);
+		float inertia = tmp.dot(tmp);
+		return inertia;
+	}
+	*/
 
 	private static final int NODE_TYPE_BRANCH = 1;
 	private static final int NODE_TYPE_TRANSFORM = 2;
@@ -371,23 +351,24 @@ public abstract class CollidableObject implements Serializable {
 	private static void writeObject(ObjectOutputStream out, Node node) throws IOException {
 		if (node instanceof BranchGroup) {
 			out.writeInt(NODE_TYPE_BRANCH);
-			out.writeInt(((BranchGroup) node).numChildren());
-			for (int i = 0; i < ((BranchGroup) node).numChildren(); i++) {
-				Node childNode = ((BranchGroup) node).getChild(i);
-				writeObject(out, childNode);
-			}
+			BranchGroup bg = (BranchGroup)node;
+			out.writeInt(bg.numChildren());
+			for (int i = 0; i < bg.numChildren(); i++) {
+				writeObject(out, bg.getChild(i));
+			}		
 		} else if (node instanceof TransformGroup) {
 			out.writeInt(NODE_TYPE_TRANSFORM);
-			Transform3D tgT = new Transform3D();
-			Matrix4f matrix = new Matrix4f();
-			((TransformGroup) node).getTransform(tgT);
-			tgT.get(matrix);
-			out.writeObject(matrix);
-			out.writeInt(((TransformGroup) node).numChildren());
-			for (int i = 0; i < ((TransformGroup) node).numChildren(); i++) {
-				Node childNode = ((TransformGroup) node).getChild(i);
-				writeObject(out, childNode);
-			}
+			TransformGroup tg = (TransformGroup)node;
+			Transform3D transform = new Transform3D();
+			tg.getTransform(transform);
+			Matrix4f matrix4f = new Matrix4f();
+			transform.get(matrix4f);
+			
+			out.writeObject(matrix4f);
+			out.writeInt(tg.numChildren());
+			for (int i = 0; i < tg.numChildren(); i++) {
+				writeObject(out, tg.getChild(i));
+			}		
 		} else if (node instanceof Primitive) {
 			out.writeInt(NODE_TYPE_PRIMITIVE);
 			Primitive prim = (Primitive)node;
@@ -405,20 +386,21 @@ public abstract class CollidableObject implements Serializable {
 				for (int i = 0; i < shape.numGeometries(); i++)
 					writeObject(out, shape.getGeometry(i));
 			}
-			
 		} else if (node instanceof Shape3D) {
 			out.writeInt(NODE_TYPE_SHAPE);
-			Shape3D shape = (Shape3D) node;
-			Appearance appearance = shape.getAppearance();
+			// Shape3D extends a Leaf class and it has no children.
+			// It contains a list of one or more Geometry component 
+			// objects and a single Appearance component object. 
+			Shape3D shape3D = (Shape3D)node;
+			Appearance appearance = shape3D.getAppearance();
 			if (appearance != null) {
 				out.writeBoolean(true);
 				writeObject(out, appearance);
 			} else
 				out.writeBoolean(false);
-			out.writeInt(shape.numGeometries());
-			for (int i = 0; i < shape.numGeometries(); i++)
-				writeObject(out, shape.getGeometry(i));
-			
+			out.writeInt(shape3D.numGeometries());
+			for (int i = 0; i < shape3D.numGeometries(); i++)
+				writeObject(out, shape3D.getGeometry(i));
 		} else 
 			throw new IllegalArgumentException("Illegal node type for serialization");
 	}
@@ -455,6 +437,41 @@ public abstract class CollidableObject implements Serializable {
 	}
 
 	private static void writeObject(ObjectOutputStream out, Appearance appearance) throws IOException {
+		// Write Coloring Attributes
+		ColoringAttributes cAttrs = appearance.getColoringAttributes();
+		if (cAttrs != null) {
+			out.writeBoolean(true);
+			Color3f color = new Color3f();
+			cAttrs.getColor(color);
+			out.writeObject(color);
+			out.writeInt(cAttrs.getShadeModel());
+		} else
+			out.writeBoolean(false);
+
+		// Write Polygon Attributes
+		PolygonAttributes pAttrs = appearance.getPolygonAttributes();
+		if (pAttrs != null) {
+			out.writeBoolean(true);
+			out.writeInt(pAttrs.getPolygonMode());
+			out.writeInt(pAttrs.getCullFace());
+			out.writeBoolean(pAttrs.getBackFaceNormalFlip());
+			out.writeFloat(pAttrs.getPolygonOffset());
+			out.writeFloat(pAttrs.getPolygonOffsetFactor());
+		} else
+			out.writeBoolean(false);
+		
+		// Write Transparency Attributes
+		TransparencyAttributes tAttrs = appearance.getTransparencyAttributes();
+		if (tAttrs != null) {
+			out.writeBoolean(true);
+			out.writeInt(tAttrs.getTransparencyMode());
+			out.writeFloat(tAttrs.getTransparency());
+			out.writeInt(tAttrs.getSrcBlendFunction());
+			out.writeInt(tAttrs.getDstBlendFunction());
+		} else
+			out.writeBoolean(false);
+		
+		// Write Material Attributes
 		Material material = appearance.getMaterial();
 		if (material != null) {
 			out.writeBoolean(true);
@@ -492,30 +509,24 @@ public abstract class CollidableObject implements Serializable {
 		int type = in.readInt();
 		switch (type) {
 		case NODE_TYPE_BRANCH:
-			BranchGroup bgroup = new BranchGroup();
-			int numTGChildren = in.readInt();
-			for (int i = 0; i < numTGChildren; i++) {
-				bgroup.addChild(readNode(in));
+			BranchGroup branch = new BranchGroup();
+
+			int numChildrenBranch = in.readInt();
+			for (int i = 0; i < numChildrenBranch; i++) {
+				branch.addChild(readNode(in));
 			}
-			bgroup.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
-			bgroup.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
-			bgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-			bgroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
-			return bgroup;
+			return branch;
 		case NODE_TYPE_TRANSFORM:
-			TransformGroup tgroup = new TransformGroup();
-			Matrix4f matrix = (Matrix4f) in.readObject();
-			Transform3D tgT = new Transform3D(matrix);
-			tgroup.setTransform(tgT);
+			TransformGroup tg = new TransformGroup();
+			Transform3D transform = new Transform3D();
+			transform.set((Matrix4f)in.readObject());
+			tg.setTransform(transform);
+			
 			int numChildren = in.readInt();
 			for (int i = 0; i < numChildren; i++) {
-				tgroup.addChild(readNode(in));
+				tg.addChild(readNode(in));
 			}
-			tgroup.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
-			tgroup.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
-			tgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-			tgroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
-			return tgroup;
+			return tg;
 		case NODE_TYPE_PRIMITIVE:
 			BranchGroup bg = new BranchGroup();
 			int shapes = in.readInt();
@@ -529,33 +540,16 @@ public abstract class CollidableObject implements Serializable {
 					shape.addGeometry(readGeometry(in));
 				bg.addChild(shape);			
 			}
-			bg.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
-			bg.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
-			bg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-			bg.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return bg;
 		case NODE_TYPE_SHAPE:
-			BranchGroup shapeBG = new BranchGroup();
 			Shape3D shape = new Shape3D();
 			shape.removeAllGeometries();
-			boolean hasAppearance = in.readBoolean();
-			Appearance shapeApp = new Appearance(); 
-			if (hasAppearance) {
-				shapeApp = readAppearance(in);
-			}
+			if (in.readBoolean())
+				shape.setAppearance(readAppearance(in));
 			int geometries = in.readInt();
-			for (int i = 0; i < geometries; i++)
-				shape.addGeometry(readGeometry(in));
-			if (hasAppearance) {
-				shape.setAppearance(shapeApp);
-			}
-			shapeBG.addChild(shape);
-			
-			shapeBG.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
-			shapeBG.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
-			shapeBG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-			shapeBG.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
-			return shapeBG;
+			for (int j = 0; j < geometries; j++)
+				shape.addGeometry(readGeometry(in));			
+			return shape;
 		default:
 			throw new IllegalArgumentException("Illegal node type for serialization");
 		}
@@ -581,18 +575,42 @@ public abstract class CollidableObject implements Serializable {
 
 	private static Appearance readAppearance(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		Appearance appearance = new Appearance();
+		// Read Coloring Attributes
+		if (in.readBoolean()) {
+			ColoringAttributes cAttrs = new ColoringAttributes();
+			cAttrs.setColor((Color3f)in.readObject());
+			cAttrs.setShadeModel(in.readInt());
+			appearance.setColoringAttributes(cAttrs);
+		}	
+		// Read Polygon Attributes
+		if (in.readBoolean()) {
+			PolygonAttributes pAttrs = new PolygonAttributes();
+			pAttrs.setPolygonMode(in.readInt());
+			pAttrs.setCullFace(in.readInt());
+			pAttrs.setBackFaceNormalFlip(in.readBoolean());
+			pAttrs.setPolygonOffset(in.readFloat());
+			pAttrs.setPolygonOffsetFactor(in.readFloat());
+			appearance.setPolygonAttributes(pAttrs);
+		}
+		// Read Transparency Attributes 
+		if (in.readBoolean()) {
+			TransparencyAttributes tAttrs = new TransparencyAttributes();
+			tAttrs.setTransparencyMode(in.readInt());
+			tAttrs.setTransparency(in.readFloat());
+			tAttrs.setSrcBlendFunction(in.readInt());
+			tAttrs.setDstBlendFunction(in.readInt());
+			appearance.setTransparencyAttributes(tAttrs);
+		}
+		// Read Material
 		if (in.readBoolean()) {
 			Material material = new Material();
 			material.setAmbientColor((Color3f)in.readObject());
-			Color3f color = (Color3f)in.readObject();
-			material.setDiffuseColor(color);
+			material.setDiffuseColor((Color3f)in.readObject());
 			material.setSpecularColor((Color3f)in.readObject());
 			material.setEmissiveColor((Color3f)in.readObject());
 			material.setShininess(in.readFloat());
 			material.setColorTarget(in.readInt());
 			appearance.setMaterial(material);
-			appearance.setColoringAttributes(new ColoringAttributes(color,
-					ColoringAttributes.FASTEST));
 		}
 		return appearance;
 	}
