@@ -18,6 +18,7 @@ import javax.media.j3d.IndexedLineArray;
 import javax.media.j3d.Light;
 import javax.media.j3d.Node;
 import javax.media.j3d.Shape3D;
+import javax.swing.SwingWorker;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
@@ -276,13 +277,26 @@ public class World implements Observer {
 					// Was there a halfspace involved? If so, was it a side?
 					if (hs != null && hs.normal.y != 1 && hs.normal.y != -1 && myPeer.getPeerSize() > 0)  {
 						// Side collision, is there a peer?
-						PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
+						final PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
 						
 						if (peer != null) {
+							final CollidableObject sendMe = o;
+							
 							o.rotateForTransmission(myPeer.getPeerInformation(), peer);
-							myPeer.sendPayloadToPeer(peer, o);
 							o.detach();
 							myObjects.remove(o);
+							
+							new SwingWorker<Object, Object>() {
+								protected Object doInBackground()
+										throws Exception {
+									myPeer.sendPayloadToPeer(peer, sendMe);
+									this.done();
+									
+									return null;
+								}
+								
+							}.execute();
+							
 							
 							// Moving on
 							continue;

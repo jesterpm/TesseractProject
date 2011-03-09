@@ -23,7 +23,7 @@ public class GeneratorsMenu extends JMenu {
 		super("Generators");
 		
 		// Build the menu of generators.
-		//add(new SphereField(theWorld));
+		add(new SphereField(theWorld));
 		add(new ParticleField(theWorld));
 	}
 }
