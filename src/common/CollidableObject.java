@@ -1,11 +1,35 @@
 package common;
 
-import java.io.*;
-import java.util.*;
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import com.sun.j3d.utils.geometry.*;
-import group2.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import javax.media.j3d.Appearance;
+import javax.media.j3d.Bounds;
+import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.Geometry;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.Group;
+import javax.media.j3d.IndexedTriangleArray;
+import javax.media.j3d.Material;
+import javax.media.j3d.Node;
+import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
+import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TransparencyAttributes;
+import javax.vecmath.Color3f;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+
+import com.sun.j3d.utils.geometry.GeometryInfo;
+import com.sun.j3d.utils.geometry.Primitive;
 
 @SuppressWarnings("restriction")
 public abstract class CollidableObject implements Serializable {
@@ -296,21 +320,6 @@ public abstract class CollidableObject implements Serializable {
 		orientation.add(tmp2);
 		orientation.normalize();
 		
-		// ADDED
-		if(other instanceof Mars ) {
-			Vector3f initialAngularVelocity = new Vector3f();
-
-			Vector3f radius = new Vector3f();
-			radius.scaleAdd(-1, other.centerOfMass, ci.contactPoint);
-			
-			float radiusNum = radius.length();
-			initialAngularVelocity.cross(radius, other.velocity);
-			other.angularVelocity.add(initialAngularVelocity);
-			float torque = -dynamicFriction * radiusNum;
-			other.angularVelocity.scale(torque);		
-		}
-		// END-ADDED
-
 		impulse.negate();
 		other.velocity.scaleAdd(other.inverseMass, impulse, other.velocity);
 		//Added
