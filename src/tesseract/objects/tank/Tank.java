@@ -30,7 +30,7 @@ public class Tank extends RemoteObject {
 	public Tank(Vector3f thePosition, float mass, float theScale,
 			Color bodyColor, Color trackColor, Color turretColor) {
 		super (thePosition, mass);
-		body = Body.makeBody(DEFAULT_BODY_COLOR, DEFAULT_TRACK_COLOR, theScale);
+		body = Body.makeBody(trackColor, bodyColor, theScale);
 		Transform3D turretMove = new Transform3D();
 		turretMove.setTranslation(new Vector3f(0, Body.height * theScale, 0));
 		turret = Body.makeTurret(turretColor, theScale, turretMove);
