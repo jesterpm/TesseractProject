@@ -80,7 +80,7 @@ public class Body {
 		tg.setTransform(toMove);
 		TransformGroup turret = new TransformGroup();
 		turret.addChild(tg);
-		turret.setTransform(rotateGun);
+		//turret.setTransform(rotateGun);
 		//tg.setTransform();
 		return turret;
 	}
