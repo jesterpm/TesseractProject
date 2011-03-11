@@ -18,12 +18,12 @@ import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 
 public class Body {
-	private static final float width = 1.35f;
-	private static final float height = .45f;
-	private static final float depth = .9f;
-	private static float radius = .75f;
-	private static float gunRad = .075f;
-	private static float gunLength = 2f;
+	public static final float width = 1.35f;
+	public static final float height = .45f;
+	public static final float depth = .9f;
+	public static float radius = .75f;
+	public static float gunRad = .075f;
+	public static float gunLength = 2f;
 	
 	public static TransformGroup makeBody(Color trackColor, Color bodyColor, float theScale) {
 		TransformGroup tank = new TransformGroup();
@@ -56,22 +56,32 @@ public class Body {
 		//TransformGroup[] tankNturret = {tank, turret};
 		return tank;
 	}
-	public static TransformGroup makeTurret(Appearance theApperance,
+	public static TransformGroup makeTurret(Color turretColor,
 			float theScale,	Transform3D toMove) {
-		
+		Appearance appearance = new Appearance();
+		Material material = new Material();
+		material.setDiffuseColor(new Color3f(turretColor));
+		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(turretColor), ColoringAttributes.NICEST));
+		appearance.setMaterial(material);
 		TransformGroup tg = new TransformGroup();
 		TransformGroup gunTG = new TransformGroup();
-		Primitive sphere = new Sphere(radius * theScale, theApperance);
-		Primitive gun = new Cylinder(gunRad * theScale,
-				gunLength * theScale, theApperance);
+		Primitive sphere = new Sphere(radius * theScale, appearance);
+		Primitive gun = new Cylinder(gunRad * theScale, gunLength * theScale, appearance);
 		gunTG.addChild(gun);
 		Transform3D mg = new Transform3D();
 		mg.rotZ(Math.PI / 2);
 		mg.setTranslation(new Vector3f(1.4f * theScale, .25f * theScale, 0));
 		gunTG.setTransform(mg);
+		Transform3D rotateGun = new Transform3D();
+		rotateGun.rotY(Math.PI / 2);
+		//toMove.mul(rotateGun);
 		tg.addChild(sphere);
 		tg.addChild(gunTG);
 		tg.setTransform(toMove);
-		return tg;
+		TransformGroup turret = new TransformGroup();
+		turret.addChild(tg);
+		turret.setTransform(rotateGun);
+		//tg.setTransform();
+		return turret;
 	}
 }
