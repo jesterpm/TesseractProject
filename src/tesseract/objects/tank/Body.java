@@ -25,7 +25,7 @@ public class Body {
 	private static float gunRad = .075f;
 	private static float gunLength = 2f;
 	
-	public static TransformGroup[] makeBody(Color trackColor, Color bodyColor, float theScale) {
+	public static TransformGroup makeBody(Color trackColor, Color bodyColor, float theScale) {
 		TransformGroup tank = new TransformGroup();
 		Appearance appearance = new Appearance();
 		Material material = new Material();
@@ -51,17 +51,19 @@ public class Body {
 		tank.addChild(box);
 		tank.addChild(leftTrack);
 		tank.addChild(rightTrack);
-		makeTurret(appearance, theScale, turretMove);
-		TransformGroup turret = makeTurret(appearance, theScale, turretMove);
-		TransformGroup[] tankNturret = {tank, turret};
-		return tankNturret;
+		//makeTurret(appearance, theScale, turretMove);
+		//TransformGroup turret = makeTurret(appearance, theScale, turretMove);
+		//TransformGroup[] tankNturret = {tank, turret};
+		return tank;
 	}
-	public static TransformGroup makeTurret(Appearance theApperance, float theScale, Transform3D toMove) {
+	public static TransformGroup makeTurret(Appearance theApperance,
+			float theScale,	Transform3D toMove) {
 		
 		TransformGroup tg = new TransformGroup();
 		TransformGroup gunTG = new TransformGroup();
 		Primitive sphere = new Sphere(radius * theScale, theApperance);
-		Primitive gun = new Cylinder(gunRad * theScale, gunLength * theScale, theApperance);
+		Primitive gun = new Cylinder(gunRad * theScale,
+				gunLength * theScale, theApperance);
 		gunTG.addChild(gun);
 		Transform3D mg = new Transform3D();
 		mg.rotZ(Math.PI / 2);
