@@ -20,7 +20,7 @@ public abstract class RemoteObject extends PhysicalObject {
 	/**
 	 * Privately used by the key controller.
 	 */
-	private static final float STEP = 0.01f;
+	protected static final float STEP = 0.01f;
 	
 	public RemoteObject(Vector3f thePosition, float mass) {
 		super(thePosition, mass);
