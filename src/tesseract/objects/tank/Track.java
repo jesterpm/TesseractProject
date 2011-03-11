@@ -73,7 +73,7 @@ public class Track {
 		NormalGenerator norms = new NormalGenerator(120);
 		GeometryInfo geo = new GeometryInfo(track);
 		norms.generateNormals(geo);
-		
+		geo.convertToIndexedTriangles();
 		Shape3D mesh = new Shape3D(geo.getGeometryArray());
 		Appearance meshApp = new Appearance();
 		Material surface = new Material();
