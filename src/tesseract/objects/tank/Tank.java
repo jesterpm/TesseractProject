@@ -13,7 +13,7 @@ public class Tank extends RemoteObject {
 	private final TransformGroup tank;
 	private final TransformGroup body;
 	private final TransformGroup turret;
-	private static final float DEFAULT_SCALE = 1f;;
+	private static final float DEFAULT_SCALE = 0.0625f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
 	private static final Color DEFAULT_TRACK_COLOR = Color.DARK_GRAY;
 	private static final Color DEFAULT_TURRET_COLOR = Color.GREEN;
@@ -48,5 +48,10 @@ public class Tank extends RemoteObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 4419863813052251438L;
+
+	@Override
+	public String getName() {
+		return "Tank";
+	}
 
 }

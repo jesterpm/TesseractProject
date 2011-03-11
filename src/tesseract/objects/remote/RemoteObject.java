@@ -50,5 +50,22 @@ public abstract class RemoteObject extends PhysicalObject {
 				break;
 		}
 	}
+	
+	/**
+	 * Get the name of the object for the menu.
+	 * 
+	 * @return The object's name for the menu.
+	 */
+	public abstract String getName();
+
+	/**
+	 * Send a KeyEvent to this remote object.
+	 * 
+	 * @param keyEvent The key event
+	 */
+	public void sendKeyEvent(final KeyEvent keyEvent) {
+		// TODO: Send this event over the network if necessary.
+		keyEventReceived(keyEvent);
+	}
 
 }

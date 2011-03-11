@@ -4,6 +4,9 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -49,6 +52,7 @@ import tesseract.newmenu.NewPlanarPolygonMenuItem;
 import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.remote.RemoteObjectMenu;
 
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
@@ -128,6 +132,11 @@ public class TesseractUI extends JFrame {
 	private PhysicalObject myCurrentObject;
 	
 	/**
+	 * Remote Objects.
+	 */
+	private RemoteObjectMenu myRemoteObjects;
+	
+	/**
 	 * UI Constructor.
 	 */
 	public TesseractUI() {
@@ -160,6 +169,9 @@ public class TesseractUI extends JFrame {
 				new NewToroidMenuItem(myWorld),
 				new NewSurfBoardMenuItem(myWorld)
 		};
+		
+		myRemoteObjects = new RemoteObjectMenu(myWorld);
+		
 		createMenu();
 		setupCanvas();
 		pack();
@@ -390,11 +402,12 @@ public class TesseractUI extends JFrame {
 			}
 		});
 		networkMenu.add(chat);
-		//menuBar.add(networkMenu);//*/
+		
+		// Remote Objects
+		menuBar.add(myRemoteObjects);
+		
+		
 		setJMenuBar(menuBar);
-		
-		
-		
 	}
 	
 	/**
@@ -535,6 +548,14 @@ public class TesseractUI extends JFrame {
 				}
 				
 				updateCamera();
+			}
+		});
+		
+		// Keyboard Events
+		myCanvas.addKeyListener(new KeyAdapter() {					
+			@Override
+			public void keyPressed(KeyEvent e) {
+				myRemoteObjects.sendKeyToObjects(e);
 			}
 		});
 		
