@@ -34,19 +34,19 @@ public abstract class RemoteObject extends PhysicalObject {
 	protected void keyEventReceived(final KeyEvent event) {
 		switch (event.getKeyCode()) {
 			case KeyEvent.VK_W:
-				position.z -= STEP;
+				velocity.z -= STEP;
 				break;
 				
 			case KeyEvent.VK_S:
-				position.z += STEP;
+				velocity.z += STEP;
 				break;
 				
 			case KeyEvent.VK_A:
-				position.x -= STEP;
+				velocity.x -= STEP;
 				break;
 				
 			case KeyEvent.VK_D:
-				position.x += STEP;
+				velocity.x += STEP;
 				break;
 		}
 	}
