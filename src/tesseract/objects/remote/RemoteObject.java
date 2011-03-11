@@ -66,6 +66,8 @@ public abstract class RemoteObject extends PhysicalObject {
 	public void sendKeyEvent(final KeyEvent keyEvent) {
 		// TODO: Send this event over the network if necessary.
 		keyEventReceived(keyEvent);
+		
+		updateTranformGroup();
 	}
 
 }

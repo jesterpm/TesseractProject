@@ -52,11 +52,15 @@ public class RemoteObjectMenu extends JMenu {
 		});
 		
 		myWorld.addObject(theObject);
+		myControlledObjects.add(theObject);
+		item.setSelected(true);
+		add(item);
 	}
 	
 	public void sendKeyToObjects(final KeyEvent e) {
 		for (RemoteObject o : myControlledObjects) {
 			o.sendKeyEvent(e);
+			System.out.println("Sent "+ e);
 		}
 	}
 }
