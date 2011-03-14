@@ -8,6 +8,7 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.World;
 import tesseract.objects.remote.RemoteObject;
 
 public class Tank extends RemoteObject {
@@ -26,19 +27,22 @@ public class Tank extends RemoteObject {
 	private static final int maxBarrelElevation = 14;
 	private static final int minBarrelElevation = -1;
 	
-	public Tank(Vector3f thePosition, float mass) {
-		this(thePosition, mass, DEFAULT_SCALE);
+	public Tank(final Vector3f thePosition, final float mass,
+			final World theWorld) {
+		this(thePosition, mass, DEFAULT_SCALE, theWorld);
 	}
 
-	public Tank(Vector3f thePosition, float mass, float theScale) {
+	public Tank(final Vector3f thePosition, final float mass,
+			final float theScale, final World theWorld) {
 		this(thePosition, mass, theScale, DEFAULT_BODY_COLOR,
-				DEFAULT_TRACK_COLOR, DEFAULT_TURRET_COLOR);
+				DEFAULT_TRACK_COLOR, DEFAULT_TURRET_COLOR, theWorld);
 	}
 
-	public Tank(Vector3f thePosition, float mass, float theScale,
-			Color bodyColor, Color trackColor, Color turretColor) {
+	public Tank(final Vector3f thePosition, final float mass,
+			final float theScale, final Color bodyColor, final Color trackColor,
+			final Color turretColor, final World theWorld) {
 		super (thePosition, mass);
-		tank = new Body(trackColor, bodyColor, theScale, turretColor);
+		tank = new Body(trackColor, bodyColor, theScale, turretColor, theWorld);
 		//orientation = new Vector3f();
 		aim = new Vector3f();
 		gunLocation = new Point3f();

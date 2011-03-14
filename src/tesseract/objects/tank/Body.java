@@ -14,6 +14,8 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.World;
+
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.GeometryInfo;
@@ -32,7 +34,8 @@ public class Body {
 	private TransformGroup barrel;
 	private Vector3f[] vectors;
 	
-	public Body(Color trackColor, Color bodyColor, float theScale, Color turretColor) {
+	
+	public Body(Color trackColor, Color bodyColor, float theScale, Color turretColor, World theWorld) {
 		body = new TransformGroup();
 		turret = new TransformGroup();
 		barrel = new TransformGroup();
