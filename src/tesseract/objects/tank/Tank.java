@@ -167,14 +167,14 @@ public class Tank extends RemoteObject {
 				//System.out.println("Tried to fire particle");
 				//break;
 		}
-		Transform3D result = new Transform3D();
+		/*Transform3D result = new Transform3D();
 		result = current;
 		result.mul(turnLeft);
 		result.mul(turnRight);
 		result.mul(barrelDown);
 		result.mul(barrelUp);
-		result.get(temp);
-		aim = temp;
+		result.get(temp);*/
+		//aim = position;
 	}
 	
 	/**
@@ -190,7 +190,8 @@ public class Tank extends RemoteObject {
 		}
 		
 		if (lastEvent != null && lastEvent.getKeyCode() == KeyEvent.VK_SPACE) {
-			children.add(new Particle(new Vector3f(0, 0, 0), new Color3f(DEFAULT_BODY_COLOR)));
+			children.add(new Particle(position, new Color3f(DEFAULT_BODY_COLOR)));
+			//System.out.println(position);
 			lastEvent = null;
 		}
 		
