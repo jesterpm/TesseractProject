@@ -68,6 +68,6 @@ public abstract class RemoteObject extends PhysicalObject {
 		keyEventReceived(keyEvent);
 		
 		updateTranformGroup();
-	}
+	} 
 
 }

@@ -27,22 +27,21 @@ public class Tank extends RemoteObject {
 	private static final int maxBarrelElevation = 14;
 	private static final int minBarrelElevation = -1;
 	
-	public Tank(final Vector3f thePosition, final float mass,
-			final World theWorld) {
-		this(thePosition, mass, DEFAULT_SCALE, theWorld);
+	public Tank(final Vector3f thePosition, final float mass) {
+		this(thePosition, mass, DEFAULT_SCALE);
 	}
 
 	public Tank(final Vector3f thePosition, final float mass,
-			final float theScale, final World theWorld) {
+			final float theScale) {
 		this(thePosition, mass, theScale, DEFAULT_BODY_COLOR,
-				DEFAULT_TRACK_COLOR, DEFAULT_TURRET_COLOR, theWorld);
+				DEFAULT_TRACK_COLOR, DEFAULT_TURRET_COLOR);
 	}
 
 	public Tank(final Vector3f thePosition, final float mass,
 			final float theScale, final Color bodyColor, final Color trackColor,
-			final Color turretColor, final World theWorld) {
+			final Color turretColor) {
 		super (thePosition, mass);
-		tank = new Body(trackColor, bodyColor, theScale, turretColor, theWorld);
+		tank = new Body(trackColor, bodyColor, theScale, turretColor);
 		//orientation = new Vector3f();
 		aim = new Vector3f();
 		gunLocation = new Point3f();
@@ -148,7 +147,7 @@ public class Tank extends RemoteObject {
 					barrelElevation--;
 				}
 				break;
-		}
+		} 
 	}
 	
 	

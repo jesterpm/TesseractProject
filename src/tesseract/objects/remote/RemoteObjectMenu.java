@@ -27,7 +27,7 @@ public class RemoteObjectMenu extends JMenu {
 		myControlledObjects = new ArrayList<RemoteObject>();
 		
 		// Objects that can be added
-		add(new TankMenuItem(this, theWorld));
+		add(new TankMenuItem(this));
 		
 		// Separator
 		addSeparator();
