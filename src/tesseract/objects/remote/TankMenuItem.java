@@ -2,7 +2,6 @@ package tesseract.objects.remote;
 
 import javax.vecmath.Vector3f;
 
-import tesseract.World;
 import tesseract.objects.tank.Tank;
 
 public class TankMenuItem extends RemoteObjectMenuItem {

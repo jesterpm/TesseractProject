@@ -13,6 +13,8 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.objects.emitters.FireableEmitter;
+
 
 
 import com.sun.j3d.utils.geometry.Box;
@@ -32,9 +34,11 @@ public class Body {
 	private TransformGroup turret;
 	private TransformGroup barrel;
 	private Vector3f[] vectors;
+	private FireableEmitter shooter;
 	
 	
 	public Body(Color trackColor, Color bodyColor, float theScale, Color turretColor) {
+		shooter = new FireableEmitter(new Vector3f(), new Vector3f(), new Color3f(1f, 0f, 0f));
 		body = new TransformGroup();
 		turret = new TransformGroup();
 		barrel = new TransformGroup();
@@ -98,6 +102,7 @@ public class Body {
 		Transform3D mg = new Transform3D();
 		mg.rotZ(Math.PI / 2);
 		mg.setTranslation(new Vector3f(1.4f * theScale, .25f * theScale, 0));
+		shooter.moveMe(new Vector3f(1.4f * theScale, .25f * theScale, 0));
 		gunTG.setTransform(mg);
 		Transform3D rotateGun = new Transform3D();
 		rotateGun.rotY(Math.PI / 2);
@@ -126,5 +131,9 @@ public class Body {
 	
 	public Vector3f getFacing() {
 		return vectors[0];
-	} 
+	}
+	
+	public FireableEmitter getShooter() {
+		return shooter;
+	}
 }

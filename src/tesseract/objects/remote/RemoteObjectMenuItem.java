@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 
-import tesseract.World;
-
 public abstract class RemoteObjectMenuItem extends JMenuItem {
 	protected RemoteObjectMenuItem(final String theLabel, 
 			final RemoteObjectMenu theMenu) {

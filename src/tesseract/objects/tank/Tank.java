@@ -147,6 +147,9 @@ public class Tank extends RemoteObject {
 					barrelElevation--;
 				}
 				break;
+			case KeyEvent.VK_SPACE:
+				tank.getShooter().spawnChildren();
+				break;
 		} 
 	}
 	
