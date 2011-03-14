@@ -2,13 +2,17 @@ package tesseract.objects.tank;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import tesseract.World;
+import tesseract.objects.Particle;
+import tesseract.objects.PhysicalObject;
 import tesseract.objects.remote.RemoteObject;
 
 public class Tank extends RemoteObject {
@@ -16,7 +20,8 @@ public class Tank extends RemoteObject {
 	private final TransformGroup whole;
 	private final TransformGroup turret;
 	//private final Vector3f orientation;
-	private final Vector3f aim;
+	KeyEvent lastEvent;
+	private Vector3f aim;
 	private final Point3f gunLocation;
 	private static final float DEFAULT_SCALE = 0.0625f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
@@ -73,13 +78,21 @@ public class Tank extends RemoteObject {
 	}
 	
 	protected void keyEventReceived(final KeyEvent event) {
+		lastEvent = event;
 		//Transform3D check = new Transform3D();
 		//tank.getBody().getTransform(check);
 		//check.get(orientation);
+		Vector3f temp = new Vector3f();
 		Transform3D current = new Transform3D();
 		turret.getTransform(current);
 		Transform3D currentOrientation = new Transform3D();
 		whole.getTransform(currentOrientation);
+		Transform3D turnRight = new Transform3D();
+		Transform3D barrelDown = new Transform3D();
+		Transform3D barrelUp = new Transform3D();
+		Transform3D right = new Transform3D();
+		Transform3D left = new Transform3D();
+		Transform3D turnLeft = new Transform3D();
 		switch (event.getKeyCode()) {
 			case KeyEvent.VK_W:
 				
@@ -90,7 +103,7 @@ public class Tank extends RemoteObject {
 				break;
 				
 			case KeyEvent.VK_A:
-				Transform3D turnLeft = new Transform3D();
+				
 				turnLeft.rotY(Math.PI / 32);
 				currentOrientation.mul(turnLeft);
 				whole.setTransform(currentOrientation);
@@ -102,7 +115,7 @@ public class Tank extends RemoteObject {
 				break;
 				
 			case KeyEvent.VK_D:
-				Transform3D turnRight = new Transform3D();
+				
 				turnRight.rotY(-Math.PI / 32);
 				currentOrientation.mul(turnRight);
 				whole.setTransform(currentOrientation);
@@ -113,19 +126,19 @@ public class Tank extends RemoteObject {
 				break;
 			case KeyEvent.VK_LEFT:
 				
-				Transform3D left = new Transform3D();
 				left.rotY(Math.PI / 32);
 				current.mul(left);
 				turret.setTransform(current);
 				break;
 			case KeyEvent.VK_RIGHT:
-				Transform3D right = new Transform3D();
+				
 				right.rotY(-Math.PI / 32);
 				current.mul(right);
 				turret.setTransform(current);
+				
 				break;
 			case KeyEvent.VK_UP:
-				Transform3D barrelUp = new Transform3D();
+				
 				tank.getBarrel().getTransform(barrelUp);
 				Transform3D up = new Transform3D();
 				up.rotZ(Math.PI /32);
@@ -134,10 +147,11 @@ public class Tank extends RemoteObject {
 					tank.getBarrel().setTransform(barrelUp);
 					barrelElevation++;
 				}
+				//barrelUp.get(aim);
 				
 				break;
 			case KeyEvent.VK_DOWN:
-				Transform3D barrelDown = new Transform3D();
+				
 				tank.getBarrel().getTransform(barrelDown);
 				Transform3D down = new Transform3D();
 				down.rotZ(-Math.PI /32);
@@ -146,11 +160,41 @@ public class Tank extends RemoteObject {
 					tank.getBarrel().setTransform(barrelDown);
 					barrelElevation--;
 				}
+				//barrelDown.get(aim);
 				break;
-			case KeyEvent.VK_SPACE:
-				tank.getShooter().spawnChildren();
-				break;
-		} 
+			//case KeyEvent.VK_SPACE:
+				//spawnChildren(0f);
+				//System.out.println("Tried to fire particle");
+				//break;
+		}
+		Transform3D result = new Transform3D();
+		result = current;
+		result.mul(turnLeft);
+		result.mul(turnRight);
+		result.mul(barrelDown);
+		result.mul(barrelUp);
+		result.get(temp);
+		aim = temp;
+	}
+	
+	/**
+	 * Update State and maybe generate a new object.
+	 * 
+	 * @return A list of new objects to add to the world.
+	 */
+	public List<PhysicalObject> spawnChildren(float duration) {
+		List<PhysicalObject> children = super.spawnChildren(duration);
+		
+		if (children == null) {
+			children = new LinkedList<PhysicalObject>();
+		}
+		
+		if (lastEvent != null && lastEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+			children.add(new Particle(new Vector3f(0, 0, 0), new Color3f(DEFAULT_BODY_COLOR)));
+			lastEvent = null;
+		}
+		
+		return children;
 	}
 	
 	
