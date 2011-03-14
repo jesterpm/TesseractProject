@@ -7,13 +7,14 @@ import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.Geometry;
 import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Material;
+import javax.media.j3d.Node;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
 
-import tesseract.objects.emitters.FireableEmitter;
+//import tesseract.objects.emitters.FireableEmitter;
 
 
 
@@ -34,11 +35,12 @@ public class Body {
 	private TransformGroup turret;
 	private TransformGroup barrel;
 	private Vector3f[] vectors;
-	private FireableEmitter shooter;
+	private Vector3f aim;
+	//private FireableEmitter shooter;
 	
 	
 	public Body(Color trackColor, Color bodyColor, float theScale, Color turretColor) {
-		shooter = new FireableEmitter(new Vector3f(), new Vector3f(), new Color3f(1f, 0f, 0f));
+		//shooter = new FireableEmitter(new Vector3f(), new Vector3f(), new Color3f(1f, 0f, 0f));
 		body = new TransformGroup();
 		turret = new TransformGroup();
 		barrel = new TransformGroup();
@@ -59,7 +61,7 @@ public class Body {
 		appearance.setMaterial(material);
 		Primitive box = new Box(width * theScale, height * theScale,
 				depth * theScale, appearance);
-		Shape3D front = box.getShape(Box.RIGHT);
+		Shape3D front = box.getShape(Box.FRONT);
 		//
 		Geometry g = front.getGeometry(0);
 		GeometryInfo gi = new GeometryInfo((GeometryArray)g);
@@ -102,7 +104,7 @@ public class Body {
 		Transform3D mg = new Transform3D();
 		mg.rotZ(Math.PI / 2);
 		mg.setTranslation(new Vector3f(1.4f * theScale, .25f * theScale, 0));
-		shooter.moveMe(new Vector3f(1.4f * theScale, .25f * theScale, 0));
+		//shooter.moveMe(new Vector3f(1.4f * theScale, .25f * theScale, 0));
 		gunTG.setTransform(mg);
 		Transform3D rotateGun = new Transform3D();
 		rotateGun.rotY(Math.PI / 2);
@@ -112,6 +114,13 @@ public class Body {
 		barrel.addChild(gunTG);
 		tg.setTransform(toMove);
 		turret.addChild(tg);
+		//Node s = barrel.getChild(Cylinder.BOTTOM);
+		//if (s instanceof Shape3D) {
+			//Shape3D r = (Shape3D) s;
+			//Geometry g = r.getGeometry(0);
+			//GeometryInfo gi = new GeometryInfo((GeometryArray)g);
+			//aim = (gi.getNormals())[0];
+		//}
 		//turret.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		//turret.setTransform(rotateGun);
 		//tg.setTransform();
@@ -133,7 +142,11 @@ public class Body {
 		return vectors[0];
 	}
 	
-	public FireableEmitter getShooter() {
-		return shooter;
+	public Vector3f getAim() {
+		return aim;
 	}
+	
+	//public FireableEmitter getShooter() {
+	//	return shooter;
+	//}
 }

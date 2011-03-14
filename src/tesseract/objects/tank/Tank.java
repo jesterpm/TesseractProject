@@ -31,6 +31,9 @@ public class Tank extends RemoteObject {
 	private int barrelElevation = 0;
 	private static final int maxBarrelElevation = 14;
 	private static final int minBarrelElevation = -1;
+	private final float myScale;
+	private int barrelTurn = 0;
+	private final int MAX_TURN = 32;
 	
 	public Tank(final Vector3f thePosition, final float mass) {
 		this(thePosition, mass, DEFAULT_SCALE);
@@ -46,6 +49,7 @@ public class Tank extends RemoteObject {
 			final float theScale, final Color bodyColor, final Color trackColor,
 			final Color turretColor) {
 		super (thePosition, mass);
+		myScale = theScale;
 		tank = new Body(trackColor, bodyColor, theScale, turretColor);
 		//orientation = new Vector3f();
 		aim = new Vector3f();
@@ -129,13 +133,14 @@ public class Tank extends RemoteObject {
 				left.rotY(Math.PI / 32);
 				current.mul(left);
 				turret.setTransform(current);
+				barrelTurn = barrelTurn - 1;
 				break;
 			case KeyEvent.VK_RIGHT:
 				
 				right.rotY(-Math.PI / 32);
 				current.mul(right);
 				turret.setTransform(current);
-				
+				barrelTurn = barrelTurn + 1;
 				break;
 			case KeyEvent.VK_UP:
 				
@@ -160,21 +165,19 @@ public class Tank extends RemoteObject {
 					tank.getBarrel().setTransform(barrelDown);
 					barrelElevation--;
 				}
-				//barrelDown.get(aim);
+				
 				break;
 			//case KeyEvent.VK_SPACE:
 				//spawnChildren(0f);
 				//System.out.println("Tried to fire particle");
 				//break;
 		}
-		/*Transform3D result = new Transform3D();
-		result = current;
-		result.mul(turnLeft);
-		result.mul(turnRight);
-		result.mul(barrelDown);
-		result.mul(barrelUp);
-		result.get(temp);*/
-		//aim = position;
+		if (barrelTurn < -MAX_TURN) {
+			barrelTurn = MAX_TURN - 1;
+		} else if (barrelTurn > MAX_TURN) {
+			barrelTurn = -MAX_TURN + 1;
+		}
+		
 	}
 	
 	/**
@@ -190,8 +193,48 @@ public class Tank extends RemoteObject {
 		}
 		
 		if (lastEvent != null && lastEvent.getKeyCode() == KeyEvent.VK_SPACE) {
-			children.add(new Particle(position, new Color3f(DEFAULT_BODY_COLOR)));
-			//System.out.println(position);
+			
+			//System.out.println(barrelTurn);
+			Vector3f toSet = new Vector3f(position.getX(), position.getY(), position.getZ());
+			//toSet.x += 1f * myScale;
+			//toSet.x = toSet.x - .5f * myScale;
+			//toSet.y += Body.height * myScale + .275 * myScale;
+			
+			float xyTheta = ((float) Math.PI / 32) * barrelElevation;
+			float xzTheta = ((float) Math.PI / 32) * barrelTurn;
+			//float c = theta * Body.gunLength * myScale;
+			//toSet.y = toSet.y + c;
+			//VERTICAL CALCULATION
+			float l = Body.gunLength * myScale + .45f * myScale;
+			float q = (l * (float) Math.sin((double) xyTheta))/ (float) Math.sin((Math.PI - xyTheta) / 2);
+			float w = (l * (float) Math.sin((double) xzTheta))/ (float) Math.sin((Math.PI - xzTheta) / 2);
+			float newX = l - ((q * q) / (2 * l));
+			float newY = (float) ((q / (2 * l)) * Math.sqrt(4 * l * l - q * q));
+			toSet.x = toSet.x + newX;
+			toSet.y = toSet.y + newY;
+			
+			//HORIZONTAL CALCULATION
+			float newnewX = l - ((w * w) / (2 * l));
+			float newZ = (float) ((w / (2 * l)) * Math.sqrt(4 * l * l - w * w));
+			//toSet.x = toSet.x - newnewX;
+			
+				toSet.z = toSet.z + newZ;
+				toSet.x = toSet.x - newX;
+				float temp = Math.max(newnewX, newX) - Math.min(newnewX, newX);
+				toSet.x = toSet.x + Math.max(newnewX, newX) - temp;
+			
+			/*
+			System.out.println("theta " + theta);
+			System.out.println("q " + q);
+			System.out.println("l " + q);
+			System.out.println(newX);
+			System.out.println(newY);*/
+			toSet.y += Body.height * myScale + .275 * myScale;
+			Particle toAdd = new Particle(toSet, new Color3f(DEFAULT_BODY_COLOR));
+			children.add(toAdd);
+			
+			//System.out.println(toAdd.getPosition());
+			//System.out.println(this.position);
 			lastEvent = null;
 		}
 		
