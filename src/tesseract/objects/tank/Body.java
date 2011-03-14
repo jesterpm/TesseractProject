@@ -41,6 +41,7 @@ public class Body {
 		turretMove.setTranslation(new Vector3f(0, height * theScale, 0));
 		makeTurret(turretColor, theScale, turretMove);
 		barrel.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		
 	}
 	
 	private void makeBody(Color trackColor, Color bodyColor, float theScale) {
@@ -121,7 +122,7 @@ public class Body {
 		return barrel;
 	}
 	
-	public Vector3f[] getFacing() {
-		return vectors;
+	public Vector3f getFacing() {
+		return vectors[0];
 	}
 }

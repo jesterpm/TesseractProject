@@ -14,7 +14,7 @@ public class Tank extends RemoteObject {
 	
 	private final TransformGroup whole;
 	private final TransformGroup turret;
-	private final Vector3f orientation;
+	//private final Vector3f orientation;
 	private final Vector3f aim;
 	private final Point3f gunLocation;
 	private static final float DEFAULT_SCALE = 0.0625f;
@@ -39,7 +39,7 @@ public class Tank extends RemoteObject {
 			Color bodyColor, Color trackColor, Color turretColor) {
 		super (thePosition, mass);
 		tank = new Body(trackColor, bodyColor, theScale, turretColor);
-		orientation = new Vector3f();
+		//orientation = new Vector3f();
 		aim = new Vector3f();
 		gunLocation = new Point3f();
 		Transform3D turretMove = new Transform3D();
@@ -50,6 +50,7 @@ public class Tank extends RemoteObject {
 		whole = new TransformGroup();
 		whole.addChild(tank.getBody());
 		whole.addChild(turret);
+		whole.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		setShape(whole);
 		inverseInertiaTensor.m00 = 1f / 12 / inverseMass * (Body.height * Body.height * theScale + Body.depth * Body.depth * theScale);
 		inverseInertiaTensor.m11 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.depth * Body.depth * theScale);
@@ -69,11 +70,13 @@ public class Tank extends RemoteObject {
 	}
 	
 	protected void keyEventReceived(final KeyEvent event) {
-		Transform3D check = new Transform3D();
-		tank.getBody().getTransform(check);
-		check.get(orientation);
+		//Transform3D check = new Transform3D();
+		//tank.getBody().getTransform(check);
+		//check.get(orientation);
 		Transform3D current = new Transform3D();
 		turret.getTransform(current);
+		Transform3D currentOrientation = new Transform3D();
+		whole.getTransform(currentOrientation);
 		switch (event.getKeyCode()) {
 			case KeyEvent.VK_W:
 				
@@ -84,11 +87,26 @@ public class Tank extends RemoteObject {
 				break;
 				
 			case KeyEvent.VK_A:
-				angularVelocity.y += STEP;
+				Transform3D turnLeft = new Transform3D();
+				turnLeft.rotY(Math.PI / 32);
+				currentOrientation.mul(turnLeft);
+				whole.setTransform(currentOrientation);
+				//orientation.y += Math.PI / 32;
+				
+				//angularVelocity.y = 0;
+				//orientation.normalize();
+				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
 				break;
 				
 			case KeyEvent.VK_D:
-				angularVelocity.y -= STEP;
+				Transform3D turnRight = new Transform3D();
+				turnRight.rotY(-Math.PI / 32);
+				currentOrientation.mul(turnRight);
+				whole.setTransform(currentOrientation);
+				//orientation.y -= Math.PI / 32;
+				//angularVelocity.y = 0;
+				//orientation.normalize();
+				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
 				break;
 			case KeyEvent.VK_LEFT:
 				
