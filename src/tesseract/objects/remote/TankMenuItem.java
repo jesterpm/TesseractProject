@@ -14,6 +14,6 @@ public class TankMenuItem extends RemoteObjectMenuItem {
 
 	@Override
 	protected RemoteObject createRemoteObject() {
-		return new Tank(new Vector3f(), 10);
+		return new Tank(new Vector3f(), 100);
 	} 
 }

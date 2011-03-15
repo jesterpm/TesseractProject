@@ -215,10 +215,12 @@ public class World implements Observer {
 		Iterator<PhysicalObject> itr = myObjects.iterator();
 	
 		List<PhysicalObject> children = new LinkedList<PhysicalObject>();
-		
+		List<CollidableObject> toRemove = new LinkedList<CollidableObject>();
 		for (int i = 0; i < myObjects.size(); i++) {
 			CollidableObject obj = myObjects.get(i);
-
+			if (obj.removeMe()) {
+				toRemove.add(obj);
+			}
 			// Apply forces
 			for (Force force : myForces) {
 				if(!(obj instanceof Blimp)) {
@@ -237,6 +239,9 @@ public class World implements Observer {
 				children.addAll(newChildren);
 			}
 		}
+		
+		myObjects.removeAll(toRemove);
+		
 		
 		/*
 		  In the "tick" method of your application, rather than call the old form of 
