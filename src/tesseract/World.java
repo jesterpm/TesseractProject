@@ -27,6 +27,7 @@ import tesseract.forces.Force;
 import tesseract.objects.HalfSpace;
 import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.blimp.Blimp;
 
 import common.CollidableObject;
 import common.CollisionDetector;
@@ -220,7 +221,9 @@ public class World implements Observer {
 
 			// Apply forces
 			for (Force force : myForces) {
-				force.applyForceTo((PhysicalObject) obj);
+				if(!(obj instanceof Blimp)) {
+					force.applyForceTo((PhysicalObject) obj);
+				}
 			}
 			
 			// Update the object's state.

@@ -52,6 +52,7 @@ import tesseract.newmenu.NewPlanarPolygonMenuItem;
 import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.blimp.Blimp;
 import tesseract.objects.remote.RemoteObjectMenu;
 
 import com.sun.j3d.utils.picking.PickCanvas;
@@ -157,6 +158,8 @@ public class TesseractUI extends JFrame {
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
 				myPeer);
 		
+		Blimp blimp = new Blimp(new Vector3f(0,0,0), .5f);
+		myWorld.addObject(blimp);
 		myCurrentObject = null;
 		
 		myObjectMenuItems = new JMenuItem[] {
