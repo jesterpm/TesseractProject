@@ -15,7 +15,7 @@ import com.sun.j3d.utils.geometry.Primitive;
 public abstract class CollidableObject implements Serializable {
 	private static final long serialVersionUID = 3667108226485766929L;
 	protected float inverseMass;
-	protected boolean detachMe = false;
+	private boolean detachMe = false;
 	// The center of mass in the local coordinate system
 	protected Vector3f centerOfMass;
 	protected Vector3f position, previousPosition;
