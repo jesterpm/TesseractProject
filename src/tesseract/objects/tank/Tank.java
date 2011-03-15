@@ -11,6 +11,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.objects.ModifyableParticle;
 import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.remote.RemoteObject;
@@ -21,8 +22,8 @@ public class Tank extends RemoteObject {
 	private final TransformGroup turret;
 	//private final Vector3f orientation;
 	KeyEvent lastEvent;
-	private Vector3f aim;
-	private final Point3f gunLocation;
+	//private Vector3f aim;
+	//private final Point3f gunLocation;
 	private static final float DEFAULT_SCALE = 0.0625f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
 	private static final Color DEFAULT_TRACK_COLOR = Color.DARK_GRAY;
@@ -52,8 +53,8 @@ public class Tank extends RemoteObject {
 		myScale = theScale;
 		tank = new Body(trackColor, bodyColor, theScale, turretColor);
 		//orientation = new Vector3f();
-		aim = new Vector3f();
-		gunLocation = new Point3f();
+		//aim = new Vector3f();
+		//gunLocation = new Point3f();
 		Transform3D turretMove = new Transform3D();
 		turretMove.setTranslation(new Vector3f(0, Body.height * theScale, 0));
 		turret = new TransformGroup();
@@ -64,10 +65,10 @@ public class Tank extends RemoteObject {
 		whole.addChild(turret);
 		whole.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		setShape(whole);
-		inverseInertiaTensor.m00 = 1f / 12 / inverseMass * (Body.height * Body.height * theScale + Body.depth * Body.depth * theScale);
-		inverseInertiaTensor.m11 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.depth * Body.depth * theScale);
-		inverseInertiaTensor.m22 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.height * Body.height * theScale);
-		inverseInertiaTensor.invert();
+		//inverseInertiaTensor.m00 = 1f / 12 / inverseMass * (Body.height * Body.height * theScale + Body.depth * Body.depth * theScale);
+		//inverseInertiaTensor.m11 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.depth * Body.depth * theScale);
+		//inverseInertiaTensor.m22 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.height * Body.height * theScale);
+		//inverseInertiaTensor.invert();
 		
 	}
 
@@ -97,13 +98,19 @@ public class Tank extends RemoteObject {
 		Transform3D right = new Transform3D();
 		Transform3D left = new Transform3D();
 		Transform3D turnLeft = new Transform3D();
+		Vector3f facing = new Vector3f(tank.getFacing());
+		Transform3D faceTrans = new Transform3D();
+		whole.getTransform(faceTrans);
+		faceTrans.transform(facing);
 		switch (event.getKeyCode()) {
 			case KeyEvent.VK_W:
-				
+				facing.scale(.01f);
+				velocity.add(facing);
 				break;
 				
 			case KeyEvent.VK_S:
-				
+				facing.scale(.01f);
+				velocity.sub(facing);
 				break;
 				
 			case KeyEvent.VK_A:
@@ -111,6 +118,7 @@ public class Tank extends RemoteObject {
 				turnLeft.rotY(Math.PI / 32);
 				currentOrientation.mul(turnLeft);
 				whole.setTransform(currentOrientation);
+				turnLeft.transform(velocity);
 				//orientation.y += Math.PI / 32;
 				
 				//angularVelocity.y = 0;
@@ -123,6 +131,7 @@ public class Tank extends RemoteObject {
 				turnRight.rotY(-Math.PI / 32);
 				currentOrientation.mul(turnRight);
 				whole.setTransform(currentOrientation);
+				turnRight.transform(velocity);
 				//orientation.y -= Math.PI / 32;
 				//angularVelocity.y = 0;
 				//orientation.normalize();
@@ -194,20 +203,57 @@ public class Tank extends RemoteObject {
 		
 		if (lastEvent != null && lastEvent.getKeyCode() == KeyEvent.VK_SPACE) {
 			
-			//System.out.println(barrelTurn);
-			Vector3f toSet = new Vector3f(position.getX(), position.getY(), position.getZ());
-			//toSet.x += 1f * myScale;
-			//toSet.x = toSet.x - .5f * myScale;
-			//toSet.y += Body.height * myScale + .275 * myScale;
-			
+			TransformGroup particleBody = new TransformGroup();
+			TransformGroup particleTurret = new TransformGroup();
+			TransformGroup particleTG = new TransformGroup();
+			TransformGroup particleBarrel = new TransformGroup();
+			TransformGroup particleGunTG = new TransformGroup();
+			Transform3D collector = new Transform3D();
+			Transform3D current = new Transform3D();
+			Transform3D pTurret = new Transform3D();
+			Transform3D pTG = new Transform3D();
+			Transform3D pBarrel = new Transform3D();
+			Transform3D pGun = new Transform3D();
+			Transform3D temp = new Transform3D();
+			temp.setTranslation(new Vector3f(0, .3f * myScale, 0));
+			whole.getTransform(current);
+			collector.set(current);
+			current.mul(temp);
+			particleBody.setTransform(current);
+			turret.getTransform(pTurret);
+			pTurret.setScale(1.7);
+			particleTurret.setTransform(pTurret);
+			((TransformGroup) turret.getChild(0)).getTransform(pTG);
+			particleTG.setTransform(pTG);
+			tank.getBarrel().getTransform(pBarrel);
+			particleBarrel.setTransform(pBarrel);
+			((TransformGroup) tank.getBarrel().getChild(0)).getTransform(pGun);
+			particleGunTG.setTransform(pGun);
+			particleBody.addChild(particleTurret);
+			particleTurret.addChild(particleTG);
+			particleTG.addChild(particleBarrel);
+			particleBarrel.addChild(particleGunTG);
+			collector.mul(pTurret);
+			collector.mul(pTG);
+			collector.mul(pBarrel);
+			collector.mul(pGun);
+			Vector3f accelerator = new Vector3f();
+			collector.get(accelerator);
+			//System.out.println(accelerator);
+			ModifyableParticle toAdd = new ModifyableParticle(position, 1f, new Color3f(Color.RED),
+					particleBody, particleGunTG);
+			toAdd.setAcceleration(accelerator);
+			/*
 			float xyTheta = ((float) Math.PI / 32) * barrelElevation;
 			float xzTheta = ((float) Math.PI / 32) * barrelTurn;
+			float zyTheta = ((float) Math.PI / 32) * barrelElevation;
 			//float c = theta * Body.gunLength * myScale;
 			//toSet.y = toSet.y + c;
 			//VERTICAL CALCULATION
 			float l = Body.gunLength * myScale + .45f * myScale;
 			float q = (l * (float) Math.sin((double) xyTheta))/ (float) Math.sin((Math.PI - xyTheta) / 2);
 			float w = (l * (float) Math.sin((double) xzTheta))/ (float) Math.sin((Math.PI - xzTheta) / 2);
+			float e = (l * (float) Math.sin((double) zyTheta))/ (float) Math.sin((Math.PI - zyTheta) / 2);
 			float newX = l - ((q * q) / (2 * l));
 			float newY = (float) ((q / (2 * l)) * Math.sqrt(4 * l * l - q * q));
 			toSet.x = toSet.x + newX;
@@ -216,28 +262,42 @@ public class Tank extends RemoteObject {
 			//HORIZONTAL CALCULATION
 			float newnewX = l - ((w * w) / (2 * l));
 			float newZ = (float) ((w / (2 * l)) * Math.sqrt(4 * l * l - w * w));
+			float newZy = (float) ((e / (2 * l)) * Math.sqrt(4 * l * l - e * e));
 			//toSet.x = toSet.x - newnewX;
-			
-				toSet.z = toSet.z + newZ;
+			if (barrelTurn != 0) {
+				//toSet.z = toSet.z + newZ;
 				toSet.x = toSet.x - newX;
 				float temp = Math.max(newnewX, newX) - Math.min(newnewX, newX);
-				toSet.x = toSet.x + Math.max(newnewX, newX) - temp;
-			
+				//toSet.x = toSet.x + Math.max(newnewX, newX) - temp;
+				if (Math.abs(newnewX) > Math.abs(newX)) {
+					toSet.x = toSet.x + newnewX - temp;
+				} else {
+					toSet.x = toSet.x + newX - temp;
+				}
+				
+				
+					float zTemp = Math.abs(newZ - newZy);
+					if (Math.abs(newZ) < Math.abs(newZy)) {
+						toSet.z = toSet.z + newZ - zTemp;
+					} else {
+						toSet.z = toSet.z + newZy - zTemp;
+					}
+			}
 			/*
 			System.out.println("theta " + theta);
 			System.out.println("q " + q);
 			System.out.println("l " + q);
 			System.out.println(newX);
 			System.out.println(newY);*/
-			toSet.y += Body.height * myScale + .275 * myScale;
-			Particle toAdd = new Particle(toSet, new Color3f(DEFAULT_BODY_COLOR));
+			//toSet.y += Body.height * myScale + .275 * myScale;
+			//System.out.println(toSet);
+			//Particle toAdd = new Particle(toSet, new Color3f(DEFAULT_BODY_COLOR));
+			//children.add(toAdd);
 			children.add(toAdd);
-			
 			//System.out.println(toAdd.getPosition());
 			//System.out.println(this.position);
 			lastEvent = null;
 		}
-		
 		return children;
 	}
 	

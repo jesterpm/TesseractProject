@@ -61,7 +61,7 @@ public class Body {
 		appearance.setMaterial(material);
 		Primitive box = new Box(width * theScale, height * theScale,
 				depth * theScale, appearance);
-		Shape3D front = box.getShape(Box.FRONT);
+		Shape3D front = box.getShape(Box.RIGHT);
 		//
 		Geometry g = front.getGeometry(0);
 		GeometryInfo gi = new GeometryInfo((GeometryArray)g);
@@ -96,34 +96,26 @@ public class Body {
 		material.setDiffuseColor(new Color3f(turretColor));
 		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(turretColor), ColoringAttributes.NICEST));
 		appearance.setMaterial(material);
-		TransformGroup tg = new TransformGroup();
-		TransformGroup gunTG = new TransformGroup();
+		
+		
 		Primitive sphere = new Sphere(radius * theScale, appearance);
 		Primitive gun = new Cylinder(gunRad * theScale, gunLength * theScale, appearance);
+		
+		
+		TransformGroup tg = new TransformGroup();
+		TransformGroup gunTG = new TransformGroup();
 		gunTG.addChild(gun);
 		Transform3D mg = new Transform3D();
 		mg.rotZ(Math.PI / 2);
 		mg.setTranslation(new Vector3f(1.4f * theScale, .25f * theScale, 0));
-		//shooter.moveMe(new Vector3f(1.4f * theScale, .25f * theScale, 0));
 		gunTG.setTransform(mg);
-		Transform3D rotateGun = new Transform3D();
-		rotateGun.rotY(Math.PI / 2);
-		//toMove.mul(rotateGun);
+		
+		
 		tg.addChild(sphere);
 		tg.addChild(barrel);
 		barrel.addChild(gunTG);
 		tg.setTransform(toMove);
 		turret.addChild(tg);
-		//Node s = barrel.getChild(Cylinder.BOTTOM);
-		//if (s instanceof Shape3D) {
-			//Shape3D r = (Shape3D) s;
-			//Geometry g = r.getGeometry(0);
-			//GeometryInfo gi = new GeometryInfo((GeometryArray)g);
-			//aim = (gi.getNormals())[0];
-		//}
-		//turret.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		//turret.setTransform(rotateGun);
-		//tg.setTransform();
 	}
 	
 	public TransformGroup getBody() {
