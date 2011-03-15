@@ -91,6 +91,7 @@ public class ModifyableParticle extends PhysicalObject {
 	}
 
 	public void setAcceleration(Vector3f accelerator) {
+		accelerator.y -= 0.0118 * 2;
 		accelerator.scale(15f);
 		this.velocity = accelerator;		
 	}
