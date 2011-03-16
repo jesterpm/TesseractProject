@@ -423,7 +423,7 @@ public class TesseractUI extends JFrame {
 		myCanvas = new Canvas3D(config);
 		
 		SimpleUniverse universe = new SimpleUniverse(myCanvas);
-		universe.getViewer().getView().setSceneAntialiasingEnable(true);
+		//universe.getViewer().getView().setSceneAntialiasingEnable(true);
 
 		// Set the camera
 		cameraTG = universe.getViewingPlatform().getViewPlatformTransform();
