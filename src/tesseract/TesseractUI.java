@@ -56,6 +56,7 @@ import tesseract.newmenu.NewParticleMenuItem;
 import tesseract.newmenu.NewPlanarPolygonMenuItem;
 import tesseract.newmenu.NewSurfBoardMenuItem;
 import tesseract.newmenu.NewToroidMenuItem;
+import tesseract.objects.Ground;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.blimp.Blimp;
 import tesseract.objects.remote.RemoteObjectMenu;
@@ -164,17 +165,8 @@ public class TesseractUI extends JFrame {
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
 				myPeer);
 		
-		//Set Background
-		BoundingBox bounds = myWorld.getBounds();
-		TextureLoader t = new TextureLoader("Alien.jpg", myCanvas);
-		Background background = new Background(t.getImage()); 
-		background.setImageScaleMode(Background.SCALE_FIT_MAX); // Tiles the image
-		background.setApplicationBounds(bounds); 
-		BranchGroup bg = new BranchGroup();
-		bg.addChild(background);
-
-		BranchGroup scene = myWorld.getScene();
-		scene.addChild(bg);
+		createBackground();
+		createGround();
 		
 		Blimp blimp = new Blimp(new Vector3f(0,0,0), .7f);
 		myWorld.addObject(blimp);
@@ -397,6 +389,7 @@ public class TesseractUI extends JFrame {
 				originLinear.setSelected(false);
 				originQuadradic.setSelected(false);
 				airDrag.setSelected(false);
+				createGround();
 			}
 		});
 		simulationMenu.add(resetSim);
@@ -502,7 +495,9 @@ public class TesseractUI extends JFrame {
 			
 			public void mouseDragged(final MouseEvent e) {
 				if (lastDragEvent != null) { 
-					if (myCurrentObject != null) {
+					
+					//Disable the ground from being pickable
+					if (myCurrentObject != null && !(myCurrentObject instanceof Ground)) {
 						float scale = 0.001f;
 						
 						int xdiff = e.getX() - lastDragEvent.getX();
@@ -622,28 +617,32 @@ public class TesseractUI extends JFrame {
 			}
 		});
 	}
+	
+	/**
+	 * Creates the ground
+	 */
+	public void createGround(){
+		Ground ground = new Ground(new Vector3f(0f, -.51f, 0f), 5f);
+		myWorld.addObject(ground);
+	}
+	
+	/**
+	 * Create background image
+	 */
+	private void createBackground() {
+		//Set Background
+		BoundingBox bounds = myWorld.getBounds();
+		TextureLoader t = new TextureLoader("Alien.jpg", myCanvas);
+		Background background = new Background(t.getImage()); 
+		background.setImageScaleMode(Background.SCALE_FIT_MAX); // Tiles the image
+		background.setApplicationBounds(bounds); 
+		BranchGroup bg = new BranchGroup();
+		bg.addChild(background);
+
+		BranchGroup scene = myWorld.getScene();
+		scene.addChild(bg);
+	}
 }
 
 
 
-/*
-JCheckBoxMenuItem cMenuItem = new JCheckBoxMenuItem("Enable Particle Emitters", enableEmitters);
-cMenuItem.addActionListener(new ActionListener() {
-	public void actionPerformed(ActionEvent e) {
-		enableEmitters = !enableEmitters;
-	}			
-});
-menu.add(cMenuItem);
-
-for (int i = 0; i < forces.length; i++) {
-	cMenuItem = new JCheckBoxMenuItem(forces[i].toString(), activeForces[i]);
-	cMenuItem.setActionCommand(i + "");
-	cMenuItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			int index = Integer.parseInt(e.getActionCommand());
-			activeForces[index] = !activeForces[index];
-		}			
-	});
-	menu.add(cMenuItem);
-}
-*/

@@ -24,6 +24,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
+import tesseract.objects.Ground;
 import tesseract.objects.HalfSpace;
 import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
@@ -381,6 +382,7 @@ public class World implements Observer {
 		myObjects.clear();
 		
 		addHalfspaces();
+		
 	}
 
 	/**
