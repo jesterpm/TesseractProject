@@ -50,6 +50,7 @@ public class ModifyableParticle extends PhysicalObject {
 	private Color3f myColor;
 
 	private boolean kidsSpawned;
+	private float myScale;
 	
 	/**
 	 * Create a new Particle.
@@ -58,8 +59,9 @@ public class ModifyableParticle extends PhysicalObject {
 	 * @param color Initial color. Null for random.
 	 */
 	public ModifyableParticle(final Vector3f position, final float mass, final Color3f color, final TransformGroup top, 
-			final TransformGroup bottom) {
+			final TransformGroup bottom, final float theScale) {
 		super(position, mass);
+		myScale = theScale;
 		myTop = (TransformGroup) top.cloneTree();
 		myBottom = getBottom(myTop);
 		myMass = mass;
@@ -102,7 +104,7 @@ public class ModifyableParticle extends PhysicalObject {
 				DIVISIONS, appearance);
 		*/
 		
-		Sphere sphere = new Sphere(RADIUS, Sphere.ENABLE_GEOMETRY_PICKING,
+		Sphere sphere = new Sphere(RADIUS * myScale * 8, Sphere.ENABLE_GEOMETRY_PICKING,
 				DIVISIONS);
 		Shape3D shape = sphere.getShape();
 		sphere.removeAllChildren();
@@ -117,8 +119,8 @@ public class ModifyableParticle extends PhysicalObject {
 	}
 
 	public void setAcceleration(Vector3f accelerator) {
-		accelerator.y -= 0.0118 * 2;
-		accelerator.scale(15f);
+		//accelerator.y -= 0.0118 * 2;
+		accelerator.scale(1f / myScale);
 		this.velocity = accelerator;		
 	}
 	
