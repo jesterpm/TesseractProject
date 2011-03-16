@@ -24,7 +24,7 @@ public class Tank extends RemoteObject {
 	KeyEvent lastEvent;
 	//private Vector3f aim;
 	//private final Point3f gunLocation;
-	private static final float DEFAULT_SCALE = 0.0625f;
+	private static final float DEFAULT_SCALE = 0.0625f / 4f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
 	private static final Color DEFAULT_TRACK_COLOR = Color.DARK_GRAY;
 	private static final Color DEFAULT_TURRET_COLOR = Color.GREEN;
@@ -35,6 +35,7 @@ public class Tank extends RemoteObject {
 	private final float myScale;
 	private int barrelTurn = 0;
 	private final int MAX_TURN = 32;
+	private final float MAX_SPEED = .3f;
 	
 	public Tank(final Vector3f thePosition, final float mass) {
 		this(thePosition, mass, DEFAULT_SCALE);
@@ -239,9 +240,10 @@ public class Tank extends RemoteObject {
 			collector.mul(pGun);
 			Vector3f accelerator = new Vector3f();
 			collector.get(accelerator);
+			
 			//System.out.println(accelerator);
 			ModifyableParticle toAdd = new ModifyableParticle(position, 1f, new Color3f(Color.RED),
-					particleBody, particleGunTG);
+					particleBody, particleGunTG, myScale);
 			toAdd.setAcceleration(accelerator);
 			/*
 			float xyTheta = ((float) Math.PI / 32) * barrelElevation;
@@ -299,6 +301,20 @@ public class Tank extends RemoteObject {
 			lastEvent = null;
 		}
 		return children;
+	}
+	
+	public void updateState(float duration) {
+		float speed = velocity.length();
+		//System.out.println(speed);
+		//int i = 0;
+		while(speed > MAX_SPEED) {
+			velocity.scale(.99f);
+			speed = velocity.length();
+			//i++;
+		}
+		//System.out.println(i);
+		
+		super.updateState(duration);
 	}
 	
 	
