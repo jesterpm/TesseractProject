@@ -598,7 +598,7 @@ public abstract class CollidableObject implements Serializable {
 		}
 		return appearance;
 	}
-
+	
 	public boolean removeMe() {
 		// TODO Auto-generated method stub
 		return detachMe;

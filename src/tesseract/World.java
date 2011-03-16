@@ -219,9 +219,9 @@ public class World implements Observer {
 		List<CollidableObject> toRemove = new LinkedList<CollidableObject>();
 		for (int i = 0; i < myObjects.size(); i++) {
 			CollidableObject obj = myObjects.get(i);
-			if (obj.removeMe()) {
+			/*if (obj.removeMe()) {
 				toRemove.add(obj);
-			}
+			}*/
 			// Apply forces
 			for (Force force : myForces) {
 				if(!(obj instanceof Blimp)) {
@@ -382,7 +382,6 @@ public class World implements Observer {
 		myObjects.clear();
 		
 		addHalfspaces();
-		
 	}
 
 	/**
