@@ -15,7 +15,11 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.media.j3d.Background;
 import javax.media.j3d.BoundingBox;
+import javax.media.j3d.BoundingLeaf;
+import javax.media.j3d.BoundingSphere;
+import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
@@ -29,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -55,6 +60,7 @@ import tesseract.objects.PhysicalObject;
 import tesseract.objects.blimp.Blimp;
 import tesseract.objects.remote.RemoteObjectMenu;
 
+import com.sun.j3d.utils.image.TextureLoader;
 import com.sun.j3d.utils.picking.PickCanvas;
 import com.sun.j3d.utils.picking.PickResult;
 import com.sun.j3d.utils.universe.SimpleUniverse;
@@ -158,8 +164,21 @@ public class TesseractUI extends JFrame {
 						new Point3d(UNIT / 2, UNIT / 2, UNIT / 2)),
 				myPeer);
 		
-		Blimp blimp = new Blimp(new Vector3f(0,0,0), .5f);
+		//Set Background
+		BoundingBox bounds = myWorld.getBounds();
+		TextureLoader t = new TextureLoader("Alien.jpg", myCanvas);
+		Background background = new Background(t.getImage()); 
+		background.setImageScaleMode(Background.SCALE_FIT_MAX); // Tiles the image
+		background.setApplicationBounds(bounds); 
+		BranchGroup bg = new BranchGroup();
+		bg.addChild(background);
+
+		BranchGroup scene = myWorld.getScene();
+		scene.addChild(bg);
+		
+		Blimp blimp = new Blimp(new Vector3f(0,0,0), .7f);
 		myWorld.addObject(blimp);
+		
 		myCurrentObject = null;
 		
 		myObjectMenuItems = new JMenuItem[] {

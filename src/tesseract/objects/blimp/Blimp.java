@@ -131,7 +131,7 @@ public class Blimp extends PhysicalObject {
 		Material box_surface = new Material();
 		box_surface.setDiffuseColor(new Color3f(.7f, .6f, .4f));
 		boxApp.setMaterial(box_surface);
-		BlimpBox box = new BlimpBox(100, .05f * my_scale, .03f * my_scale, .1f * my_scale,
+		BlimpBox box = new BlimpBox(10, .05f * my_scale, .03f * my_scale, .1f * my_scale,
 				new Vector3f(0f * my_scale, -.08f * my_scale, 0f * my_scale), boxApp);
 		TransformGroup tgBox = new TransformGroup();
 		tgBox.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);

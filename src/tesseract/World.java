@@ -333,6 +333,15 @@ public class World implements Observer {
 	}
 	
 	/**
+	 * Used for the background.  Returns the BoundingBox.
+	 * 
+	 * @return BoundingBox used for background.
+	 */
+	public BoundingBox getBounds() {
+		return myVirtualWorldBounds;
+	}
+	
+	/**
 	 * Add a new object to the world.
 	 * 
 	 * @param obj The object to add
