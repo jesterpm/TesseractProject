@@ -18,7 +18,7 @@ import com.sun.j3d.utils.geometry.Sphere;
  * Particle.java used as code base, parts also taken from ModifyableParticle.
  * 
  * @author Phillip Cardon
- * @author Jesse Morgan
+ * @author Jesse Morgan (base code)
  */
 public class DyingParticle extends PhysicalObject {
 	/**

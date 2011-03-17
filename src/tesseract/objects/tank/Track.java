@@ -15,7 +15,11 @@ import javax.vecmath.Point3f;
 
 import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.NormalGenerator;
-
+/**
+ * Track, tank track geometry.
+ * @author Phillip Cardon
+ *
+ */
 public class Track {
 	
 	private Track(){}

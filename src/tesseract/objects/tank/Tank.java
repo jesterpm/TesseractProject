@@ -15,7 +15,11 @@ import tesseract.objects.ModifyableParticle;
 import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.remote.RemoteObject;
-
+/**
+ * tank object
+ * @author Phillip Cardon
+ *
+ */
 public class Tank extends RemoteObject {
 	
 	private final TransformGroup whole;

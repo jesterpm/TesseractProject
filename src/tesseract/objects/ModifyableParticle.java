@@ -19,9 +19,9 @@ import common.CollidableObject;
 import common.CollisionInfo;
 
 /**
- * A particle object.
+ * A particle object. Base code taken from Particle.java
  * @author Phillip Cardon
- * @author Jesse Morgan
+ * @author Jesse Morgan (base code)
  */
 public class ModifyableParticle extends PhysicalObject {
 	/**
