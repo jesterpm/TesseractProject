@@ -1,6 +1,9 @@
 package tesseract.objects.blimp;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
@@ -45,7 +48,8 @@ public class Blimp extends RemoteObject {
 	private final int MAX_TURN = 32;
 	private final float MAX_SPEED = .3f;
 	private Vector3f[] vectors;
-	private TransformGroup my_blimp;
+	
+	transient private TransformGroup my_blimp;
 	
 	/**
 	 * Use to scale all object together
@@ -456,6 +460,15 @@ public class Blimp extends RemoteObject {
 		
 		super.updateState(duration);
 	}
+	
+	private void readObject(ObjectInputStream in) 
+    throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		
+		// Find those pesky references
+		my_blimp = (TransformGroup) TG.getChild(0);
+	}
+
 	
 	
 }

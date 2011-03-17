@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.UUID;
 
 import javax.vecmath.Vector3f;
@@ -126,9 +127,8 @@ public abstract class RemoteObject extends PhysicalObject {
 		
 	}
 	
-	private void writeObject(ObjectOutputStream out)
-     throws IOException {
-		out.defaultWriteObject();
+	public void detach() {
+		super.detach();
 		
 		myListener.stop();
 	}
@@ -148,7 +148,6 @@ public abstract class RemoteObject extends PhysicalObject {
 			mySocket = new Socket();
 			
 			try {
-				System.out.println("Connecting to " + myHome);
 				mySocket.connect(myHome);
 				
 				// Send id
@@ -167,6 +166,9 @@ public abstract class RemoteObject extends PhysicalObject {
 						KeyInfo event = new KeyInfo(key);
 						
 						sendKeyEvent(event);
+						
+					} catch (SocketException e) {
+						// Socket closed from transportation.
 						
 					} catch (Exception e) {
 						System.err.println("Could not read KeyEvent: " + e);
