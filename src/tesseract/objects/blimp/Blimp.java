@@ -2,6 +2,8 @@ package tesseract.objects.blimp;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -378,5 +380,11 @@ public class Blimp extends RemoteObject {
 		super.updateState(duration);
 	}
 	
-	
+	private void readObject(ObjectInputStream in) 
+    throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		
+		// Find those pesky references
+		my_blimp = (TransformGroup) TG.getChild(0);
+	}
 }
