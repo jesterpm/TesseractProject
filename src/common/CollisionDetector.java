@@ -18,6 +18,7 @@ import javax.media.j3d.TriangleFanArray;
 import javax.media.j3d.TriangleStripArray;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
+import javax.vecmath.SingularMatrixException;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
@@ -387,7 +388,11 @@ public class CollisionDetector {
 			Matrix3f tmp = new Matrix3f(a.previousPosition.x - a.position.x, triangle.b.x - triangle.a.x, triangle.c.x - triangle.a.x,
 			                            a.previousPosition.y - a.position.y, triangle.b.y - triangle.a.y, triangle.c.y - triangle.a.y,
 			                            a.previousPosition.z - a.position.z, triangle.b.z - triangle.a.z, triangle.c.z - triangle.a.z);
-			tmp.invert();
+			try {
+				tmp.invert();
+			} catch (SingularMatrixException e) {
+				return EMPTY_COLLISION_LIST;
+			}
 			Vector3f intercept = new Vector3f();
 			intercept.scaleAdd(-1, triangle.a, a.previousPosition);
 			tmp.transform(intercept);
