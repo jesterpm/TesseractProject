@@ -29,7 +29,7 @@ public class Tank extends RemoteObject {
 	 */
 	private static final long serialVersionUID = 4419863813052251438L;
 	
-	private static final float DEFAULT_SCALE = 0.0625f / 4f;
+	private static final float DEFAULT_SCALE = 0.0625f / 2.5f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
 	private static final Color DEFAULT_TRACK_COLOR = Color.DARK_GRAY;
 	private static final Color DEFAULT_TURRET_COLOR = Color.GREEN;
@@ -255,7 +255,7 @@ public class Tank extends RemoteObject {
 			
 			//System.out.println(accelerator);
 			ModifyableParticle toAdd = new ModifyableParticle(position, 1f, new Color3f(Color.RED),
-					particleBody, particleGunTG, myScale);
+					particleBody, particleGunTG, myScale * 2);
 			toAdd.setAcceleration(accelerator);
 			/*
 			float xyTheta = ((float) Math.PI / 32) * barrelElevation;
