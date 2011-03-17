@@ -75,25 +75,7 @@ public abstract class RemoteObject extends PhysicalObject {
 	 * 
 	 * @param event The KeyEvent recieved
 	 */
-	protected void keyEventReceived(final KeyInfo event) {
-		switch (event.getKeyCode()) {
-			case KeyEvent.VK_W:
-				velocity.z -= STEP;
-				break;
-				
-			case KeyEvent.VK_S:
-				velocity.z += STEP;
-				break;
-				
-			case KeyEvent.VK_A:
-				velocity.x -= STEP;
-				break;
-				
-			case KeyEvent.VK_D:
-				velocity.x += STEP;
-				break;
-		}
-	}
+	protected abstract void keyEventReceived(final KeyInfo event);
 	
 	/**
 	 * Get the name of the object for the menu.
