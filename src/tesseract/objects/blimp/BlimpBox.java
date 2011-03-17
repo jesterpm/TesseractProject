@@ -63,12 +63,12 @@ public class BlimpBox extends PhysicalObject {
 		setShape(createShape());
 		
 		previousPosition.set(position);
-		if (inverseMass != 0) {
+		/*if (inverseMass != 0) {
 			inverseInertiaTensor.m00 = 1f / 12 / inverseMass * (height * height + depth * depth);
 			inverseInertiaTensor.m11 = 1f / 12 / inverseMass * (width * width + depth * depth);
 			inverseInertiaTensor.m22 = 1f / 12 / inverseMass * (width * width + height * height);
 			inverseInertiaTensor.invert();
-		}
+		}*/
 		updateTransformGroup();
 	}
 

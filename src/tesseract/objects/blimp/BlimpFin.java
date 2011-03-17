@@ -65,12 +65,12 @@ public class BlimpFin extends PhysicalObject {
 		
 		setShape(createShape(radius, DEFAULT_DIVISIONS));
 		
-		if (inverseMass != 0) {
+		/*if (inverseMass != 0) {
 			inverseInertiaTensor.m00 = 1f / 4 / inverseMass * radius * radius;
 			inverseInertiaTensor.m11 = 2 * inverseInertiaTensor.m00;
 			inverseInertiaTensor.m22 = inverseInertiaTensor.m00;
 			inverseInertiaTensor.invert();
-		}
+		}*/
 		updateTransformGroup();
 	}
 

@@ -28,6 +28,12 @@ import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
 
+/**
+ * This class builds a blimp and the controls for it.
+ * 
+ * @author Steve Bradshaw
+ *
+ */
 public class Blimp extends RemoteObject {
 
 	KeyInfo lastEvent;
@@ -57,6 +63,7 @@ public class Blimp extends RemoteObject {
 	 * @param position Initial position.
 	 * @param scale determine the size of the blimp
 	 * @param theColor of object.
+	 * @author Steve Bradshaw
 	 */
 	public Blimp(final Vector3f position, final float scale) {
 		super(position, DEFAULT_MASS);
@@ -87,6 +94,7 @@ public class Blimp extends RemoteObject {
 	 * @param b float in the ellipsoid formula.
 	 * @param c float in the ellipsoid formula.
 	 * @return TransformGroup with the shape.
+	 * @author Steve Bradshaw
 	 */
 	private TransformGroup create( final float a,
 			final float b, final float c) {
@@ -232,7 +240,7 @@ public class Blimp extends RemoteObject {
 	
 	/**
 	 * This controls the blimp.  Most of it was written by Phillip Cardon for the Tank
-	 * and modified to fit the blimp since it can move up or down
+	 * and modified to fit the blimp since it can move up or down and roll
 	 * 
 	 * @author Phillip Cardon, Steve Bradshaw
 	 */
@@ -243,6 +251,8 @@ public class Blimp extends RemoteObject {
 		my_blimp.getTransform(currentOrientation);
 		Transform3D turnRight = new Transform3D();
 		Transform3D turnLeft = new Transform3D();
+		Transform3D turnUp = new Transform3D();
+		Transform3D turnDown = new Transform3D();
 		Vector3f facing = new Vector3f(vectors[0]);
 		Transform3D faceTrans = new Transform3D();
 		my_blimp.getTransform(faceTrans);
@@ -257,30 +267,49 @@ public class Blimp extends RemoteObject {
 				facing.scale(.01f);
 				velocity.sub(facing);
 				break;
-				
+			
+			//roll right
 			case KeyEvent.VK_A:
-				
+				turnLeft.rotZ(-Math.PI / 32);
+				currentOrientation.mul(turnLeft);
+				my_blimp.setTransform(currentOrientation);
+			//	turnLeft.transform(velocity); 
+				break;
+			
+			//roll left	
+			case KeyEvent.VK_D:
+				turnRight.rotZ(Math.PI / 32);
+				currentOrientation.mul(turnRight);
+				my_blimp.setTransform(currentOrientation);
+				//turnRight.transform(velocity);
+				break;
+			
+			case KeyEvent.VK_LEFT:
 				turnLeft.rotY(Math.PI / 32);
 				currentOrientation.mul(turnLeft);
 				my_blimp.setTransform(currentOrientation);
 				turnLeft.transform(velocity);
-				//orientation.y += Math.PI / 32;
-				
-				//angularVelocity.y = 0;
-				//orientation.normalize();
-				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
 				break;
-				
-			case KeyEvent.VK_D:
-				
+			
+			case KeyEvent.VK_RIGHT:
 				turnRight.rotY(-Math.PI / 32);
 				currentOrientation.mul(turnRight);
 				my_blimp.setTransform(currentOrientation);
 				turnRight.transform(velocity);
-				//orientation.y -= Math.PI / 32;
-				//angularVelocity.y = 0;
-				//orientation.normalize();
-				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
+				break;
+				
+			case KeyEvent.VK_UP:
+				turnUp.rotX(-Math.PI / 32);
+				currentOrientation.mul(turnUp);
+				my_blimp.setTransform(currentOrientation);
+				turnUp.transform(velocity);
+				break;
+				
+			case KeyEvent.VK_DOWN:
+				turnDown.rotX(Math.PI / 32);
+				currentOrientation.mul(turnDown);
+				my_blimp.setTransform(currentOrientation);
+				turnDown.transform(velocity);
 				break;
 		}
 	}
@@ -301,6 +330,118 @@ public class Blimp extends RemoteObject {
 		
 	}*/
 	
+	/**
+	 * Update State and maybe generate a new object.
+	 * 
+	 * @return A list of new objects to add to the world.
+	 */
+	/*public List<PhysicalObject> spawnChildren(float duration) {
+		List<PhysicalObject> children = super.spawnChildren(duration);
+		
+		if (children == null) {
+			children = new LinkedList<PhysicalObject>();
+		}
+		
+		if (lastEvent != null && lastEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+			
+			TransformGroup particleBody = new TransformGroup();
+			TransformGroup particleTurret = new TransformGroup();
+			TransformGroup particleTG = new TransformGroup();
+			TransformGroup particleBarrel = new TransformGroup();
+			TransformGroup particleGunTG = new TransformGroup();
+			Transform3D collector = new Transform3D();
+			Transform3D current = new Transform3D();
+			Transform3D pTurret = new Transform3D();
+			Transform3D pTG = new Transform3D();
+			Transform3D pBarrel = new Transform3D();
+			Transform3D pGun = new Transform3D();
+			Transform3D temp = new Transform3D();
+			temp.setTranslation(new Vector3f(0, .3f * myScale, 0));
+			my_blimp.getTransform(current);
+			collector.set(current);
+			current.mul(temp);
+			particleBody.setTransform(current);
+			turret.getTransform(pTurret);
+			pTurret.setScale(1.7);
+			particleTurret.setTransform(pTurret);
+			((TransformGroup) turret.getChild(0)).getTransform(pTG);
+			particleTG.setTransform(pTG);
+			tank.getBarrel().getTransform(pBarrel);
+			particleBarrel.setTransform(pBarrel);
+			((TransformGroup) tank.getBarrel().getChild(0)).getTransform(pGun);
+			particleGunTG.setTransform(pGun);
+			particleBody.addChild(particleTurret);
+			particleTurret.addChild(particleTG);
+			particleTG.addChild(particleBarrel);
+			particleBarrel.addChild(particleGunTG);
+			collector.mul(pTurret);
+			collector.mul(pTG);
+			collector.mul(pBarrel);
+			collector.mul(pGun);
+			Vector3f accelerator = new Vector3f();
+			collector.get(accelerator);
+			
+			//System.out.println(accelerator);
+			ModifyableParticle toAdd = new ModifyableParticle(position, 1f, new Color3f(Color.RED),
+					particleBody, particleGunTG, myScale);
+			toAdd.setAcceleration(accelerator);
+
+			float xyTheta = ((float) Math.PI / 32) * barrelElevation;
+			float xzTheta = ((float) Math.PI / 32) * barrelTurn;
+			float zyTheta = ((float) Math.PI / 32) * barrelElevation;
+			//float c = theta * Body.gunLength * myScale;
+			//toSet.y = toSet.y + c;
+			//VERTICAL CALCULATION
+			float l = Body.gunLength * myScale + .45f * myScale;
+			float q = (l * (float) Math.sin((double) xyTheta))/ (float) Math.sin((Math.PI - xyTheta) / 2);
+			float w = (l * (float) Math.sin((double) xzTheta))/ (float) Math.sin((Math.PI - xzTheta) / 2);
+			float e = (l * (float) Math.sin((double) zyTheta))/ (float) Math.sin((Math.PI - zyTheta) / 2);
+			float newX = l - ((q * q) / (2 * l));
+			float newY = (float) ((q / (2 * l)) * Math.sqrt(4 * l * l - q * q));
+			toSet.x = toSet.x + newX;
+			toSet.y = toSet.y + newY;
+			
+			//HORIZONTAL CALCULATION
+			float newnewX = l - ((w * w) / (2 * l));
+			float newZ = (float) ((w / (2 * l)) * Math.sqrt(4 * l * l - w * w));
+			float newZy = (float) ((e / (2 * l)) * Math.sqrt(4 * l * l - e * e));
+			//toSet.x = toSet.x - newnewX;
+			if (barrelTurn != 0) {
+				//toSet.z = toSet.z + newZ;
+				toSet.x = toSet.x - newX;
+				float temp = Math.max(newnewX, newX) - Math.min(newnewX, newX);
+				//toSet.x = toSet.x + Math.max(newnewX, newX) - temp;
+				if (Math.abs(newnewX) > Math.abs(newX)) {
+					toSet.x = toSet.x + newnewX - temp;
+				} else {
+					toSet.x = toSet.x + newX - temp;
+				}
+				
+				
+					float zTemp = Math.abs(newZ - newZy);
+					if (Math.abs(newZ) < Math.abs(newZy)) {
+						toSet.z = toSet.z + newZ - zTemp;
+					} else {
+						toSet.z = toSet.z + newZy - zTemp;
+					}
+			}
+			
+			System.out.println("theta " + theta);
+			System.out.println("q " + q);
+			System.out.println("l " + q);
+			System.out.println(newX);
+			System.out.println(newY);
+			//toSet.y += Body.height * myScale + .275 * myScale;
+			//System.out.println(toSet);
+			//Particle toAdd = new Particle(toSet, new Color3f(DEFAULT_BODY_COLOR));
+			//children.add(toAdd);
+			children.add(toAdd);
+			//System.out.println(toAdd.getPosition());
+			//System.out.println(this.position);
+			lastEvent = null;
+		}
+		return children;
+	}*/
 	
 	public void updateState(float duration) {
 		float speed = velocity.length();
