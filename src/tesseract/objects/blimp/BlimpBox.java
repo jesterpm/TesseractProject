@@ -6,6 +6,7 @@ import javax.media.j3d.Appearance;
 import javax.media.j3d.Geometry;
 import javax.media.j3d.Material;
 import javax.media.j3d.Node;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
@@ -38,6 +39,11 @@ public class BlimpBox extends PhysicalObject {
 	private float my_depth;
 	
 	/**
+	 * The box for the blimp
+	 */
+	private Primitive my_box;
+	
+	/**
 	 * The tg for this object
 	 */
 	private TransformGroup my_tg;
@@ -67,9 +73,18 @@ public class BlimpBox extends PhysicalObject {
 	}
 
 	public Node createShape() {
-		return new com.sun.j3d.utils.geometry.Box(my_width / 2, my_height / 2, my_depth / 2, my_appearance);
-
+		Primitive box = new com.sun.j3d.utils.geometry.Box(my_width / 2, my_height / 2, my_depth / 2, my_appearance);
+		my_box = box;
+		return box;
 	}
+	
+	/**
+	 * Return the box shape to be used to get the front based on Phil's idea to get front
+	 */
+	public Primitive getBoxShape() {
+		return my_box;
+	}
+	
 	
 	/**
 	 * get the tg for this box

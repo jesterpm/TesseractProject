@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 
 import tesseract.World;
 
@@ -22,12 +23,14 @@ public class RemoteObjectMenu extends JMenu {
 	
 	public RemoteObjectMenu(final World theWorld) {
 		super("RC Objects");
-		
+		// Added by Steve: Fixes viewing menu problem with Canvas3D on both my windows machines
+		JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 		myWorld = theWorld;
 		myControlledObjects = new ArrayList<RemoteObject>();
 		
 		// Objects that can be added
 		add(new TankMenuItem(this));
+		add(new BlimpMenuItem(this));
 		
 		// Separator
 		addSeparator();

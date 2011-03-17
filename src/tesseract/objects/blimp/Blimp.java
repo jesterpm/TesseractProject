@@ -1,13 +1,19 @@
 package tesseract.objects.blimp;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.Geometry;
+import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Group;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Material;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.Texture;
 import javax.media.j3d.Texture2D;
 import javax.media.j3d.Transform3D;
@@ -16,22 +22,30 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import tesseract.objects.ModifyableParticle;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.remote.RemoteObject;
 
+import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.geometry.Cylinder;
+import com.sun.j3d.utils.geometry.GeometryInfo;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
 
-public class Blimp extends PhysicalObject {
+public class Blimp extends RemoteObject {
 
-	
+	KeyEvent lastEvent;
 	/**
 	 * Default mass.
 	 */
 	//private static final float DEFAULT_MASS = Float.POSITIVE_INFINITY;
 	private static final float DEFAULT_MASS = 10;
+	private final int MAX_TURN = 32;
+	private final float MAX_SPEED = .3f;
+	private Vector3f[] vectors;
+	private TransformGroup my_blimp;
 	
 	/**
 	 * Use to scale all object together
@@ -83,38 +97,15 @@ public class Blimp extends PhysicalObject {
 	private TransformGroup create( final float a,
 			final float b, final float c) {
 		
-		TransformGroup blimp = new TransformGroup();
-		blimp.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-		blimp.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+		my_blimp = new TransformGroup();
+		my_blimp.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		my_blimp.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		
 		//blimp node
 		Appearance b_appearance = new Appearance();
 		Material surface = new Material();
 		surface.setDiffuseColor(new Color3f(.5f, .6f, .6f));
 		b_appearance.setMaterial(surface);
-		
-		/*TextureLoader t2 = new TextureLoader("lava.jpg", null);
-		ImageComponent2D image2 = t2.getImage();
-		int width2 = image2.getWidth();
-		int height2 = image2.getHeight();
-		Texture2D texture2 = new Texture2D(Texture.MULTI_LEVEL_MIPMAP, Texture.RGB, width2, height2);
-		
-		int imageLevel2 = 0;
-		texture2.setImage(imageLevel2, image2);
-		while (width2 > 1 || height2 > 1) {
-			imageLevel2++;
-			if (width2 > 1) width2 /= 2;
-			if (height2 > 1) height2 /= 2;
-			texture2.setImage(imageLevel2, t2.getScaledImage(width2, height2));
-		}
-		texture2.setMagFilter(Texture2D.NICEST);
-		texture2.setMinFilter(Texture2D.NICEST);
-		Material mat2 = new Material();
-		mat2.setDiffuseColor(1, 0, 0);
-		
-		Appearance b_appearance = new Appearance();
-		b_appearance.setTexture(texture2);
-		b_appearance.setMaterial(mat2);*/
 		
 		Sphere sphere = new Sphere(my_radius,
 				new Sphere().getPrimitiveFlags() | Sphere.ENABLE_GEOMETRY_PICKING,
@@ -137,6 +128,14 @@ public class Blimp extends PhysicalObject {
 		tgBox.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tgBox.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 		tgBox.addChild(box.getGroup());
+		
+		//This is done quite right, but it gets the front.
+		Primitive boxOfBlimpBox = box.getBoxShape();
+		Shape3D front = boxOfBlimpBox.getShape(Box.FRONT); //Gets the orientation for keys
+		//
+		Geometry g = front.getGeometry(0);
+		GeometryInfo gi = new GeometryInfo((GeometryArray)g);
+		vectors = gi.getNormals();
 		
 		//fin1
 		TextureLoader tl = new TextureLoader("lava.jpg", null);
@@ -188,12 +187,17 @@ public class Blimp extends PhysicalObject {
 		rotate3.rotX(Math.PI / 2);
 		tgPole.setTransform(rotate3);
 		
-		blimp.addChild(tgBlimp);
-		blimp.addChild(tgBox);
-		blimp.addChild(tgFin);
-		blimp.addChild(tgFin2);
-		blimp.addChild(tgPole);
-		return blimp;
+		my_blimp.addChild(tgBlimp);
+		my_blimp.addChild(tgBox);
+		my_blimp.addChild(tgFin);
+		my_blimp.addChild(tgFin2);
+		my_blimp.addChild(tgPole);
+		my_blimp.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		return my_blimp;
+	}
+	
+	public Vector3f getFacing() {
+		return vectors[0];
 	}
 	
 	private TransformGroup createPole(Color3f color) {
@@ -223,4 +227,100 @@ public class Blimp extends PhysicalObject {
 		
 		return axis;
 	}
+	
+	
+	private static final long serialVersionUID = 4419863813052251438L;
+
+	@Override
+	public String getName() {
+		return "Blimp";
+	}
+	
+	/**
+	 * This controls the blimp.  Most of it was written by Phillip Cardon for the Tank
+	 * and modified to fit the blimp since it can move up or down
+	 * 
+	 * @author Phillip Cardon, Steve Bradshaw
+	 */
+	protected void keyEventReceived(final KeyEvent event) {
+		lastEvent = event;
+		Vector3f temp = new Vector3f();
+		Transform3D currentOrientation = new Transform3D();
+		my_blimp.getTransform(currentOrientation);
+		Transform3D turnRight = new Transform3D();
+		Transform3D turnLeft = new Transform3D();
+		Vector3f facing = new Vector3f(vectors[0]);
+		Transform3D faceTrans = new Transform3D();
+		my_blimp.getTransform(faceTrans);
+		faceTrans.transform(facing);
+		switch (event.getKeyCode()) {
+			case KeyEvent.VK_W:
+				facing.scale(.01f);
+				velocity.add(facing);
+				break;
+				
+			case KeyEvent.VK_S:
+				facing.scale(.01f);
+				velocity.sub(facing);
+				break;
+				
+			case KeyEvent.VK_A:
+				
+				turnLeft.rotY(Math.PI / 32);
+				currentOrientation.mul(turnLeft);
+				my_blimp.setTransform(currentOrientation);
+				turnLeft.transform(velocity);
+				//orientation.y += Math.PI / 32;
+				
+				//angularVelocity.y = 0;
+				//orientation.normalize();
+				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
+				break;
+				
+			case KeyEvent.VK_D:
+				
+				turnRight.rotY(-Math.PI / 32);
+				currentOrientation.mul(turnRight);
+				my_blimp.setTransform(currentOrientation);
+				turnRight.transform(velocity);
+				//orientation.y -= Math.PI / 32;
+				//angularVelocity.y = 0;
+				//orientation.normalize();
+				//System.out.println(orientation.x+ ", " + orientation.y + " " + orientation.z);
+				break;
+		}
+	}
+
+				
+		//		break;
+
+			//case KeyEvent.VK_SPACE:
+				//spawnChildren(0f);
+				//System.out.println("Tried to fire particle");
+				//break;
+		
+/*		if (barrelTurn < -MAX_TURN) {
+			barrelTurn = MAX_TURN - 1;
+		} else if (barrelTurn > MAX_TURN) {
+			barrelTurn = -MAX_TURN + 1;
+		}
+		
+	}*/
+	
+	
+	public void updateState(float duration) {
+		float speed = velocity.length();
+		//System.out.println(speed);
+		//int i = 0;
+		while(speed > MAX_SPEED) {
+			velocity.scale(.99f);
+			speed = velocity.length();
+			//i++;
+		}
+		//System.out.println(i);
+		
+		super.updateState(duration);
+	}
+	
+	
 }
