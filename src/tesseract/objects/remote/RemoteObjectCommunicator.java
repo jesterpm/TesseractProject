@@ -22,10 +22,7 @@ public class RemoteObjectCommunicator implements Runnable {
 	public RemoteObjectCommunicator() {
 		mySockets = new HashMap<UUID, Socket>();
 		myRunning = false;
-	}
-
-	
-	public void run() {
+		
 		int port = BASE_PORT;
 		
 		// Find an open port.
@@ -43,7 +40,10 @@ public class RemoteObjectCommunicator implements Runnable {
 				return;
 			}
 		}
-		
+	}
+
+	
+	public void run() {
 		// Listen for connections
 		while (myRunning) {
 			try {
@@ -70,30 +70,21 @@ public class RemoteObjectCommunicator implements Runnable {
 				
 			} catch (IOException e) {
 				mySockets.remove(id);
-				// TODO: REMOVE
-				System.out.println(id + " Exception. "  + e);
 				return false;
 			}
 			
 		} else {
-			// TODO: REMOVE
-			System.out.println(id + " has not called home.");
 			return false;
 		}
 	}
 	
 	private void handleNewSocket(final Socket socket) {		
 		try {
-			// TODO: Remove
-			System.out.println("New Socket");
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			
 			long msb = in.readLong();
 			long lsb = in.readLong();
-			
 			UUID id = new UUID(msb, lsb);
-			
-			System.out.println("Id is " + id);
 			
 			mySockets.put(id, socket);
 			
@@ -104,15 +95,12 @@ public class RemoteObjectCommunicator implements Runnable {
 
 
 	public int getPort() {
-		System.out.print("Blocking for address.");
-		while (mySocket == null) {
-			// Block until we get a socket.
-			System.out.print(".");
+		if (mySocket != null) {
+			return mySocket.getLocalPort();
+			
+		} else {
+			return 0;
 		}
-		
-		System.out.println();
-		
-		return mySocket.getLocalPort();
 	}
 	
 }

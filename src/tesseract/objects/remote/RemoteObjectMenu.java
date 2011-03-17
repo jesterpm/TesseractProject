@@ -81,7 +81,6 @@ public class RemoteObjectMenu extends JMenu {
 	public void sendKeyToObjects(final KeyEvent e) {
 		for (RemoteObject o : myControlledObjects) {
 			if (!myCommunicator.sendKeyToObject(o.getId(), e)) {
-				System.out.println("Send failed to " + o.getId());
 				//myControlledObjects.remove(o);
 				// TODO : Remove from menu.
 			}

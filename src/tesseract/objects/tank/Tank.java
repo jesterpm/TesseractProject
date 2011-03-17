@@ -333,10 +333,6 @@ public class Tank extends RemoteObject {
 	private void writeObject(ObjectOutputStream out)
     throws IOException {
 		out.defaultWriteObject();
-		
-		System.out.println(whole);
-		System.out.println(turret);
-		System.out.println(barrel);
 	}
 	
 	private void readObject(ObjectInputStream in) 
