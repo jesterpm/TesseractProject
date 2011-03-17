@@ -15,6 +15,6 @@ public class BlimpMenuItem extends RemoteObjectMenuItem {
 
 	@Override
 	protected RemoteObject createRemoteObject() {
-		return new Blimp(new Vector3f(), 1f);
+		return new Blimp(new Vector3f(), .7f);
 	} 
 }
