@@ -1,6 +1,7 @@
 package tesseract.objects.tank;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
@@ -30,6 +31,7 @@ import com.sun.j3d.utils.geometry.Sphere;
  *
  */
 public class Body {
+	
 	public static final float width = 1.35f;
 	public static final float height = .45f;
 	public static final float depth = .9f;

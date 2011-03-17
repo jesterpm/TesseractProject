@@ -2,44 +2,51 @@ package tesseract.objects.tank;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import tesseract.objects.ModifyableParticle;
-import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
+import tesseract.objects.remote.KeyInfo;
 import tesseract.objects.remote.RemoteObject;
+
 /**
- * tank object
+ * tank object.
  * @author Phillip Cardon
  *
  */
 public class Tank extends RemoteObject {
+	/**
+	 * Serial UID.
+	 */
+	private static final long serialVersionUID = 4419863813052251438L;
 	
-	private final TransformGroup whole;
-	private final TransformGroup turret;
-	//private final Vector3f orientation;
-	KeyEvent lastEvent;
-	//private Vector3f aim;
-	//private final Point3f gunLocation;
 	private static final float DEFAULT_SCALE = 0.0625f / 4f;
 	private static final Color DEFAULT_BODY_COLOR = Color.GREEN;
 	private static final Color DEFAULT_TRACK_COLOR = Color.DARK_GRAY;
 	private static final Color DEFAULT_TURRET_COLOR = Color.GREEN;
-	private final Body tank;
-	private int barrelElevation = 0;
 	private static final int maxBarrelElevation = 14;
 	private static final int minBarrelElevation = -1;
+	private static final int MAX_TURN = 32;
+	private static final float MAX_SPEED = .3f;
+	
+	transient private TransformGroup whole;
+	transient private TransformGroup turret;
+	transient private TransformGroup barrel;
+	
+	private int barrelElevation = 0;
 	private final float myScale;
 	private int barrelTurn = 0;
-	private final int MAX_TURN = 32;
-	private final float MAX_SPEED = .3f;
+	
+	private KeyInfo lastEvent;
 	
 	public Tank(final Vector3f thePosition, final float mass) {
 		this(thePosition, mass, DEFAULT_SCALE);
@@ -56,20 +63,23 @@ public class Tank extends RemoteObject {
 			final Color turretColor) {
 		super (thePosition, mass);
 		myScale = theScale;
-		tank = new Body(trackColor, bodyColor, theScale, turretColor);
-		//orientation = new Vector3f();
-		//aim = new Vector3f();
-		//gunLocation = new Point3f();
-		Transform3D turretMove = new Transform3D();
-		turretMove.setTranslation(new Vector3f(0, Body.height * theScale, 0));
+		
+		
+		Body tank = new Body(trackColor, bodyColor, theScale, turretColor);
+		
+		barrel = tank.getBarrel();
+		
 		turret = new TransformGroup();
 		turret.addChild(tank.getTurret());
 		turret.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		
 		whole = new TransformGroup();
 		whole.addChild(tank.getBody());
 		whole.addChild(turret);
 		whole.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		
 		setShape(whole);
+		
 		//inverseInertiaTensor.m00 = 1f / 12 / inverseMass * (Body.height * Body.height * theScale + Body.depth * Body.depth * theScale);
 		//inverseInertiaTensor.m11 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.depth * Body.depth * theScale);
 		//inverseInertiaTensor.m22 = 1f / 12 / inverseMass * (Body.width * Body.width * theScale + Body.height * Body.height * theScale);
@@ -77,36 +87,34 @@ public class Tank extends RemoteObject {
 		
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4419863813052251438L;
 
 	@Override
 	public String getName() {
 		return "Tank";
 	}
 	
-	protected void keyEventReceived(final KeyEvent event) {
+	protected void keyEventReceived(final KeyInfo event) {
 		lastEvent = event;
-		//Transform3D check = new Transform3D();
-		//tank.getBody().getTransform(check);
-		//check.get(orientation);
-		Vector3f temp = new Vector3f();
-		Transform3D current = new Transform3D();
-		turret.getTransform(current);
-		Transform3D currentOrientation = new Transform3D();
-		whole.getTransform(currentOrientation);
+		
+		//Vector3f temp = new Vector3f();
+		
+		
 		Transform3D turnRight = new Transform3D();
 		Transform3D barrelDown = new Transform3D();
 		Transform3D barrelUp = new Transform3D();
 		Transform3D right = new Transform3D();
 		Transform3D left = new Transform3D();
 		Transform3D turnLeft = new Transform3D();
-		Vector3f facing = new Vector3f(tank.getFacing());
-		Transform3D faceTrans = new Transform3D();
-		whole.getTransform(faceTrans);
-		faceTrans.transform(facing);
+		
+		Transform3D currentTurrentTransform = new Transform3D();
+		turret.getTransform(currentTurrentTransform);
+		
+		Transform3D currentOrientation = new Transform3D();
+		whole.getTransform(currentOrientation);
+		
+		Vector3f facing = new Vector3f(1, 0, 0);
+		currentOrientation.transform(facing);
+		
 		switch (event.getKeyCode()) {
 			case KeyEvent.VK_W:
 				facing.scale(.01f);
@@ -145,25 +153,25 @@ public class Tank extends RemoteObject {
 			case KeyEvent.VK_LEFT:
 				
 				left.rotY(Math.PI / 32);
-				current.mul(left);
-				turret.setTransform(current);
+				currentTurrentTransform.mul(left);
+				turret.setTransform(currentTurrentTransform);
 				barrelTurn = barrelTurn - 1;
 				break;
 			case KeyEvent.VK_RIGHT:
 				
 				right.rotY(-Math.PI / 32);
-				current.mul(right);
-				turret.setTransform(current);
+				currentTurrentTransform.mul(right);
+				turret.setTransform(currentTurrentTransform);
 				barrelTurn = barrelTurn + 1;
 				break;
 			case KeyEvent.VK_UP:
 				
-				tank.getBarrel().getTransform(barrelUp);
+				barrel.getTransform(barrelUp);
 				Transform3D up = new Transform3D();
 				up.rotZ(Math.PI /32);
 				barrelUp.mul(up);
 				if (barrelElevation < maxBarrelElevation) {
-					tank.getBarrel().setTransform(barrelUp);
+					barrel.setTransform(barrelUp);
 					barrelElevation++;
 				}
 				//barrelUp.get(aim);
@@ -171,12 +179,12 @@ public class Tank extends RemoteObject {
 				break;
 			case KeyEvent.VK_DOWN:
 				
-				tank.getBarrel().getTransform(barrelDown);
+				barrel.getTransform(barrelDown);
 				Transform3D down = new Transform3D();
 				down.rotZ(-Math.PI /32);
 				barrelDown.mul(down);
 				if (barrelElevation > minBarrelElevation) {
-					tank.getBarrel().setTransform(barrelDown);
+					barrel.setTransform(barrelDown);
 					barrelElevation--;
 				}
 				
@@ -230,9 +238,9 @@ public class Tank extends RemoteObject {
 			particleTurret.setTransform(pTurret);
 			((TransformGroup) turret.getChild(0)).getTransform(pTG);
 			particleTG.setTransform(pTG);
-			tank.getBarrel().getTransform(pBarrel);
+			barrel.getTransform(pBarrel);
 			particleBarrel.setTransform(pBarrel);
-			((TransformGroup) tank.getBarrel().getChild(0)).getTransform(pGun);
+			((TransformGroup) barrel.getChild(0)).getTransform(pGun);
 			particleGunTG.setTransform(pGun);
 			particleBody.addChild(particleTurret);
 			particleTurret.addChild(particleTG);
@@ -322,5 +330,23 @@ public class Tank extends RemoteObject {
 	}
 	
 	
+	private void writeObject(ObjectOutputStream out)
+    throws IOException {
+		out.defaultWriteObject();
+		
+		System.out.println(whole);
+		System.out.println(turret);
+		System.out.println(barrel);
+	}
+	
+	private void readObject(ObjectInputStream in) 
+    throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		
+		// Find those pesky references
+		whole = (TransformGroup) TG.getChild(0);
+		turret = (TransformGroup) whole.getChild(1);
+		barrel = ((TransformGroup) ((TransformGroup) ((TransformGroup) turret.getChild(0)).getChild(0)).getChild(1));
+	}
 
 }

@@ -516,6 +516,7 @@ public abstract class CollidableObject implements Serializable {
 			tgroup.setCapability(javax.media.j3d.Node.ALLOW_BOUNDS_READ);
 			tgroup.setCapability(javax.media.j3d.Node.ALLOW_LOCAL_TO_VWORLD_READ);
 			tgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+			tgroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 			tgroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 			return tgroup;
 		case NODE_TYPE_PRIMITIVE:

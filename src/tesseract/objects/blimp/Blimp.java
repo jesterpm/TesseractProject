@@ -1,16 +1,11 @@
 package tesseract.objects.blimp;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.media.j3d.Appearance;
-import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.Geometry;
 import javax.media.j3d.GeometryArray;
-import javax.media.j3d.Group;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Material;
 import javax.media.j3d.Shape3D;
@@ -22,8 +17,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
-import tesseract.objects.ModifyableParticle;
-import tesseract.objects.PhysicalObject;
+import tesseract.objects.remote.KeyInfo;
 import tesseract.objects.remote.RemoteObject;
 
 import com.sun.j3d.utils.geometry.Box;
@@ -36,7 +30,7 @@ import com.sun.j3d.utils.image.TextureLoader;
 
 public class Blimp extends RemoteObject {
 
-	KeyEvent lastEvent;
+	KeyInfo lastEvent;
 	/**
 	 * Default mass.
 	 */
@@ -242,7 +236,7 @@ public class Blimp extends RemoteObject {
 	 * 
 	 * @author Phillip Cardon, Steve Bradshaw
 	 */
-	protected void keyEventReceived(final KeyEvent event) {
+	protected void keyEventReceived(final KeyInfo event) {
 		lastEvent = event;
 		Vector3f temp = new Vector3f();
 		Transform3D currentOrientation = new Transform3D();
