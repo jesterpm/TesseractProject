@@ -429,8 +429,10 @@ public class TesseractUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog( null, 
 						"Tank:\n" +
+						"arrows = turret aim up, down, left, right\n" +
 						"a = left\nb = right\n" +
 						"w = forward\ns = backup\n\n" +
+						
 						"Blimp:\n" +
 						"arrows = steer up, down, left, right\n" +
 						"w = forward\na = roll left\nd = roll right\n" +
@@ -438,13 +440,13 @@ public class TesseractUI extends JFrame {
 						"TO FIRE ON BOTH = space");
 			}
 		});
-		final JMenuItem infoMsg = new JMenuItem("Information"); 
+		final JMenuItem infoMsg = new JMenuItem("RC Information"); 
 		infoMsg.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog( null, 
-						"This program allows the user\n" +
-						"to send the RC object to another\n" +
+						"The RC OBject menu allows the user\n" +
+						"to send an RC object to another\n" +
 						"world and control it remotely");
 			}
 		});
