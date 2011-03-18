@@ -5,13 +5,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 
 import tesseract.World;
 
@@ -45,6 +51,11 @@ public class RemoteObjectMenu extends JMenu {
 			System.err.println(e);
 		}
 		
+		// Home submenu
+		JMenu home = new JMenu("Home Address");
+		populateHomeMenu(home);
+		add(home);
+		
 		// Objects that can be added
 		add(new TankMenuItem(this));
 		add(new BlimpMenuItem(this));
@@ -53,6 +64,45 @@ public class RemoteObjectMenu extends JMenu {
 		addSeparator();
 		
 		// Living Objects here...
+	}
+	
+	private void populateHomeMenu(JMenu home) {
+		List<InetAddress> addrList = new ArrayList<InetAddress>();
+		
+		try {
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			
+			ButtonGroup group = new ButtonGroup();
+			
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface i = interfaces.nextElement();
+				
+				try {
+					if (i.isUp()) {
+						// Get addresses
+						Enumeration<InetAddress> ips = i.getInetAddresses();
+						while (ips.hasMoreElements()) {
+							final InetAddress ip = ips.nextElement();
+							
+							JRadioButtonMenuItem item = new JRadioButtonMenuItem(ip.toString());
+							item.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									myHome = new InetSocketAddress(ip, myCommunicator.getPort());
+								}
+							});
+							
+							home.add(item);
+							group.add(item);
+						}
+					}
+				} catch (SocketException e) {
+					// I suppose we'll ignore this address.
+				}
+			}
+			
+		} catch (SocketException e) {
+			// I suppose we'll ignore all addresses?
+		}
 	}
 	
 	public void addObject(final RemoteObject theObject) {
@@ -80,10 +130,7 @@ public class RemoteObjectMenu extends JMenu {
 	
 	public void sendKeyToObjects(final KeyEvent e) {
 		for (RemoteObject o : myControlledObjects) {
-			if (!myCommunicator.sendKeyToObject(o.getId(), e)) {
-				//myControlledObjects.remove(o);
-				// TODO : Remove from menu.
-			}
+			myCommunicator.sendKeyToObject(o.getId(), e);
 		}
 	}
 }
