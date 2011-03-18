@@ -168,9 +168,6 @@ public class TesseractUI extends JFrame {
 		createBackground();
 		createGround();
 		
-		//Blimp blimp = new Blimp(new Vector3f(0,0,0), .7f);
-		//myWorld.addObject(blimp);
-		
 		myCurrentObject = null;
 		
 		myObjectMenuItems = new JMenuItem[] {
