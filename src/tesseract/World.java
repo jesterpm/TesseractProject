@@ -24,8 +24,10 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3f;
 
 import tesseract.forces.Force;
+import tesseract.objects.DyingParticle;
 import tesseract.objects.Ground;
 import tesseract.objects.HalfSpace;
+import tesseract.objects.ModifyableParticle;
 import tesseract.objects.Particle;
 import tesseract.objects.PhysicalObject;
 import tesseract.objects.blimp.Blimp;
@@ -288,7 +290,9 @@ public class World implements Observer {
 						// Side collision, is there a peer?
 						final PeerInformation peer = myPeer.getPeerInDirection(o.getVelocity().x, -o.getVelocity().z);
 						
-						if (peer != null) {
+						if (peer != null
+								&& !(o instanceof ModifyableParticle)
+								&& !(o instanceof DyingParticle)) {
 							final CollidableObject sendMe = o;
 							
 							o.rotateForTransmission(myPeer.getPeerInformation(), peer);
