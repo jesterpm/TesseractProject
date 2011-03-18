@@ -152,35 +152,8 @@ public class Blimp extends RemoteObject {
 		vectors = gi.getNormals();
 		
 		//fin1
-		/*TextureLoader tl = new TextureLoader("lava.jpg", null);
-		ImageComponent2D image = tl.getImage();
-		int width = image.getWidth();
-		int height = image.getHeight();
-		Texture2D texture = new Texture2D(Texture.MULTI_LEVEL_MIPMAP, Texture.RGB, width, height);
-		
-		int imageLevel = 0;
-		texture.setImage(imageLevel, image);
-		while (width > 1 || height > 1) {
-			imageLevel++;
-			if (width > 1) width /= 2;
-			if (height > 1) height /= 2;
-			texture.setImage(imageLevel, tl.getScaledImage(width, height));
-		}
-		texture.setMagFilter(Texture2D.NICEST);
-		texture.setMinFilter(Texture2D.NICEST);*/
-		//Material mat = new Material();
-		///mat.setDiffuseColor(1, 1, 1);
-		
-		Appearance appearance = new Appearance();
-		//appearance.setTexture(texture);
-		//appearance.setMaterial(mat);
-		
-		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(.1f,.1f,.3f),
-				ColoringAttributes.FASTEST));
-		
-		
 		BlimpFin fin = new BlimpFin(1, new Vector3f(0f * my_scale,
-				0f * my_scale, -.165f  * my_scale), .1f * my_scale, appearance);
+				0f * my_scale, -.165f  * my_scale), .1f * my_scale);
 		Transform3D rotate = new Transform3D();
 		rotate.rotZ(Math.PI / 2);
 		TransformGroup tgFin = new TransformGroup(rotate);
@@ -190,7 +163,7 @@ public class Blimp extends RemoteObject {
 		
 		//fin2
 		BlimpFin fin2 = new BlimpFin(1, new Vector3f(0f * my_scale,
-				0f * my_scale, -.165f * my_scale), .1f * my_scale, appearance);
+				0f * my_scale, -.165f * my_scale), .1f * my_scale);
 		Transform3D rotate2 = new Transform3D();
 		//rotate2.rotZ(Math.PI / 2);
 		TransformGroup tgFin2 = new TransformGroup(rotate2);
