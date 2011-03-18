@@ -91,6 +91,13 @@ public class RemoteObjectMenu extends JMenu {
 								}
 							});
 							
+							try {
+								if (ip.equals(InetAddress.getLocalHost())) {
+									item.setSelected(true);
+								}
+							} catch (UnknownHostException e1) {
+							}
+							
 							home.add(item);
 							group.add(item);
 						}

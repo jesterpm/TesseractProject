@@ -423,7 +423,7 @@ public class TesseractUI extends JFrame {
 		
 		//About
 		JMenu aboutMenu = new JMenu("About");
-		final JMenuItem commandsMsg = new JMenuItem("KeyBoard Commands"); 
+		final JMenuItem commandsMsg = new JMenuItem("Keyboard Commands"); 
 		commandsMsg.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
