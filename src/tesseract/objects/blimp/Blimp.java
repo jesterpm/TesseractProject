@@ -152,8 +152,14 @@ public class Blimp extends RemoteObject {
 		vectors = gi.getNormals();
 		
 		//fin1
+
+		Appearance appearance = new Appearance();
+		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(.1f,.1f,.3f),
+				ColoringAttributes.FASTEST));
+		
+		
 		BlimpFin fin = new BlimpFin(1, new Vector3f(0f * my_scale,
-				0f * my_scale, -.165f  * my_scale), .1f * my_scale);
+				0f * my_scale, -.165f  * my_scale), .1f * my_scale, appearance);
 		Transform3D rotate = new Transform3D();
 		rotate.rotZ(Math.PI / 2);
 		TransformGroup tgFin = new TransformGroup(rotate);
@@ -163,7 +169,7 @@ public class Blimp extends RemoteObject {
 		
 		//fin2
 		BlimpFin fin2 = new BlimpFin(1, new Vector3f(0f * my_scale,
-				0f * my_scale, -.165f * my_scale), .1f * my_scale);
+				0f * my_scale, -.165f * my_scale), .1f * my_scale, appearance);
 		Transform3D rotate2 = new Transform3D();
 		//rotate2.rotZ(Math.PI / 2);
 		TransformGroup tgFin2 = new TransformGroup(rotate2);

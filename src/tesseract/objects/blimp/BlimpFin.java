@@ -8,7 +8,6 @@ package tesseract.objects.blimp;
 
 
 import javax.media.j3d.Appearance;
-import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.Geometry;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Material;
@@ -46,6 +45,11 @@ public class BlimpFin extends PhysicalObject {
 	public static final int DEFAULT_DIVISIONS = 4;
 	
 	/**
+	 * The appearance of this fin
+	 */
+	private Appearance my_appearance;
+	
+	/**
 	 * Create a new Ellipsoid.
 	 * 
 	 * @param position Initial position.
@@ -54,8 +58,10 @@ public class BlimpFin extends PhysicalObject {
 	 * @param divisions an in for the shape divisions.
 	 */
 	public BlimpFin( final float mass, final Vector3f position,
-			final float radius) {
+			final float radius, final Appearance appearance) {
 		super(position, mass);
+		
+		my_appearance = appearance;
 		
 		setShape(createShape(radius, DEFAULT_DIVISIONS));
 		
@@ -90,14 +96,11 @@ public class BlimpFin extends PhysicalObject {
 		new NormalGenerator().generateNormals(gInfo);
 		gInfo.convertToIndexedTriangles();
 		Shape3D fin = new Shape3D(gInfo.getGeometryArray());
-		Appearance appearance = new Appearance();
-		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(.1f,.1f,.3f),
-				ColoringAttributes.FASTEST));
 
 		PolygonAttributes polyAttr = new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0);
-		appearance.setPolygonAttributes(polyAttr);		
+		my_appearance.setPolygonAttributes(polyAttr);		
 		geometry.setCapability(Geometry.ALLOW_INTERSECT);
-		fin =  new Shape3D(geometry, appearance);
+		fin =  new Shape3D(geometry, my_appearance);
 		Transform3D rotate = new Transform3D();
 		rotate.rotY(Math.PI / 4);
 		TransformGroup tg = new TransformGroup(rotate);
