@@ -237,7 +237,7 @@ public class TesseractUI extends JFrame {
 			((MenuItem) item).setParent(this); 
 		}
 		menuBar.add(objectsMenu);
-		
+
 		//Network
 		JMenu networkMenu = new JMenu("Network");
 		final JMenuItem join = new JMenuItem("Join Network"); 
@@ -420,6 +420,37 @@ public class TesseractUI extends JFrame {
 		
 		// Remote Objects
 		menuBar.add(myRemoteObjects);
+		
+		//About
+		JMenu aboutMenu = new JMenu("About");
+		final JMenuItem commandsMsg = new JMenuItem("KeyBoard Commands"); 
+		commandsMsg.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog( null, 
+						"Tank:\n" +
+						"a = left\nb = right\n" +
+						"w = forward\ns = backup\n\n" +
+						"Blimp:\n" +
+						"arrows = steer up, down, left, right\n" +
+						"w = forward\na = roll left\nd = roll right\n" +
+						"s = backup\n\n" +
+						"TO FIRE ON BOTH = space");
+			}
+		});
+		final JMenuItem infoMsg = new JMenuItem("Information"); 
+		infoMsg.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog( null, 
+						"This program allows the user\n" +
+						"to send the RC object to another\n" +
+						"world and control it remotely");
+			}
+		});
+		aboutMenu.add(infoMsg);
+		aboutMenu.add(commandsMsg);
+		menuBar.add(aboutMenu);
 		
 		
 		setJMenuBar(menuBar);
