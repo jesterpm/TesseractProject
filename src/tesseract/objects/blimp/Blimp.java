@@ -45,6 +45,7 @@ import com.sun.j3d.utils.image.TextureLoader;
  *
  */
 public class Blimp extends RemoteObject {
+	
 
 	KeyInfo lastEvent;
 	/**
@@ -55,7 +56,7 @@ public class Blimp extends RemoteObject {
 	private final int MAX_TURN = 32;
 	private final float MAX_SPEED = .3f;
 	private Vector3f[] vectors;
-	private TransformGroup my_blimp;
+	transient TransformGroup my_blimp;
 	private int my_bomb_count = 0;
 	
 	/**
@@ -151,7 +152,7 @@ public class Blimp extends RemoteObject {
 		vectors = gi.getNormals();
 		
 		//fin1
-		TextureLoader tl = new TextureLoader("lava.jpg", null);
+		/*TextureLoader tl = new TextureLoader("lava.jpg", null);
 		ImageComponent2D image = tl.getImage();
 		int width = image.getWidth();
 		int height = image.getHeight();
@@ -166,13 +167,16 @@ public class Blimp extends RemoteObject {
 			texture.setImage(imageLevel, tl.getScaledImage(width, height));
 		}
 		texture.setMagFilter(Texture2D.NICEST);
-		texture.setMinFilter(Texture2D.NICEST);
-		Material mat = new Material();
-		mat.setDiffuseColor(1, 0, 0);
+		texture.setMinFilter(Texture2D.NICEST);*/
+		//Material mat = new Material();
+		///mat.setDiffuseColor(1, 1, 1);
 		
 		Appearance appearance = new Appearance();
-		appearance.setTexture(texture);
-		appearance.setMaterial(mat);
+		//appearance.setTexture(texture);
+		//appearance.setMaterial(mat);
+		
+		appearance.setColoringAttributes(new ColoringAttributes(new Color3f(.1f,.1f,.3f),
+				ColoringAttributes.FASTEST));
 		
 		
 		BlimpFin fin = new BlimpFin(1, new Vector3f(0f * my_scale,
@@ -257,7 +261,6 @@ public class Blimp extends RemoteObject {
 	 */
 	protected void keyEventReceived(final KeyInfo event) {
 		lastEvent = event;
-		Vector3f temp = new Vector3f();
 		Transform3D currentOrientation = new Transform3D();
 		my_blimp.getTransform(currentOrientation);
 		Transform3D rollRight = new Transform3D();

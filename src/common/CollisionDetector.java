@@ -272,8 +272,8 @@ public class CollisionDetector {
 		if (a instanceof Sphere && b instanceof Sphere)
 			return calculateCollisions((Sphere)a, (Sphere)b);
 		
-		if (!a.getBounds().intersect(b.getBounds()))
-			return EMPTY_COLLISION_LIST;
+		/*if (!a.getBounds().intersect(b.getBounds()))
+			return EMPTY_COLLISION_LIST;*/
 		
 		if (a instanceof Particle)
 			return calculateCollisions((Particle)a, b);
